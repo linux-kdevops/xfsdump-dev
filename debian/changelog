@@ -1,3 +1,9 @@
+xfsdump (3.1.7) unstable; urgency=low
+
+  * New upstream release
+
+ -- Nathan Scott <nathans@debian.org> Fri, 18 Aug 2017 17:49:02 -0500
+
 xfsdump (3.1.6) unstable; urgency=low
 
   * New upstream release
