@@ -37,6 +37,7 @@
 #include <assert.h>
 #include <string.h>
 #include <uuid/uuid.h>
+#include <locale.h>
 
 #include "config.h"
 
