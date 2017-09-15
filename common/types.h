@@ -62,6 +62,10 @@ typedef uint64_t xfs_ino_t;
 
 /* limits
  */
+#ifndef NBBY
+#define NBBY		8
+#endif
+
 #define	MKMAX( t, s )	( ( t )						\
 			  ( ( ( 1ull					\
 			        <<					\
