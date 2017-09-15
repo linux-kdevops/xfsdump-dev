@@ -2237,7 +2237,7 @@ static sig_printmap_t sig_printmap[ ] = {
 	{SIGTERM,	"SIGTERM"},
 	{SIGUSR1,	"SIGUSR1"},
 	{SIGUSR2,	"SIGUSR2"},
-	{SIGCLD,	"SIGCLD"},
+	{SIGCHLD,	"SIGCHLD"},
 	{SIGPWR,	"SIGPWR"},
 	{SIGURG,	"SIGURG"},
 	{SIGPOLL,	"SIGPOLL"},
