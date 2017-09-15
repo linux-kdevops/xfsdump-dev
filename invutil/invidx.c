@@ -20,6 +20,7 @@
 #include <xfs/jdm.h>
 
 #include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <ncurses.h>
