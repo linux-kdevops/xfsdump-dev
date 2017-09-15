@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <string.h>
+#include <limits.h>
 #include <uuid/uuid.h>
 
 #include "config.h"
