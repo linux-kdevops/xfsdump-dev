@@ -585,7 +585,7 @@ HsmModifyExtentMap(
 	struct getbmapx	*bmap)
 {
 	dmf_f_ctxt_t	*dmf_f_ctxtp = (dmf_f_ctxt_t *)contextp;
-	__int64_t	length;
+	int64_t		length;
 
 	if (bmap[0].bmv_entries <= 0) {
 		return 1;	/* caller must already be at EOF */

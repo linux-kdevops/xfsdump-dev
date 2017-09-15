@@ -43,7 +43,7 @@
 /* length of labels, mntpts, etc */
 #define INV_STRLEN              GLOBAL_HDR_STRING_SZ
 
-typedef __uint32_t		inv_version_t;
+typedef uint32_t		inv_version_t;
 
 /* This is the general inventory version. 
  */

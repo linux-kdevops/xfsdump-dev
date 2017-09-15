@@ -46,7 +46,7 @@
 
 
 
-typedef __uint32_t	invt_objtype_t;
+typedef uint32_t	invt_objtype_t;
 
 #define INVT_LOCKED		0x0001
 

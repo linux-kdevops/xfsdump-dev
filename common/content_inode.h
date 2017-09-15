@@ -191,10 +191,10 @@ typedef struct bstat bstat_t;
  * and using two 16bit values to hold new 32bit projid was choosen
  * to retain compatibility with "old" filesystems).
  */
-static inline __uint32_t
+static inline uint32_t
 bstat_projid(struct bstat *bs)
 {
-        return (__uint32_t)bs->bs_projid_hi << 16 | bs->bs_projid_lo;
+        return (uint32_t)bs->bs_projid_hi << 16 | bs->bs_projid_lo;
 }
 
 

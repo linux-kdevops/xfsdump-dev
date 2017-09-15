@@ -120,7 +120,7 @@ typedef struct invt_seshdr {
 	off64_t		sh_streams_off; /* offset to start of the set of 
 					   stream hdrs */
 	time32_t	sh_time;        /* time of the dump */
-	__uint32_t	sh_flag;        /* for misc flags */
+	uint32_t	sh_flag;        /* for misc flags */
 	u_char		sh_level;       /* dump level */
 	u_char		sh_pruned;      /* pruned by invutil flag */
 	char		sh_padding[22];
@@ -184,7 +184,7 @@ typedef struct invt_entry {
 
 /* Cheap Inheritance, and an attempt to avoid a nested type */
 #define INVT_COUNTER_FIELDS  \
-        __uint32_t    ic_vernum;/* on disk version number for posterity */\
+        uint32_t      ic_vernum;/* on disk version number for posterity */\
 	uint	      ic_curnum;/* number of sessions/invindices recorded \
 				   so far */				  \
 	uint	      ic_maxnum;/* maximum number of sessions/inv_indices \
