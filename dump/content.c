@@ -36,6 +36,7 @@
 #include <xfs/xfs.h>
 #include <xfs/jdm.h>
 #ifdef linux
+#include <linux/limits.h>
 #include <xfs/xqm.h>
 #endif
 
