@@ -1,3 +1,6 @@
+xfsdump-3.1.8 (21 Sep 2017)
+	- Build fixes for musl libc (Felix Janda)
+
 xfsdump-3.1.7 (18 Aug 2017)
 	- No further changes
 
