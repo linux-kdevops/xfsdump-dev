@@ -90,13 +90,13 @@ recons_test( int howmany )
 {
 	int fd, i, rval = 1;
 	off64_t off = 0;
-	
+
 	ses sarr[ SESLIM];
-	
+
 	fd = open( sesfile, O_RDONLY );
-	
+
 	for ( i=0; i<howmany && i < SESLIM; i++ ){
-		rval = get_invtrecord( fd, &sarr[i], 
+		rval = get_invtrecord( fd, &sarr[i],
 				       sizeof( uuid_t ) + sizeof( size_t ), off,
 				       BOOL_FALSE );
 		assert( rval > 0 );
@@ -108,9 +108,9 @@ recons_test( int howmany )
 		assert( rval > 0 );
 		off += sarr[i].sz;
 	}
-	
-	
-	
+
+
+
 	for ( i=0; i<howmany && i < SESLIM; i++ ){
 		if ( inv_put_sessioninfo( sarr[i].buf, sarr[i].sz ) < 0)
 			printf("$ insert failed.\n");
@@ -134,13 +134,13 @@ delete_test( int n )
 
 	fd = open( "moids", O_RDONLY );
 	if ( fd < 0 ) return -1;
-	
+
 	get_invtrecord( fd, &moid, sizeof(uuid_t), (n-1)* sizeof( uuid_t), 0 );
 	uuid_to_string( &moid, &str, &stat );
 	printf("Searching for Moid = %s\n", str );
 	free( str );
 	if (! inv_delete_mediaobj( &moid ) ) return -1;
-	    
+
 	return 1;
 
 }
@@ -200,7 +200,7 @@ query_test( int level )
 	time_t *tm;
 	inv_session_t *ses;
 	invt_pr_ctx_t prctx;
-	
+
 	if (level == -2) {
 		printf("mount pt %s\n",sesfile);
 		tok = inv_open( INV_BY_MOUNTPT, INV_SEARCH_ONLY, sesfile );
@@ -208,7 +208,7 @@ query_test( int level )
 		idx_DEBUG_print (tok->d_invindex_fd);
 		return 1;
 	}
-		
+
 	for (i = 7; i<8; i++) {
 		printf("\n\n\n----------------------------------\n"
 		       "$ Searching fs %s\n", mnt_str[7-i] );
@@ -239,8 +239,8 @@ query_test( int level )
 		inv_close( tok );
 	}
 	return 1;
-}				
-				   
+}
+
 
 /*----------------------------------------------------------------------*/
 /*                                                                      */
@@ -256,7 +256,7 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 	uuid_t *fsidp;
 	inv_idbtoken_t tok1;
 	inv_sestoken_t tok2;
-	inv_stmtoken_t tok3;	
+	inv_stmtoken_t tok3;
 	char *dev, *mnt;
 	char label[120];
 	uuid_t fsidarr[8], labelid;
@@ -314,13 +314,13 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 		free (str);
 		strbuf[8] = '\0';
 		sprintf(label,"%s_%s (%d)\0","SESSION_LABEL", strbuf, i );
-		
+
 		tok2 = inv_writesession_open(tok1, fsidp,
 					     &labelid,
-					     label, 
+					     label,
 					     (bool_t)i%2,
 					     (bool_t)i%2,
-					     dumplevel, nstreams, 
+					     dumplevel, nstreams,
 					     time(NULL),
 					     mnt, dev );
 		assert (tok2 != INV_TOKEN_NULL );
@@ -333,7 +333,7 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 					      k*100 + 99 );
 			inv_stream_close( tok3, BOOL_TRUE );
 		}
-	
+
 #ifdef RECONS
 		if (inv_get_sessioninfo( tok2, &bufp, &sz ) == BOOL_TRUE ) {
 			put_invtrecord( rfd, fsidp, sizeof( uuid_t ), off,
@@ -351,8 +351,8 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 #endif
 		inv_writesession_close( tok2 );
 		inv_close( tok1 );
-	}	
-#ifdef RECONS	
+	}
+#ifdef RECONS
 	close( rfd );
 #endif
 	return 1;
@@ -375,10 +375,10 @@ mp_test(int nstreams)
 
 	tok2 = inv_writesession_open(tok1, fsidp,
 				     &labelid,
-				     label, 
+				     label,
 				     (bool_t)i%2,
 				     (bool_t)i%2,
-				     dumplevel, nstreams, 
+				     dumplevel, nstreams,
 				     time(NULL),
 				     mnt, dev );
 	assert (tok2 != INV_TOKEN_NULL );
@@ -392,7 +392,7 @@ mp_test(int nstreams)
 					      k*100 + 99 );
 			inv_stream_close( tok3, BOOL_TRUE );
 		}
-#endif	
+#endif
 }
 
 
@@ -404,7 +404,7 @@ mp_test(int nstreams)
 /*                                                                      */
 /*----------------------------------------------------------------------*/
 
-	
+
 main(int argc, char *argv[])
 {
 	int rval = -1, nsess = 8, nmedia = 2, nstreams = 3, level = 0;
@@ -418,12 +418,12 @@ main(int argc, char *argv[])
 	progname = argv[0];
 	sesfile = "sessions";
 	assert( argc > 1 );
-	
+
 	mlog_init( argc, argv );
 
 	if (! inv_DEBUG_print(argc, argv))
 		return 0;
-	
+
 	optind = 1;
 	optarg = 0;
 
@@ -433,21 +433,21 @@ main(int argc, char *argv[])
 			op = WRI;
 			break;
 		      case 'r':
-			op = REC;	
+			op = REC;
 			break;
-			
+
 		      case 'q':
-			op = QUE;			
+			op = QUE;
 			break;
-			
+
 		      case 'd':
-			op = DEL;			
+			op = DEL;
 			break;
 
 		      case 'z':
 			op = MP;
 			break;
-			
+
 		      case 'g':
 			op = QUE2;
 			break;
@@ -463,7 +463,7 @@ main(int argc, char *argv[])
 		      case 's':
 			nsess = atoi(optarg);
 			break;
-			
+
 		      case 'l':
 			level = atoi(optarg);
 			break;
@@ -471,24 +471,24 @@ main(int argc, char *argv[])
 		      case 't':
 			nstreams = atoi(optarg);
 			break;
-			
+
 		      case 'm':
 			nmedia = atoi( optarg );
 			break;
 		      case 'v':
 			break;
-			
+
 		      case 'f':
 			sesfile = optarg;
 			break;
 
 		      default:
-			usage(); 
+			usage();
 			break;
 		}
 	}
-	
-	
+
+
 	if ( op == WRI )
 		rval = write_test( nsess, nstreams, nmedia, level );
 	else if ( op == QUE )
@@ -504,10 +504,10 @@ main(int argc, char *argv[])
 			rval = sess_queries_byuuid(uuid);
 		else if (label)
 			rval = sess_queries_bylabel(label);
-		}	
+		}
 	else
 		usage();
-		
+
 	if (rval < 0 )
 		printf( "aborted\n");
 	else

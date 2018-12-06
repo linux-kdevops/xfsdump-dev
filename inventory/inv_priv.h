@@ -60,7 +60,7 @@
 #define INVT_DOLOCK		BOOL_TRUE
 #define INVT_DONTLOCK		BOOL_FALSE
 
-#define INVLOCK( fd, m )	flock( fd, m ) 
+#define INVLOCK( fd, m )	flock( fd, m )
 
 /* return values */
 #define INV_OK			(int) 1
@@ -110,14 +110,14 @@ typedef struct invt_session {
 	char		 s_devpath[INV_STRLEN];/* path to the device */
 	uint		 s_cur_nstreams;/* number of streams created under
 					   this session so far */
-	uint		 s_max_nstreams;/* number of media streams in 
+	uint		 s_max_nstreams;/* number of media streams in
 					   the session */
 	char		 s_padding[16];
-} invt_session_t;			   
- 
+} invt_session_t;
+
 typedef struct invt_seshdr {
 	off64_t		sh_sess_off;    /* offset to rest of the sessioninfo */
-	off64_t		sh_streams_off; /* offset to start of the set of 
+	off64_t		sh_streams_off; /* offset to start of the set of
 					   stream hdrs */
 	time32_t	sh_time;        /* time of the dump */
 	uint32_t	sh_flag;        /* for misc flags */
@@ -129,7 +129,7 @@ typedef struct invt_seshdr {
 
 /* Each session consists of a number of media streams. While it is given that
    there won't be multiple writesessions (ie. dumpsessions) concurrently,
-   there can be multiple media streams operating on a single file system, 
+   there can be multiple media streams operating on a single file system,
    each writing media files within its own stream. Hence, we have a linked
    list of media files, that the stream keeps track of. */
 
@@ -159,7 +159,7 @@ typedef struct invt_mediafile {
 	uuid_t		 mf_moid;	/* media object id */
 	char		 mf_label[INV_STRLEN];	/* media file label */
 	invt_breakpt_t	 mf_startino;	/* file that we started out with */
-	invt_breakpt_t	 mf_endino;	/* the dump file we ended this 
+	invt_breakpt_t	 mf_endino;	/* the dump file we ended this
 					   media file with */
 	off64_t		 mf_nextmf;	/* links to other mfiles */
 	off64_t		 mf_prevmf;
@@ -200,7 +200,7 @@ typedef struct invt_sescounter {
 	INVT_COUNTER_FIELDS
 	off64_t	       ic_eof;   /* current end of the file, where the next
 				 media file or stream will be written to */
-	char 	       ic_padding[0x20 - ( INVT_COUNTER_FIELDS_SIZE + 
+	char 	       ic_padding[0x20 - ( INVT_COUNTER_FIELDS_SIZE +
 					   sizeof( off64_t) )];
 } invt_sescounter_t;
 
@@ -225,7 +225,7 @@ typedef struct invt_desc_entry {
 				   this file system or not and also if
 				   we had to create a new invindex file */
 	inv_oflag_t d_oflag;    /* the open mode (SEARCH_ONLY, SEARCH_N_MOD) */
-	off64_t	d_invindex_off; /* for every session, we need a reference 
+	off64_t	d_invindex_off; /* for every session, we need a reference
 				   to its invindex entry, so that when we
 				   close a session, we know which one */
 } invt_desc_entry_t;
@@ -235,23 +235,23 @@ typedef struct invt_sesdesc_entry {
 	invt_desc_entry_t *sd_invtok;	/* generic inventory token */
 	off64_t		   sd_session_off;
 	off64_t		   sd_sesshdr_off;
-	time32_t	   sd_sesstime;	/* time that session started. 
+	time32_t	   sd_sesstime;	/* time that session started.
 					   needed for closing the session */
 } invt_sesdesc_entry_t;
-	
+
 struct invt_mediafile;
 
 typedef struct invt_strdesc_entry {
 	invt_sesdesc_entry_t  *md_sesstok;   /* the session token */
-	off64_t		       md_stream_off;/* offset to the media stream 
-						header */	
+	off64_t		       md_stream_off;/* offset to the media stream
+						header */
 	struct invt_mediafile *md_lastmfile; /* just so that we dont have
 						to get it back from disk
 						when we add the next mfile
 						to the linked list */
 
 } invt_strdesc_entry_t;
-	
+
 
 
 
@@ -262,7 +262,7 @@ typedef struct invt_strdesc_entry {
 
 typedef struct invt_sessinfo {
 	int 		  stobjfd;
-	invt_seshdr_t    *seshdr; 
+	invt_seshdr_t    *seshdr;
 	invt_session_t   *ses;
 	invt_stream_t    *strms;
 	invt_mediafile_t *mfiles;
@@ -332,7 +332,7 @@ typedef bool_t (*search_callback_t) (int, invt_seshdr_t *, void *, void *);
 #define GET_SESHEADERS( fd, hdrs, n ) get_headers( fd, (void**)(hdrs), \
 				   (size_t) ( n * sizeof(invt_seshdr_t ) ),\
 				          sizeof( invt_sescounter_t )  )
-						   
+
 #define GET_ENTRIES(fd, hdrs, n, sz) get_headers(fd, (void**)(hdrs), \
 				   (size_t) (n * sz), sizeof(invt_counter_t))
 
@@ -358,7 +358,7 @@ int
 idx_find_stobj( invt_idxinfo_t *idx, time32_t tm );
 
 uint
-idx_insert_newentry( int fd, int *stobjfd, invt_entry_t *iarr, 
+idx_insert_newentry( int fd, int *stobjfd, invt_entry_t *iarr,
 		     invt_counter_t *icnt,
 		     time32_t tm );
 int
@@ -382,23 +382,23 @@ int
 stobj_create( char *fname );
 
 int
-stobj_create_session( inv_sestoken_t tok, int fd, invt_sescounter_t *sescnt, 
+stobj_create_session( inv_sestoken_t tok, int fd, invt_sescounter_t *sescnt,
 		      invt_session_t *ses, invt_seshdr_t *hdr );
 
 int
 stobj_put_mediafile( inv_stmtoken_t tok, invt_mediafile_t *mf );
 
 off64_t
-stobj_put_session( 
-	int fd, 
-	invt_sescounter_t *sescnt, 
-	invt_session_t *ses, 
+stobj_put_session(
+	int fd,
+	invt_sescounter_t *sescnt,
+	invt_session_t *ses,
 	invt_seshdr_t *hdr,
 	invt_stream_t *strms,
 	invt_mediafile_t *mfiles );
 
 int
-stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses, 
+stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		   invt_stream_t *strms,
 		   invt_mediafile_t *mfiles );
 
@@ -412,7 +412,7 @@ uint
 stobj_find_splitpoint( int fd, invt_seshdr_t *harr, uint ns, time32_t tm );
 
 int
-stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt, 
+stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 	     invt_sessinfo_t *newsess );
 bool_t
 stobj_replace_session( int fd, invt_sescounter_t *sescnt, invt_session_t *ses,
@@ -427,7 +427,7 @@ stobj_pack_sessinfo( int fd, invt_session_t *ses, invt_seshdr_t *hdr,
 		     void  **bufpp, size_t *bufszp );
 
 bool_t
-stobj_unpack_sessinfo(  
+stobj_unpack_sessinfo(
         void              *bufp,
         size_t             bufsz,
 	invt_sessinfo_t   *s );
@@ -454,7 +454,7 @@ int
 stobj_make_invsess( int fd, inv_session_t **buf, invt_seshdr_t *hdr );
 
 int
-stobj_copy_invsess( int fd, invt_seshdr_t *hdr, invt_session_t *ses, 
+stobj_copy_invsess( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		    inv_session_t **buf);
 
 void
@@ -471,7 +471,7 @@ stobj_getsession_bylabel(int fd, invt_seshdr_t *hdr, void *label, void **buf);
 
 
 void
-stobj_convert_session(inv_session_t *ises, invt_session_t *ses, 
+stobj_convert_session(inv_session_t *ises, invt_session_t *ses,
 		      invt_seshdr_t *hdr);
 
 void
@@ -486,14 +486,14 @@ stobj_convert_sessinfo(inv_session_t **buf, invt_sessinfo_t *sinfo);
 /*----------------------------------------------------------------------*/
 
 int
-fstab_get_fname( void *pred, char *fname, inv_predicate_t bywhat, 
+fstab_get_fname( void *pred, char *fname, inv_predicate_t bywhat,
 		 inv_oflag_t forwhat );
 
 int
 fstab_put_entry( uuid_t *fsidp, char *mntpt, char *dev, inv_oflag_t forwhat );
 
 int
-fstab_getall( invt_fstab_t **arr, invt_counter_t **cnt, int *numfs, 
+fstab_getall( invt_fstab_t **arr, invt_counter_t **cnt, int *numfs,
 	      inv_oflag_t forwhat );
 
 void
@@ -563,14 +563,14 @@ bool_t
 lastsess_level_equalto( int fd, invt_seshdr_t *hdr,  void *arg, void **buf );
 
 int
-DEBUG_displayallsessions( int fd, invt_seshdr_t *hdr, uint ref, 
+DEBUG_displayallsessions( int fd, invt_seshdr_t *hdr, uint ref,
 			  invt_pr_ctx_t *prctx);
 
 int
 make_invdirectory( inv_oflag_t forwhat );
 
 bool_t
-init_idb( void *pred, inv_predicate_t bywhat, inv_oflag_t forwhat, 
+init_idb( void *pred, inv_predicate_t bywhat, inv_oflag_t forwhat,
 	 inv_idbtoken_t *tok );
 
 int
@@ -582,6 +582,6 @@ insert_session( invt_sessinfo_t *s);
 /* To reconstruct a complete inventory from dumped inventories */
 extern bool_t
 inv_put_sessioninfo( invt_sessinfo_t *s );
-	        
+
 
 #endif

@@ -342,7 +342,7 @@ ds_instantiate( int argc, char *argv[], drive_t *drivep )
 			      drivep->d_pathname,
 			      strerror( errno ));
 			return BOOL_FALSE;
-		
+
 		}
 		oflags = O_RDONLY;
 		switch( statbuf.st_mode & S_IFMT ) {
@@ -495,7 +495,7 @@ do_begin_read( drive_t *drivep )
 		return rval;
 	}
 	assert( ( size_t )nread == GLOBAL_HDR_SZ );
-	
+
 	mlog(MLOG_NITTY, "do_begin_read: global_hdr\n"
 	     "\tgh_magic %.100s\n"
 	     "\tgh_version %u\n"
@@ -771,7 +771,7 @@ do_seek_mark( drive_t *drivep, drive_mark_t *markp )
 	if ( strmoff > mark ) {
 		return DRIVE_ERROR_CORE;
 	}
-	
+
 	/* use read_buf util func to eat up difference
 	 */
 	nreadneeded64 = mark - strmoff;
@@ -897,7 +897,7 @@ do_begin_write( drive_t *drivep )
 	/* indicate in the header that there is no recorded mark.
 	 */
 	*( ( off64_t * )dwhdrp->dh_specific ) = 0;
-	
+
 	/* prepare the drive context. initially the caller does not own
 	 * any of the write buffer, so the next portion of the buffer to
 	 * be supplied is the top of the buffer. emptyp never changes;
@@ -1491,7 +1491,7 @@ do_erase( drive_t *drivep )
 /* get_media_class()
  */
 /* ARGSUSED */
-static int 
+static int
 do_get_device_class( drive_t *drivep )
 {
 	mlog( MLOG_NITTY | MLOG_DRIVE,

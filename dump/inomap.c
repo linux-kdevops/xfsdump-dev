@@ -354,7 +354,7 @@ inomap_build( jdm_fshandle_t *fshandlep,
 			     bstatbufp,
 			     bstatbuflen );
 	*inomap_statphasep = 0;
-	
+
 	if ( rval ) {
 		cb_context_free();
 		free( ( void * )bstatbufp );
@@ -704,7 +704,7 @@ supprt_prune( void *arg1,	/* ancestors marked as changed? */
 		if ( state != MAP_DIR_CHANGE &&
                      state != MAP_DIR_NOCHNG &&
 		     state != MAP_DIR_SUPPRT) {
-			/* 
+			/*
 			 * if file is now a dir then it has
 			 * certainly changed.
 			 */
@@ -752,7 +752,7 @@ supprt_prune( void *arg1,	/* ancestors marked as changed? */
 	state = inomap_get_state( cb_inomap_contextp, statp->bs_ino );
 	if ( state != MAP_NDR_CHANGE &&
 	     state != MAP_NDR_NOCHNG ) {
-		/* 
+		/*
 		 * if dir is now a file then it has
 		 * certainly changed.
 		 */

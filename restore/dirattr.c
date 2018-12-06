@@ -105,7 +105,7 @@
 struct dirattr {
 #ifdef DIRATTRCHK
 	uint16_t d_unq;
-	uint16_t d_sum; 
+	uint16_t d_sum;
 #endif /* DIRATTRCHK */
 	mode_t d_mode;
 	uid_t d_uid;
@@ -395,7 +395,7 @@ dirattr_add( filehdr_t *fhdrp )
 	uint16_t sum;
 #endif /* DIRATTRCHK */
 	dah_t dah;
-	
+
 	/* sanity checks
 	 */
 	assert( dtp );

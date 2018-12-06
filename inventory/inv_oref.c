@@ -57,7 +57,7 @@ oref_resolve_(
 		assert(0);
 		break;
 	}
-	
+
 	return rval;
 }
 
@@ -66,12 +66,12 @@ oref_resolve_(
 
 
 /*
- * Resolve an object reference upto a specified point 
+ * Resolve an object reference upto a specified point
  */
 
 int
 oref_resolve_upto(
-	invt_oref_t 	*obj, 
+	invt_oref_t 	*obj,
 	invt_objtype_t	type)
 {
 	int rval = INV_OK;
@@ -101,7 +101,7 @@ oref_resolve_upto(
 	if (type >= INVT_RES_MFILES && rval != INV_ERR) {
 		rval = oref_resolve_mfiles(obj);
 	}
-	
+
 	return rval;
 }
 
@@ -137,7 +137,7 @@ oref_resolve_entries(
 	}
 
 	OREF_SET_TYPE(obj, INVT_RES_COUNTERS);
-		
+
 	return INV_OK;
 }
 
@@ -173,7 +173,7 @@ oref_resolve_counters(
 	}
 
 	OREF_SET_TYPE(obj, INVT_RES_COUNTERS);
-		
+
 	return INV_OK;
 }
 
@@ -181,7 +181,7 @@ oref_resolve_counters(
 
 int
 oref_sync(
-	invt_oref_t 	*obj, 
+	invt_oref_t 	*obj,
 	invt_objtype_t	type)
 {
 	int rval;
@@ -194,34 +194,34 @@ oref_sync(
 
 	switch (type) {
 	      case INVT_RES_COUNTERS:
-		rval = PUT_REC_NOLOCK(obj->fd, 
-				      OREF_CNT(obj), 
+		rval = PUT_REC_NOLOCK(obj->fd,
+				      OREF_CNT(obj),
 				      sizeof(*OREF_CNT(obj)),
 				      (off64_t) 0);
-				      
+
 		break;
 
 	      case INVT_RES_ENTRIES:
 		assert(! OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ));
 
-		rval = PUT_REC_NOLOCK(obj->fd, 
-				      OREF_ENTRIES(obj), 
+		rval = PUT_REC_NOLOCK(obj->fd,
+				      OREF_ENTRIES(obj),
 				      sizeof(*OREF_ENTRIES(obj)),
 				      (off64_t) sizeof(*OREF_CNT(obj)));
-		
+
 		break;
 
 	      default:
 		assert(0);
 		break;
 	}
-	
+
 	return rval;
 }
 
 int
 oref_sync_append(
-	invt_oref_t 	*obj, 
+	invt_oref_t 	*obj,
 	invt_objtype_t	type,
 	void		*entry,
 	size_t		entsz)
@@ -236,22 +236,22 @@ oref_sync_append(
 	switch (type) {
 	      case INVT_RES_ENTRIES:
 		assert(! OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ));
-		
-		rval = PUT_REC_NOLOCK(obj->fd, 
+
+		rval = PUT_REC_NOLOCK(obj->fd,
 				      entry,
 				      entsz,
 				      IDX_HDR_OFFSET(OREF_CNT_CURNUM(obj) - 1));
-		if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES)) 
+		if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES))
 			free((oref)->eu_ent);
 		OREF_UNSET_TYPE(obj, INVT_RES_ENTRIES);
-		
+
 		break;
 
 	      default:
 		assert(0);
 		break;
 	}
-	
+
 	return rval;
 }
 
@@ -259,18 +259,18 @@ oref_sync_append(
 
 void
 _oref_free(
-	invt_oref_t 	*obj, 
+	invt_oref_t 	*obj,
 	bool_t 		freethis)
 {
-	/* 
+	/*
 	 * Unlock the object *if* it is locked.
 	 * We dont want to actually close the fd because,
 	 * the tokens still need it.
 	 */
-	OREF_UNLOCK(obj);	
+	OREF_UNLOCK(obj);
 
 	if (OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ) ){
-		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS)) 
+		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS))
 			free((oref)->cu_sescnt);
 		if (OREF_ISRESOLVED(obj, INVT_RES_HDRS))
 			free((oref)->eu_hdr);
@@ -282,15 +282,15 @@ _oref_free(
 			free((oref)->eu_mfile);
 	}
 	else if (OREF_ISRESOLVED(obj, INVT_OTYPE_INVIDX)) {
-		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS)) 
+		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS))
 			free((oref)->cu_cnt);
-		if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES)) 
+		if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES))
 			free((oref)->eu_ent);
 	}
 	else if (OREF_ISRESOLVED(obj, INVT_OTYPE_FSTAB)) {
-		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS)) 
+		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS))
 			free((oref)->cu_cnt);
-		if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES)) 
+		if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES))
 			free((oref)->eu_fstabent);
 	}
 	OREF_INIT(obj);
@@ -318,7 +318,7 @@ oref_resolve(
 	int		index;
 
 	assert(! OREF_ISRESOLVED(invidx, INVT_OTYPE_MASK));
-	
+
 	OREF_SET_TYPE(invidx, INVT_OTYPE_INVIDX);
 
 	/* come up with the unique file suffix that refers to this
@@ -336,7 +336,7 @@ oref_resolve(
 			return INV_ERR;
 		}
 		/* create the invidx */
-		return oref_resolve_new_invidx(invidx, fname);	
+		return oref_resolve_new_invidx(invidx, fname);
 	}
 
 	invidx->fd = fd;
@@ -351,27 +351,27 @@ oref_resolve(
 
 	/* Now we need to make sure that this has enough space */
 	OREF_LOCK(stobj, LOCK_SH);
-	
+
 	if (oref_resolve_upto(stobj, INVT_RES_COUNTERS) == INV_ERR) {
 		OREF_UNLOCK(stobj);
 		OREF_UNLOCK(invidx);
 		return INV_ERR;
 	}
 
-	/* create another storage object ( and, an inv_index entry for it 
+	/* create another storage object ( and, an inv_index entry for it
 	   too ) if we've filled this one up */
 	if (OREF_CNT_CURNUM(stobj) >= OREF_CNT_MAXNUM(stobj)) {
 		int 	rval;
 #ifdef INVT_DEBUG
 		mlog( MLOG_DEBUG | MLOG_INV, "$ INV: creating a new storage obj & "
 		      "index entry. \n" );
-#endif	
+#endif
 		/* Close(), Destroy() and mark unresolved */
 		OREF_UNRESOLVE_CHILD(invidx);
 		rval = oref_resolve_new_stobj(invidx, BOOL_FALSE);
 		/* rval = oref_idx_create_entry(invidx, BOOL_FALSE); */
 		OREF_UNLOCK(invidx);
-		
+
 		return rval;
 	}
 
@@ -380,7 +380,7 @@ oref_resolve(
 
 	tok = get_token(invidx->fd, stobj->fd);
 	tok->d_invindex_off = IDX_HDR_OFFSET(index - 1);
-	
+
 	OREF_SET_TOKEN(tok);
 	return INV_OK;
 
@@ -398,14 +398,14 @@ oref_resolve_child(
 	invt_entry_t 	*ent;
 	assert(OREF_IS_LOCKED(invidx));
 
-	if (oref_resolve_upto(invidx, INVT_RES_ENTRIES) == INV_ERR)	
+	if (oref_resolve_upto(invidx, INVT_RES_ENTRIES) == INV_ERR)
 		return INV_ERR;
-	
+
 	ent = OREF_ENTRIES(invidx);
-	
+
 	/* at this point we know that there should be at least one invindex
 	   entry present */
-	assert ( ent != NULL );	
+	assert ( ent != NULL );
 	assert ( ent->ie_filename );
 
 	fd = open( ent->ie_filename, O_RDWR );
@@ -442,7 +442,7 @@ oref_resolve_new_invidx(
 
 #ifdef INVT_DEBUG
 	mlog( MLOG_NITTY | MLOG_INV, "creating InvIndex %s\n", fname);
-#endif	
+#endif
 	/* create the new stobj as its first entry */
 	rval = oref_resolve_new_stobj(invidx, IS_EMPTY);
 
@@ -470,7 +470,7 @@ oref_resolve_new_stobj(
 	memset ( &ent, 0, sizeof( ent ) );
 	stobj = calloc(1, sizeof(invt_oref_t));
 	OREF_SET_CHILD(invidx, stobj);
-	
+
 	/* initialize the start and end times to be the same */
 	ent.ie_timeperiod.tp_start = ent.ie_timeperiod.tp_end = (time32_t)0;
 	stobj_makefname( ent.ie_filename );
@@ -482,7 +482,7 @@ oref_resolve_new_stobj(
 		cnt->ic_maxnum = INVT_MAX_INVINDICES;
 		cnt->ic_curnum = 1;
 		cnt->ic_vernum = INV_VERSION;
-		
+
 		fd = stobj_create( ent.ie_filename );
 		if ( fd < 0 ) {
 			free(cnt);
@@ -499,7 +499,7 @@ oref_resolve_new_stobj(
 	else {
 		if (oref_resolve_upto(invidx, INVT_RES_COUNTERS) == INV_ERR)
 			return INV_ERR;
-		
+
 		/* create the new storage object */
 		fd = stobj_create( ent.ie_filename );
 		if ( fd < 0 ) {
@@ -508,21 +508,21 @@ oref_resolve_new_stobj(
 
 		stobj->fd = fd;
 		OREF_CNT_CURNUM(invidx)++;
-		
+
 		if ((oref_sync(invidx, INVT_RES_COUNTERS) == INV_ERR)
 		    ||
-		    (oref_sync_append(invidx, INVT_RES_ENTRIES, 
+		    (oref_sync_append(invidx, INVT_RES_ENTRIES,
 				      &ent, sizeof(ent)) == INV_ERR))
 			return INV_ERR;
-		
+
 	}
 	tok = get_token( invfd, fd );
 	tok->d_invindex_off = IDX_HDR_OFFSET(OREF_CNT_CURNUM(invidx) - 1);
 	tok->d_update_flag |= NEW_INVINDEX;
-	
+
 	OREF_SET_TOKEN(invidx, tok);
 	return INV_OK;
-	
+
 }
 
 

@@ -105,7 +105,7 @@ qlock_lock( qlockh_t qlockh )
 	pthread_t tid;
 	/* REFERENCED */
 	int rval;
-	
+
 	/* get the caller's tid
 	 */
 	tid = pthread_self();
@@ -148,7 +148,7 @@ qlock_unlock( qlockh_t qlockh )
 	qlock_t *qlockp = ( qlock_t * )qlockh;
 	/* REFERENCED */
 	int rval;
-	
+
 	/* verify lock is held by this thread
 	 */
 	assert( QLOCK_ORDMAP_GET( thread_ordmap, qlockp->ql_ord ));
@@ -156,7 +156,7 @@ qlock_unlock( qlockh_t qlockh )
 	/* clear lock's ord from thread's ord map
 	 */
 	QLOCK_ORDMAP_CLR( thread_ordmap, qlockp->ql_ord );
-	
+
 	/* release the lock
 	 */
 	rval = pthread_mutex_unlock( &qlockp->ql_mutex );
@@ -203,7 +203,7 @@ qsemP( qsemh_t qsemh )
 {
 	sem_t *semp = ( sem_t * )qsemh;
 	int rval;
-	
+
 	/* "P" the semaphore
 	 */
 	rval = sem_wait( semp );
@@ -215,7 +215,7 @@ qsemV( qsemh_t qsemh )
 {
 	sem_t *semp = ( sem_t * )qsemh;
 	int rval;
-	
+
 	/* "V" the semaphore
 	 */
 	rval = sem_post( semp );

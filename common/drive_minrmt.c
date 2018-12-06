@@ -328,12 +328,12 @@ static void calc_max_lost( drive_t *drivep );
 static void display_ring_metrics( drive_t *drivep, int mlog_flags );
 #ifdef CLRMTAUD
 static uint32_t rewind_and_verify( drive_t *drivep );
-static uint32_t erase_and_verify( drive_t *drivep ); 
+static uint32_t erase_and_verify( drive_t *drivep );
 static uint32_t bsf_and_verify( drive_t *drivep );
 static uint32_t fsf_and_verify( drive_t *drivep );
 #else /* CLRMTAUD */
 static short rewind_and_verify( drive_t *drivep );
-static short erase_and_verify( drive_t *drivep ); 
+static short erase_and_verify( drive_t *drivep );
 static short bsf_and_verify( drive_t *drivep );
 static short fsf_and_verify( drive_t *drivep );
 #endif /* CLRMTAUD */
@@ -421,7 +421,7 @@ ds_match( int argc, char *argv[], drive_t *drivep )
 		return -10;
 	}
 
-	/* Check if the min rmt flag and block size have 
+	/* Check if the min rmt flag and block size have
 	 * been specified.
 	 * If so , this is a non-SGI drive and this is the right
 	 * strategy.
@@ -441,7 +441,7 @@ ds_match( int argc, char *argv[], drive_t *drivep )
 			    cmdlineblksize = ( uint32_t )atoi( optarg );
 		            errno = 0;
 		            fd = open( drivep->d_pathname, O_RDONLY );
-		            if ( fd < 0 ) 
+		            if ( fd < 0 )
 			            return -10;
 		            close( fd );
 			    break;
@@ -454,12 +454,12 @@ ds_match( int argc, char *argv[], drive_t *drivep )
 		if (minrmt == BOOL_TRUE) {
 			if (cmdlineblksize != 0)
 				return 20;
-		 	else 
+		 	else
 				mlog( MLOG_NORMAL | MLOG_WARNING | MLOG_DRIVE,
 					_("Minimal rmt cannot be used without specifying blocksize. Use -%c\n"),
 					GETOPT_BLOCKSIZE );
 		}
-	} 
+	}
 	/* catch all */
 	return -10;
 }
@@ -1018,7 +1018,7 @@ do_seek_mark( drive_t *drivep, drive_mark_t *markp )
 		currentoffset += ( off64_t )recoff;
 	}
 	assert( wantedoffset >= currentoffset );
-	
+
 	/* if we are currently holding a record and the desired offset
 	 * is not within the current record, eat the current record.
 	 */
@@ -1087,7 +1087,7 @@ do_seek_mark( drive_t *drivep, drive_mark_t *markp )
 	     wantedoffset - currentoffset >= ( off64_t )tape_recsz ) {
 		off64_t wantedreccnt;
 		seekmode_t seekmode;
-		
+
 		assert( ! contextp->dc_recp );
 		wantedreccnt = wantedoffset / ( off64_t )tape_recsz;
 		if ( contextp->dc_singlethreadedpr ) {
@@ -1701,7 +1701,7 @@ do_begin_write( drive_t *drivep )
 
 	/* intialize header in new record
 	 */
-	rechdrp = (rec_hdr_t*)contextp->dc_recp;	
+	rechdrp = (rec_hdr_t*)contextp->dc_recp;
 	rechdrp->magic = STAPE_MAGIC;
 	rechdrp->version = STAPE_VERSION;
 	rechdrp->file_offset = contextp->dc_reccnt * ( off64_t )tape_recsz;
@@ -1895,7 +1895,7 @@ do_write( drive_t *drivep, char *bufp, size_t retcnt )
 	 */
 	rechdrp = ( rec_hdr_t * )contextp->dc_recp;
 	rechdrp->rec_used = tape_recsz;
-	
+
 	/* write out the record buffer and get a new one.
 	 */
 	if ( contextp->dc_singlethreadedpr ) {
@@ -2418,7 +2418,7 @@ do_erase( drive_t *drivep )
 
 	/* use validating tape erase util func
 	 */
-	( void )erase_and_verify( drivep ); 
+	( void )erase_and_verify( drivep );
 
 	/* rewind again
 	 */
@@ -2568,7 +2568,7 @@ read_label( drive_t *drivep )
 	 */
 	if ( nread != ( int )tape_recsz ) {
 		assert( nread < ( int )tape_recsz );
-	} 
+	}
 
 	/* check for an unexpected errno
 	 */
@@ -2584,7 +2584,7 @@ read_label( drive_t *drivep )
 	 */
 	if (( nread == 0 )  /* takes care of sun */
 	      ||            /* now handle SGI */
-	      (nread < 0 && saved_errno == ENOSPC )) { 
+	      (nread < 0 && saved_errno == ENOSPC )) {
 		mlog( MLOG_NORMAL | MLOG_DRIVE,
 #ifdef DUMP
 		      _("encountered EOD : assuming blank media\n") );
@@ -2883,8 +2883,8 @@ determine_write_error( int nwritten, int saved_errno )
 
 		ret = DRIVE_ERROR_DEVICE;
 	} else if (
-			( saved_errno == ENOSPC ) 
-				|| 
+			( saved_errno == ENOSPC )
+				||
 			( saved_errno == EIO )
 				||
 			(( saved_errno == 0 ) && ( nwritten >= 0 ))  /* short
@@ -2895,7 +2895,7 @@ determine_write_error( int nwritten, int saved_errno )
 
 		mlog(MLOG_NORMAL,
 			_("no more data can be written to this tape\n") );
-		
+
 		ret = DRIVE_ERROR_EOM;
 	} else if ( saved_errno != 0 ) {
 		ret = DRIVE_ERROR_CORE;
@@ -3256,7 +3256,7 @@ prepare_drive( drive_t *drivep )
 			if (3 == try)
 				/* IRIX rmt returns ENOSPC for blank media */
 				/* It reads to the EOD */
-				return DRIVE_ERROR_BLANK; 
+				return DRIVE_ERROR_BLANK;
 			else
 				continue;
 #endif
@@ -3277,7 +3277,7 @@ prepare_drive( drive_t *drivep )
 			  "or foreign media\n" );
 			return DRIVE_ERROR_FOREIGN;
 		}
-			
+
 
 		/* if we fell through the seive, code is wrong.
 		 * display useful info and abort
@@ -3338,7 +3338,7 @@ checkhdr:
 					return DRIVE_ERROR_DEVICE;
 				}
 				return DRIVE_ERROR_FOREIGN;
-			} 
+			}
 		} else {
 			drive_hdr_t *drhdrp;
 			rec_hdr_t *tprhdrp;
@@ -3351,7 +3351,7 @@ checkhdr:
 
 largersize:
 		/* we end up here if we want to try a new larger record size
-		 * because the last one was not big enough for the tape block 
+		 * because the last one was not big enough for the tape block
 		 */
 		if ( changedblkszpr ) {
 			mlog( MLOG_NORMAL | MLOG_DRIVE,
@@ -3797,7 +3797,7 @@ Ring_get( ring_t *ringp )
 
 	mlog( (MLOG_NITTY + 1) | MLOG_DRIVE,
 	      "ring op: get\n" );
-	
+
 	msgp = ring_get( ringp );
 	return msgp;
 }
@@ -3808,7 +3808,7 @@ Ring_put(  ring_t *ringp, ring_msg_t *msgp )
 	mlog( (MLOG_NITTY + 1) | MLOG_DRIVE,
 	      "ring op: put %d\n",
 	      msgp->rm_op );
-	
+
 	ring_put( ringp, msgp );
 }
 
@@ -3817,7 +3817,7 @@ Ring_reset(  ring_t *ringp, ring_msg_t *msgp )
 {
 	mlog( (MLOG_NITTY + 1) | MLOG_DRIVE,
 	      "ring op: reset\n" );
-	
+
 	assert( ringp );
 
 	ring_reset( ringp, msgp );
@@ -3847,7 +3847,7 @@ display_ring_metrics( drive_t *drivep, int mlog_flags )
 	ring_t *ringp = contextp->dc_ringp;
 	char bufszbuf[ 16 ];
 	char *bufszsfxp;
-	
+
 	if ( tape_recsz == STAPE_MIN_MAX_BLKSZ ) {
 		assert( ! ( STAPE_MIN_MAX_BLKSZ % 0x400 ));
 		sprintf( bufszbuf, "%u", STAPE_MIN_MAX_BLKSZ / 0x400 );
@@ -3899,7 +3899,7 @@ rewind_and_verify( drive_t *drivep )
 		if ( rval ) {
 			sleep( 1 );
 			rval = mt_op( contextp->dc_fd, MTREW, 0 );
-		} else 
+		} else
 			return 0;
 
 		if ( try >= MTOP_TRIES_MAX ) {
@@ -3915,7 +3915,7 @@ static uint32_t
 #else /* CLRMTAUD */
 static short
 #endif /* CLRMTAUD */
-erase_and_verify( drive_t *drivep ) 
+erase_and_verify( drive_t *drivep )
 {
 	char *tempbufp;
 	int saved_errno;
@@ -3927,7 +3927,7 @@ erase_and_verify( drive_t *drivep )
 
 	/* Erase is not standard rmt. So we cannot use the line below.
 
-	( void )mt_op( contextp->dc_fd, MTERASE, 0 ); 
+	( void )mt_op( contextp->dc_fd, MTERASE, 0 );
 
 	 * So write a record of zeros to fake erase . Poor man's erase!
 	 * We put the ERASE_MAGIC string at the beginning so we can
@@ -3974,9 +3974,9 @@ set_best_blk_and_rec_sz( drive_t *drivep )
 	drive_context_t *contextp = ( drive_context_t * )drivep->d_contextp;
 
 	if ( contextp->dc_isQICpr == BOOL_TRUE )
-		tape_recsz = STAPE_MIN_MAX_BLKSZ; 
+		tape_recsz = STAPE_MIN_MAX_BLKSZ;
 	else
-		tape_recsz = cmdlineblksize; 
+		tape_recsz = cmdlineblksize;
 
 	return BOOL_TRUE;
 }
@@ -4000,6 +4000,6 @@ isxfsdumperasetape( drive_t *drivep )
 {
 	if ( !strcmp( ( char * )drivep->d_greadhdrp, ERASE_MAGIC ) )
 		return BOOL_TRUE;
-	else 
+	else
 		return BOOL_FALSE;
 }

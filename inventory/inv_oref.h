@@ -51,14 +51,14 @@ typedef uint32_t	invt_objtype_t;
 #define INVT_LOCKED		0x0001
 
 typedef struct invt_oref {
-	int				 fd;  
+	int				 fd;
 
 	/* counters - contains curnum, maxnum, etc */
 	union {
 		invt_sescounter_t 	 *sescnt;
 		invt_counter_t		 *cnt;
 	} oref_cnt_u;
-	
+
 	/* entries pointing at other invt objects */
 	union {
 		invt_entry_t 		 *ent;
@@ -94,7 +94,7 @@ typedef struct invt_oref {
 #define ku_stobj	oref_kin_u.stobj
 
 /*
- *	See if the object has been resolved to the given level. 
+ *	See if the object has been resolved to the given level.
  */
 
 #define OREF_ISRESOLVED(oref, to_this_type) \
@@ -110,7 +110,7 @@ typedef struct invt_oref {
 	  else if (OREF_ISRESOLVED(oref, INVT_RES_PARENT)) \
 		  _oref_free((oref)->ku_invidx, BOOL_TRUE); \
           _oref_free(oref, BOOL_FALSE); }
-	  
+
 #define OREF_COPY(src_oref, dst_oref) \
 	(bcopy((src_oref), (dst_oref), sizeof(invt_oref_t)))
 
@@ -239,7 +239,7 @@ oref_resolve(
 
 int
 oref_resolve_upto(
-	invt_oref_t 	*obj, 
+	invt_oref_t 	*obj,
 	invt_objtype_t	type);
 
 int
@@ -252,7 +252,7 @@ oref_resolve_counters(
 
 void
 _oref_free(
-	invt_oref_t 	*obj, 
+	invt_oref_t 	*obj,
 	bool_t 		freethis);
 
 

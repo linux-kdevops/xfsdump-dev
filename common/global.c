@@ -163,7 +163,7 @@ global_hdr_alloc( int argc, char *argv[ ] )
                                 usage( );
                                 return 0;
                         }
-			
+
 			if ( ! uuid_parse( optarg, ghdrp->gh_dumpid ) ) {
 				mlog( MLOG_NORMAL | MLOG_ERROR,
 				      _("-%c argument not a valid uuid\n"),
@@ -275,10 +275,10 @@ global_hdr_checksum_check( global_hdr_t *hdrp )
 	return accum == 0 ? BOOL_TRUE : BOOL_FALSE;
 }
 
-/* global_version_check - if we know this version number, return BOOL_TRUE 
+/* global_version_check - if we know this version number, return BOOL_TRUE
  * else return BOOL_FALSE
  */
-bool_t 
+bool_t
 global_version_check( uint32_t version )
 {
 	switch (version) {

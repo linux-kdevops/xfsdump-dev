@@ -73,7 +73,7 @@ write_buf( char *bufp,
 
 int
 read_buf( char *bufp,
-	  size_t bufsz, 
+	  size_t bufsz,
 	  void *contextp,
 	  rfp_t read_funcp,
 	  rrbfp_t return_read_buf_funcp,
@@ -230,7 +230,7 @@ bigstat_iter( jdm_fshandle_t *fshandlep,
 				      "bulkstat seeked to EOS\n");
 				return 0;
 			}
-			
+
 			mlog( MLOG_DEBUG,
 			      "bulkstat seeked to %llu\n", lastino);
 
@@ -397,7 +397,7 @@ diriter( jdm_fshandle_t *fshandlep,
 		assert( cbrval == 0 );
 
 		nread = getdents_wrap( fd, (char *)gdp, gdsz );
-		
+
 		/* negative count indicates something very bad happened;
 		 * try to gracefully end this dir.
 		 */
@@ -511,7 +511,7 @@ diriter( jdm_fshandle_t *fshandlep,
 	}
 }
 
-int 
+int
 cvtnum( int blocksize, char *s )
 {
 	int i;

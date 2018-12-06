@@ -376,7 +376,7 @@ node_init( int fd,
 		  node_hdrp->nh_firstsegoff,
 		  segsz,
 		  winmapmax );
-	
+
 	/* announce the results
 	 */
 	mlog( MLOG_DEBUG | MLOG_TREE,

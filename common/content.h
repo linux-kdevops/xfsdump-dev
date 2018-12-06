@@ -59,7 +59,7 @@ struct content_hdr {
 		/* content strategy-specific info */
 };
 
-typedef struct content_hdr content_hdr_t;	
+typedef struct content_hdr content_hdr_t;
 
 #define CONTENT_QUOTAFILE	"xfsdump_quotas"
 #define CONTENT_PQUOTAFILE	"xfsdump_quotas_proj"

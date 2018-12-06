@@ -135,12 +135,12 @@ xlate_drive_hdr(drive_hdr_t *dh1, drive_hdr_t *dh2, int dir)
 	     "\tdh_pad1 %s\n"
 	     "\tdh_specific %s\n"
 	     "\tdh_upper %s\n",
-	     ptr1->dh_drivecnt, 
+	     ptr1->dh_drivecnt,
 	     ptr1->dh_driveix,
 	     ptr1->dh_strategyid,
 	     ptr1->dh_pad1,
 	     ptr1->dh_specific,
-	     ptr1->dh_upper);	     
+	     ptr1->dh_upper);
 
 	mlog(MLOG_NITTY, "xlate_drive_hdr: post-xlate\n"
 	     "\tdh_drivecnt %u\n"
@@ -149,12 +149,12 @@ xlate_drive_hdr(drive_hdr_t *dh1, drive_hdr_t *dh2, int dir)
 	     "\tdh_pad1 %s\n"
 	     "\tdh_specific %s\n"
 	     "\tdh_upper %s\n",
-	     ptr2->dh_drivecnt, 
+	     ptr2->dh_drivecnt,
 	     ptr2->dh_driveix,
 	     ptr2->dh_strategyid,
 	     ptr2->dh_pad1,
 	     ptr2->dh_specific,
-	     ptr2->dh_upper);	     
+	     ptr2->dh_upper);
 }
 
 /*
@@ -416,7 +416,7 @@ xlate_extenthdr(extenthdr_t *eh1, extenthdr_t *eh2, int dir)
 {
 	extenthdr_t *ptr1 = eh1;
 	extenthdr_t *ptr2 = eh2;
-	
+
 	mlog(MLOG_NITTY, "xlate_extenthdr\n");
 
 	IXLATE(eh1, eh2, eh_sz);
@@ -522,7 +522,7 @@ xlate_direnthdr_v1(direnthdr_v1_t *dh1, direnthdr_v1_t *dh2, int dir)
 	     ptr2->dh_gen,
 	     ptr2->dh_sz,
 	     ptr2->dh_checksum,
-	     ptr2->dh_name );	     
+	     ptr2->dh_name );
 }
 
 /*
@@ -550,7 +550,7 @@ xlate_rec_hdr(rec_hdr_t *rh1, rec_hdr_t *rh2, int dir)
 	rec_hdr_t *ptr2 = rh2;
 
 	mlog(MLOG_NITTY, "xlate_rec_hdr\n");
-  
+
 	IXLATE(rh1, rh2, magic);
 	IXLATE(rh1, rh2, version);
 	IXLATE(rh1, rh2, blksize);
@@ -569,7 +569,7 @@ xlate_rec_hdr(rec_hdr_t *rh1, rec_hdr_t *rh2, int dir)
 
 	BXLATE(pad1);
 	BXLATE(dump_uuid);
-	BXLATE(pad2);	
+	BXLATE(pad2);
 
 	mlog(MLOG_NITTY, "xlate_rec_hdr: pre-xlate\n"
 	     "\tmagic %llu\n"
@@ -582,7 +582,7 @@ xlate_rec_hdr(rec_hdr_t *rh1, rec_hdr_t *rh2, int dir)
 	     "\trec_used %u\n"
 	     "\tchecksum %d\n"
 	     "\tischecksum %d\n",
-	     ptr1->magic, 
+	     ptr1->magic,
 	     ptr1->version,
 	     ptr1->blksize,
 	     ptr1->recsize,
@@ -604,7 +604,7 @@ xlate_rec_hdr(rec_hdr_t *rh1, rec_hdr_t *rh2, int dir)
 	     "\trec_used %u\n"
 	     "\tchecksum %d\n"
 	     "\tischecksum %d\n",
-	     ptr2->magic, 
+	     ptr2->magic,
 	     ptr2->version,
 	     ptr2->blksize,
 	     ptr2->recsize,
@@ -621,7 +621,7 @@ xlate_rec_hdr(rec_hdr_t *rh1, rec_hdr_t *rh2, int dir)
  */
 void
 xlate_invt_seshdr(invt_seshdr_t *ish1, invt_seshdr_t *ish2, int dir)
-{	
+{
 	invt_seshdr_t *ptr1 = ish1;
 	invt_seshdr_t *ptr2 = ish2;
 
@@ -705,7 +705,7 @@ xlate_invt_stream(invt_stream_t *ist1, invt_stream_t *ist2, int dir)
 		ptr1 = ist2;
 		ptr2 = ist1;
 	}
-	
+
 	BXLATE(st_cmdarg);
 	BXLATE(st_padding);
 

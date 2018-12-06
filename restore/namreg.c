@@ -261,7 +261,7 @@ namreg_add( char *name, size_t namelen )
 	off64_t oldoff;
 	unsigned char c;
 	nrh_t nrh;
-	
+
 	/* sanity checks
 	 */
 	assert( ntp );
@@ -476,7 +476,7 @@ namreg_get( nrh_t nrh,
 	/* null-terminate the string if room
 	 */
 	bufp[ len ] = 0;
-	
+
 	unlock( );
 
 	return ( int )len;

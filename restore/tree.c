@@ -65,7 +65,7 @@
 
 /* structure definitions used locally ****************************************/
 
-/* name of persistent state file 
+/* name of persistent state file
  */
 #define PERS_NAME	"tree"
 
@@ -228,7 +228,7 @@ typedef struct node node_t;
 	 * longer exists or it has not changed. if it is referenced, we assume
 	 * it exists, in which case if it is not dumped then all of its entries
 	 * are referenced as well.
-	 */ 
+	 */
 #define NF_NEWORPH	( 1 << 6 )
 	/* cleared from all nodes in the orphanage before a dump is applied.
 	 * set if a dir is seen in the dirdump but no node exists for it.
@@ -462,7 +462,7 @@ tree_init( char *hkdir,
 	assert( persp->p_hashsz <= ( size64_t )( OFF64MAX - ( off64_t )PERSSZ));
 	nodeoff = ( off64_t )PERSSZ + ( off64_t )persp->p_hashsz;
 	assert( vmsz > ( size64_t )nodeoff );
-	ok = node_init( tranp->t_persfd, 
+	ok = node_init( tranp->t_persfd,
 		        nodeoff,
 		        NODESZ,
 			 ( ix_t )offsetofmember( node_t, n_nodehkbyte ),
@@ -875,7 +875,7 @@ tree_addent( nh_t parh, xfs_ino_t ino, gen_t gen, char *name, size_t namelen )
 			nh_t renameh;
 			node_t *renamep;
 			/* REFERENCED */
-			int namebuflen; 
+			int namebuflen;
 
 			hardp->n_flags |= NF_REFED;
 			if ( hardp->n_parh == persp->p_orphh ) {
@@ -1620,7 +1620,7 @@ mkdirs_recurse( nh_t parh, nh_t cldh, char *path )
 				      "mkdir %s failed: %s\n"),
 				      path,
 				      strerror( errno ));
-				
+
 			} else {
 				cldp = Node_map( cldh );
 				cldp->n_flags |= NF_REAL;
@@ -1644,7 +1644,7 @@ mkdirs_recurse( nh_t parh, nh_t cldh, char *path )
 		 */
 		cldh = nextcldh;
 	}
-	
+
 	return BOOL_TRUE;
 }
 
@@ -1845,7 +1845,7 @@ tree_cb_links( xfs_ino_t ino,
 				if ( ! tranp->t_toconlypr && exists ) {
 					rval = unlink( path );
 					if ( rval && errno != ENOENT ) {
-						mlog( MLOG_NORMAL | 
+						mlog( MLOG_NORMAL |
 						      MLOG_WARNING, _(
 						      "unable to unlink "
 						      "current file prior to "
@@ -1904,17 +1904,17 @@ tree_cb_links( xfs_ino_t ino,
 			 * with 'orphanage' the file is one of two
 			 * things:
 			 * 1) It's a file that really is an
-			 * orphanage file from a previous restore 
+			 * orphanage file from a previous restore
 			 * that has now ended up on this dump tape.
 			 * We don't really want to restore this file
-			 * but, it's harmless to do so, it should 
-			 * happen rarely, and the path name is 
+			 * but, it's harmless to do so, it should
+			 * happen rarely, and the path name is
 			 * indistinguishable from ...
 			 * 2) A file whose name was never resolved
 			 * from root because of file corruption.
-			 * Some granparent dir (parent dir of it's 
-			 * parent dir) was corrupted so the code that 
-			 * walks the trees was thus never able to set 
+			 * Some granparent dir (parent dir of it's
+			 * parent dir) was corrupted so the code that
+			 * walks the trees was thus never able to set
 			 * the NF_SUBTREE flag.  It then ends up here
 			 * with a non-resolved name but a valid
 			 * hard reference.  We really need to give
@@ -1923,7 +1923,7 @@ tree_cb_links( xfs_ino_t ino,
 			 * make the whole tree of data
 			 * unreachable.  pv698761
 			 */
-			if ( persp->p_ignoreorphpr || (strncmp(ORPH_NAME, path, 
+			if ( persp->p_ignoreorphpr || (strncmp(ORPH_NAME, path,
 					    strlen(ORPH_NAME)) != 0)) {
 				mlog( MLOG_DEBUG | MLOG_TREE,
 				      "discarding %llu %u\n",
@@ -1947,12 +1947,12 @@ tree_cb_links( xfs_ino_t ino,
 				mlog (MLOG_VERBOSE | MLOG_NOTE | MLOG_TREE, _(
 				      "ino %llu salvaging file,"
 				      " placing in %s\n"), ino, path1);
-				ok = ( * funcp )( contextp, path == path2, 
+				ok = ( * funcp )( contextp, path == path2,
 					path1, path2 );
 				if ( ! ok ) {
 					return RV_NOTOK;
 				}
-			} 
+			}
 		} else {
 			mlog( MLOG_VERBOSE | MLOG_NOTE | MLOG_TREE, _(
 			      "ino %llu gen %u not referenced: "
@@ -1967,7 +1967,7 @@ tree_cb_links( xfs_ino_t ino,
 			if (nh == NH_NULL) {
 				mlog( MLOG_ERROR | MLOG_TREE, _(
 				"node allocation failed when placing ino %llu"
-				" in orphanage\n"), ino); 
+				" in orphanage\n"), ino);
 				return RV_ERROR; /* allocation failed */
 			}
 			link_in( nh );
@@ -2117,7 +2117,7 @@ tree_extattr_recurse( nh_t parh,
 	} else {
 		ok = BOOL_TRUE;
 	}
-	
+
 	return ok;
 }
 
@@ -2148,7 +2148,7 @@ proc_hardlinks( char *path1, char *path2 )
 /* called for every hard head
  *
  * tes@sgi.com:
- * This code processes the hardlinks, extracting out a 
+ * This code processes the hardlinks, extracting out a
  * src_list - real & !ref
  * dest_list - !real & ref
  * The src_list are the entries to delete and the dst_list
@@ -2224,7 +2224,7 @@ proc_hardlinks_cb( void *contextp, nh_t hardheadh )
 			Node_free( &nh );
 			continue;
 		}
-		
+
 		/* not real, refed, but not selected, can't help
 		 */
 		if ( ! isrealpr &&   isrefpr && ! isselpr ) {
@@ -2356,7 +2356,7 @@ proc_hardlinks_cb( void *contextp, nh_t hardheadh )
 			successpr = BOOL_TRUE;
 		}
 
-		/* tes@sgi.com: note: loop of one iteration only 
+		/* tes@sgi.com: note: loop of one iteration only
 		 */
 		while ( ! successpr && lnsrch != NH_NULL ) {
 			ok = Node2path( lnsrch, phcbp->path1, _("link") );
@@ -2813,7 +2813,7 @@ restart:
 		mlog( MLOG_NORMAL, _("Unmark and quit\n") );
 		selsubtree( persp->p_rooth , BOOL_FALSE );
 	}
-	    
+
 	return BOOL_TRUE;
 }
 
@@ -3668,7 +3668,7 @@ disown( nh_t cldh )
 		parp->n_cldh = cldp->n_sibh;
 		if ( cldp->n_sibh != NH_NULL ) {
 			node_t *sibp = Node_map( cldp->n_sibh );
-			sibp->n_sibprevh = NH_NULL; 
+			sibp->n_sibprevh = NH_NULL;
 			Node_unmap( cldp->n_sibh, &sibp );
 		}
 	} else {
@@ -3681,13 +3681,13 @@ disown( nh_t cldh )
 		prevcldp = Node_map( prevcldh );
 
 		/* fix up previous */
-		prevcldp->n_sibh = cldp->n_sibh; 
+		prevcldp->n_sibh = cldp->n_sibh;
 		Node_unmap( prevcldh, &prevcldp  );
 
 		/* fix up next */
 		if ( cldp->n_sibh != NH_NULL ) {
 			node_t *sibp = Node_map( cldp->n_sibh );
-			sibp->n_sibprevh = prevcldh; 
+			sibp->n_sibprevh = prevcldh;
 			Node_unmap( cldp->n_sibh, &sibp );
 		}
 	}
@@ -4027,7 +4027,7 @@ link_iter_next( link_iter_context_t *link_iter_contextp )
 	if ( link_iter_contextp->li_donepr == BOOL_TRUE ) {
 		return NH_NULL;
 	}
-		
+
 	/* if no hardhead, done
 	 */
 	if ( link_iter_contextp->li_headh == NH_NULL ) {
@@ -4242,7 +4242,7 @@ hash_in( nh_t nh )
 	/* get ino from node
 	 */
 	ino = np->n_ino;
-	
+
 	/* assert not already in
 	 */
 	assert( hash_find( np->n_ino, np->n_gen ) == NH_NULL );
@@ -4292,7 +4292,7 @@ hash_out( nh_t nh )
 	 */
 	hashheadh = *entryp;
 	assert( hashheadh != NH_NULL );
-	
+
 	/* if node is first in list, replace entry with following node.
 	 * otherwise, walk the list until found.
 	 */
@@ -4339,7 +4339,7 @@ hash_find( xfs_ino_t ino, gen_t gen )
 #ifdef TREE_DEBUG
 	mlog(MLOG_DEBUG | MLOG_TREE,
 	     "hash_find(%llu,%u): traversing hash link list\n",
-		ino, gen); 
+		ino, gen);
 #endif
 
 	/* walk the list until found.
@@ -4842,9 +4842,9 @@ collapse_white( char *string, char *liter )
 	for ( s = string, l = liter ; is_white( *s ) && ! *l ; s++, l++ ) {
 		cnt++;
 	}
-	
+
 	string[ 0 ] = ' ';
-	
+
 	if ( cnt > 1 ) {
 		shrink( &string[ 1 ], cnt - 1 );
 		shrink( &liter[ 1 ], cnt - 1 );

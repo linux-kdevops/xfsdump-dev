@@ -64,7 +64,7 @@ static void drive_allochdrs( drive_t *drivep,
 /* definition of locally defined global variables ****************************/
 
 drive_t **drivepp;
-size_t drivecnt; 
+size_t drivecnt;
 size_t partialmax;
 
 /* definition of locally defined static variables *****************************/
@@ -115,8 +115,8 @@ drive_init1( int argc, char *argv[ ] )
 
 	/* initialize the partialmax value.  Each drive can be completing a file
 	 * started in another drive (except for drive 0) and leave one file to
-	 * be completed by another drive.  This value is used to limit the 
-	 * search in the list of partially completed files shared between all 
+	 * be completed by another drive.  This value is used to limit the
+	 * search in the list of partially completed files shared between all
 	 * restore streams.  Note, if drivecnt is one, then partialmax is zero
 	 * to indicate no partial files can span streams.
 	 */
@@ -167,7 +167,7 @@ drive_init1( int argc, char *argv[ ] )
 
 		drivecnt = 1;
 
-		/* Adding this alloc to fix malloc corruption. 
+		/* Adding this alloc to fix malloc corruption.
 		 * Bug #393618 - prasadb 04/16/97
 		 * allocate an array to hold ptrs to drive descriptors
 		 */
@@ -177,7 +177,7 @@ drive_init1( int argc, char *argv[ ] )
 		drivepp[ 0 ] = drive_alloc( "stdio", 0 );
 
 #ifdef DUMP   /* ifdef added around dlog_desist() by prasadb to fix 435626 */
-		dlog_desist( ); 
+		dlog_desist( );
 #endif
 	}
 
@@ -347,7 +347,7 @@ drive_display_metrics( void )
 
 /* definition of locally defined static functions ****************************/
 
-/* drive_alloc - allocate and initialize the generic portions of a drive 
+/* drive_alloc - allocate and initialize the generic portions of a drive
  * descriptor. do NOT allocate hdr buffers.
  */
 static drive_t *

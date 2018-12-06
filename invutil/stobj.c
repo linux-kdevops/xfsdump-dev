@@ -454,7 +454,7 @@ generate_stobj_menu(node_t *startnode, int level, char *StObjFileName)
 
 	parent_session = n;
 	for ( j = 0; j < (int) StObjses->s_cur_nstreams; j++ ) {
-	    StObjstrm = (invt_stream_t *)(stobj_file[idx].mapaddr + 
+	    StObjstrm = (invt_stream_t *)(stobj_file[idx].mapaddr +
 					  StObjhdr->sh_streams_off +
 					  (j * sizeof(invt_stream_t)));
 
@@ -487,10 +487,10 @@ generate_stobj_menu(node_t *startnode, int level, char *StObjFileName)
 
 	    parent_stream = n;
 	    for ( k = 0; k < StObjstrm->st_nmediafiles; k++) {
-		StObjmed = (invt_mediafile_t *)(stobj_file[idx].mapaddr + 
+		StObjmed = (invt_mediafile_t *)(stobj_file[idx].mapaddr +
 						StObjstrm->st_firstmfile +
 						(k * sizeof(invt_mediafile_t)));
-		
+
 		len = strlen(StObjmed->mf_label) + 26;
 		txt = malloc(len);
 		if(txt == NULL) {

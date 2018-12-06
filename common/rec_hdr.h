@@ -33,7 +33,7 @@
 /*
  * This structure is used by both drive_minrmt and drive_scsi.  New
  * strategies should define their own here if they need a different
- * structure, and add a endian conversion function to arch_xlate.c 
+ * structure, and add a endian conversion function to arch_xlate.c
  */
 struct rec_hdr {
 	uint64_t magic;			/*   8   8 */

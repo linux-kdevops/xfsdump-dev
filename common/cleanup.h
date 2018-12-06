@@ -30,7 +30,7 @@ extern cleanup_t *cleanup_register( void ( *funcp )( void *arg1, void *arg2 ),
 				    void *arg1,
 				    void *arg2 );
 
-extern cleanup_t *cleanup_register_early( 
+extern cleanup_t *cleanup_register_early(
 				    void ( *funcp )( void *arg1, void *arg2 ),
 				    void *arg1,
 				    void *arg2 );

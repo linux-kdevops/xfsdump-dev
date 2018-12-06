@@ -31,7 +31,7 @@ struct cu {
 
 /* Cleanup structure flags
  */
-#define CU_EARLY	0x00000001	
+#define CU_EARLY	0x00000001
 			/* call cleanup routine before calling killall */
 
 typedef struct cu cu_t;

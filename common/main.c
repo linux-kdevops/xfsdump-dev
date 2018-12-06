@@ -204,7 +204,7 @@ main( int argc, char *argv[] )
 	if ( ! ok ) {
 		return mlog_exit(EXIT_ERROR, RV_OPT);
 	}
-	
+
 	/* initialize message logging (stage 1)
 	 */
 	ok = mlog_init1( argc, argv );
@@ -698,7 +698,7 @@ main( int argc, char *argv[] )
 			prbcld_xc = xc;
 			stop_requested = BOOL_TRUE;
 		}
-			
+
 		/* all children died normally. break out.
 		 */
 		if ( cldmgr_remainingcnt( ) == 0 ) {
@@ -743,7 +743,7 @@ main( int argc, char *argv[] )
 				}
 				stop_timeout = STOP_TIMEOUT;
 			}
-				
+
 			/* important that this appear after dialog.
 			 * allows dialog to be terminated with SIGINT,
 			 * without infinite loop.
@@ -793,7 +793,7 @@ main( int argc, char *argv[] )
 				coredump_requested = BOOL_TRUE;
 			}
 		}
-		
+
 		/* see if need to initiate a stop
 		 */
 		if ( stop_requested && ! stop_in_progress ) {
@@ -806,7 +806,7 @@ main( int argc, char *argv[] )
 			assert( stop_timeout >= 0 );
 			stop_deadline = now + ( time32_t )stop_timeout;
 		}
-		
+
 		/* set alarm if needed (note time stands still during dialog)
 		 */
 		if ( stop_in_progress ) {
@@ -1381,7 +1381,7 @@ loadoptfile( int *argcp, char ***argvp )
 	return BOOL_TRUE;
 }
 
-/* parent and children share this handler. 
+/* parent and children share this handler.
  */
 static void
 sighandler( int signo )
@@ -2012,7 +2012,7 @@ sigintstr( void )
 		      strerror( errno ));
 		return 0;
 	}
-	
+
 	intchr = termios.c_cc[ VINTR ];
 	mlog( MLOG_NITTY | MLOG_PROC,
 	      "tty fd: %d; terminal interrupt character: %c (0%o)\n",
@@ -2071,7 +2071,7 @@ set_rlimits( size64_t *vmszp )
 
 	vmsz = ( size64_t )rlimit64.rlim_cur;
 #endif /* RESTORE */
-	
+
 	assert( minstacksz <= maxstacksz );
 	rval = getrlimit64( RLIMIT_STACK, &rlimit64 );
 	assert( ! rval );
@@ -2175,7 +2175,7 @@ set_rlimits( size64_t *vmszp )
 	      "RLIMIT_DATA org cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
 	      rlimit64.rlim_max );
-	
+
 	rval = getrlimit64( RLIMIT_FSIZE, &rlimit64 );
 	assert( ! rval );
 	mlog( MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
@@ -2192,7 +2192,7 @@ set_rlimits( size64_t *vmszp )
 	      "RLIMIT_FSIZE now cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
 	      rlimit64.rlim_max );
-	
+
 	rval = getrlimit64( RLIMIT_CPU, &rlimit64 );
 	assert( ! rval );
 	mlog( MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,

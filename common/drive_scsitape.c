@@ -459,7 +459,7 @@ is_scsi_driver(char *pathname)
 	int dev_major;
 
 	if (realpath(pathname, rp) == NULL) {
-		return BOOL_FALSE; 
+		return BOOL_FALSE;
 	}
 
 	if ( stat64( pathname, &statbuf ) == -1) {
@@ -497,7 +497,7 @@ is_scsi_driver(char *pathname)
 		return BOOL_TRUE;
 	}
 	else if (dev_major == get_driver_character_major("ts") ||
-	         dev_major == get_driver_character_major("tmf")) { 
+	         dev_major == get_driver_character_major("tmf")) {
 		TS_ISDRIVER = 1;
 		return BOOL_TRUE;
 	}
@@ -1131,7 +1131,7 @@ do_seek_mark( drive_t *drivep, drive_mark_t *markp )
 		currentoffset += ( off64_t )recoff;
 	}
 	assert( wantedoffset >= currentoffset );
-	
+
 	/* if we are currently holding a record and the desired offset
 	 * is not within the current record, eat the current record.
 	 */
@@ -1200,7 +1200,7 @@ do_seek_mark( drive_t *drivep, drive_mark_t *markp )
 	     wantedoffset - currentoffset >= ( off64_t )tape_recsz ) {
 		off64_t wantedreccnt;
 		seekmode_t seekmode;
-		
+
 		assert( ! contextp->dc_recp );
 		wantedreccnt = wantedoffset / ( off64_t )tape_recsz;
 		if ( contextp->dc_singlethreadedpr ) {
@@ -1851,7 +1851,7 @@ do_begin_write( drive_t *drivep )
 
 	/* intialize header in new record
 	 */
-	rechdrp = (rec_hdr_t*)contextp->dc_recp;	
+	rechdrp = (rec_hdr_t*)contextp->dc_recp;
 	rechdrp->magic = STAPE_MAGIC;
 	rechdrp->version = STAPE_VERSION;
 	rechdrp->file_offset = contextp->dc_reccnt * ( off64_t )tape_recsz;
@@ -2045,7 +2045,7 @@ do_write( drive_t *drivep, char *bufp, size_t retcnt )
 	 */
 	rechdrp = ( rec_hdr_t * )contextp->dc_recp;
 	rechdrp->rec_used = tape_recsz;
-	
+
 	/* write out the record buffer and get a new one.
 	 */
 	if ( contextp->dc_singlethreadedpr ) {
@@ -2763,7 +2763,7 @@ do_quit( drive_t *drivep )
 	     &&
 	     ! contextp->dc_isQICpr
 	     &&
-	     contextp->dc_cansetblkszpr 
+	     contextp->dc_cansetblkszpr
 	     &&
 	     ( contextp->dc_origcurblksz != 0 ) ) {
 		( void )set_fixed_blksz( drivep, contextp->dc_origcurblksz );
@@ -2804,7 +2804,7 @@ percent64( off64_t num, off64_t denom )
  * in IRIX and Linux.
  * The 1st read() below is made prior to calling read_label().
  * The 2nd read() is the one made inside read_label().
- * Extraneous status flags, such as online, are not mentioned. 
+ * Extraneous status flags, such as online, are not mentioned.
  *
  * -----------------------------------------
  * Full tape (incomplete dump - over >1 tapes)
@@ -2818,16 +2818,16 @@ percent64( off64_t num, off64_t denom )
  *    read->-1 (ENOSPC) <eod, ew>
  * -----------------------------------------
  * Partial tape (complete dump - just 1 tape)
- * 
+ *
  * Linux
  *    read->0 <fmk>
  *    read->0 <eod>
- * 
+ *
  * IRIX
  *    read->0 <fmk>
  *    read->-1 (ENOSPC) <eod>
  * -----------------------------------------
- */  
+ */
 
 
 static int
@@ -3166,7 +3166,7 @@ set_fixed_blksz( drive_t *drivep, size_t blksz )
                 /* issue call to set block size
                  */
                 if ( mt_op( contextp->dc_fd,
-                            MTSETBLK,  
+                            MTSETBLK,
                             ( int )blksz ) ) {
 			mlog( MLOG_DEBUG | MLOG_DRIVE,
 			      "MTSETBLK %u failed: %s (%d)\n",
@@ -3265,7 +3265,7 @@ Need to find equivalent in Linux.
 			}
 #endif
 		}
-	} 
+	}
 
 	set_recommended_sizes( drivep );
 
@@ -3317,7 +3317,7 @@ set_recommended_sizes( drive_t *drivep )
 /* mt_blkinfo
  *	In IRIX, issue MTIOGETBLKINFO ioctl operation to the tape device.
  *      There is no equivalent call in Linux at the moment.
- *      However, the minblks and maxblks are stored internally in 
+ *      However, the minblks and maxblks are stored internally in
  *      the scsi/st.c driver and may be exported in the future.
  *      The current blk size comes from the mt_dsreg field.
  *
@@ -3453,7 +3453,7 @@ mt_op(int fd, int sub_op, int param )
 
 static bool_t
 mt_get_fileno( drive_t *drivep, long *fileno)
-{ 
+{
 	struct mtget 	mt_stat;
 	drive_context_t *contextp;
 
@@ -3532,8 +3532,8 @@ mt_get_status( drive_t *drivep, long *status)
 	*status = mt_stat.mt_gstat;
 
 	/* print out symbolic form of tape status */
-	mlog( MLOG_DEBUG | MLOG_DRIVE, 
-		"tape status = %s%s%s%s%s%s%s\n", 
+	mlog( MLOG_DEBUG | MLOG_DRIVE,
+		"tape status = %s%s%s%s%s%s%s\n",
 		IS_BOT(*status)?   "bot ":"",
 		IS_FMK(*status)?   "fmk ":"",
 		IS_EOD(*status)?   "eod ":"",
@@ -4037,7 +4037,7 @@ retry:
 	 * and the record size we tried initially was not less than
 	 * the minmax block size, change the block size to minmax and
 	 * try to read a one block record again.
-	 * 
+	 *
 	 * **************
 	 * LINUX WARNING:
 	 * **************
@@ -4265,7 +4265,7 @@ retry:
 
 		if ( nread == 0
 		     &&
-		     ! contextp->dc_isvarpr 
+		     ! contextp->dc_isvarpr
 		     &&
 		     IS_EOD( mtstat )
 		     &&
@@ -4284,7 +4284,7 @@ retry:
 
 		if ( nread == 0
 		     &&
-		     ! contextp->dc_isvarpr 
+		     ! contextp->dc_isvarpr
 		     &&
 		     IS_EOD( mtstat )
 		     &&
@@ -4302,7 +4302,7 @@ retry:
 
 		if ( nread == 0
 		     &&
-		     ! contextp->dc_isvarpr 
+		     ! contextp->dc_isvarpr
 		     &&
 		     IS_EOT( mtstat )
 		     &&
@@ -4320,7 +4320,7 @@ retry:
 
 		if ( nread == 0
 		     &&
-		     ! contextp->dc_isvarpr 
+		     ! contextp->dc_isvarpr
 		     &&
 		     ! IS_EOD( mtstat )
 		     &&
@@ -4433,7 +4433,7 @@ retry:
 			  "indicates wrong blocksize\n" );
 			goto newsize;
 		}
-		
+
 		if ( nread == ( int )tape_recsz
 		     &&
 		     ! contextp->dc_isvarpr ) {
@@ -4485,7 +4485,7 @@ retry:
 		    mlog( MLOG_NORMAL | MLOG_NOTE | MLOG_DRIVE,
 			_("either try using a smaller block size with "
 			"the -b option, or increase max_sg_segs for "
-			"the scsi tape driver\n")); 
+			"the scsi tape driver\n"));
 		}
 
 
@@ -4544,7 +4544,7 @@ checkhdr:
 			tape_recsz = ( size_t )tprhdrp->recsize;
 			mlog( MLOG_DEBUG | MLOG_DRIVE,
 			      "tape record size set to header's "
-			      "record size = %d\n", tape_recsz); 
+			      "record size = %d\n", tape_recsz);
 			break;
 		}
 
@@ -4589,7 +4589,7 @@ newsize:
 
 largersize:
 		/* we end up here if we want to try a new larger record size
-		 * because the last one was not big enough for the tape block 
+		 * because the last one was not big enough for the tape block
 		 */
 		if ( changedblkszpr ) {
 			mlog( MLOG_NORMAL | MLOG_DRIVE,
@@ -5077,7 +5077,7 @@ Ring_get( ring_t *ringp )
 
 	mlog( (MLOG_NITTY + 1) | MLOG_DRIVE,
 	      "ring op: get\n" );
-	
+
 	msgp = ring_get( ringp );
 	return msgp;
 }
@@ -5088,7 +5088,7 @@ Ring_put(  ring_t *ringp, ring_msg_t *msgp )
 	mlog( (MLOG_NITTY + 1) | MLOG_DRIVE,
 	      "ring op: put %d\n",
 	      msgp->rm_op );
-	
+
 	ring_put( ringp, msgp );
 }
 
@@ -5097,7 +5097,7 @@ Ring_reset(  ring_t *ringp, ring_msg_t *msgp )
 {
 	mlog( (MLOG_NITTY + 1) | MLOG_DRIVE,
 	      "ring op: reset\n" );
-	
+
 	assert( ringp );
 
 	ring_reset( ringp, msgp );
@@ -5127,7 +5127,7 @@ display_ring_metrics( drive_t *drivep, int mlog_flags )
 	ring_t *ringp = contextp->dc_ringp;
 	char bufszbuf[ 16 ];
 	char *bufszsfxp;
-	
+
 	if ( tape_recsz == STAPE_MIN_MAX_BLKSZ ) {
 		assert( ! ( STAPE_MIN_MAX_BLKSZ % 0x400 ));
 		sprintf( bufszbuf, "%u", STAPE_MIN_MAX_BLKSZ / 0x400 );
@@ -5178,7 +5178,7 @@ rewind_and_verify( drive_t *drivep )
 	for ( try = 1 ; ; try++ ) {
 		mtstat_t mtstat;
 		bool_t ok;
-		
+
 		if ( rval ) {
 			sleep( 1 );
 			rval = mt_op( contextp->dc_fd, MTREW, 0 );
@@ -5233,7 +5233,7 @@ bsf_and_verify( drive_t *drivep )
 		( void )mt_op( contextp->dc_fd, MTBSF, 1 );
 		for ( try = 1 ; ; try++ ) {
 			mtstat_t mtstat;
-		
+
 			ok = mt_get_status( drivep, &mtstat );
 			if ( ! ok ) {
 				mtstat = 0;
@@ -5286,7 +5286,7 @@ status:		ok = mt_get_status( drivep, &mtstat );
 				return 0;
 			}
 			try++;
-			sleep( 1 ); 
+			sleep( 1 );
 			goto status;
 		}
 		return mtstat;
@@ -5304,7 +5304,7 @@ fsf_and_verify( drive_t *drivep )
 	for ( try = 1 ; ; try++ ) {
 		mtstat_t mtstat;
 		bool_t ok;
-		
+
 		ok = mt_get_status( drivep, &mtstat );
 		if ( ! ok ) {
 			mtstat = 0;
@@ -5394,7 +5394,7 @@ isefsdump( drive_t *drivep )
  * General purpose routine which dredges through procfs trying to
  * match up device driver names with the associated major numbers
  * being used in the running kernel. (This routine is based on
- * the get_driver_block_major() routine in the libdisk library.) 
+ * the get_driver_block_major() routine in the libdisk library.)
  */
 static int
 get_driver_character_major( const char *driver )

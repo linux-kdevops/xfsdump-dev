@@ -28,8 +28,8 @@
  * knowledge of the functionalities, some abstractions, and even typical queries
  * of dump() and restore() and uses this knowledge in formulating its storage
  * structure on disk. All these things, of course, are completely abstract with
- * respect to the clients of the inventory. 
- * 
+ * respect to the clients of the inventory.
+ *
  */
 
 #define INV_DIRPATH		inv_dirpath()
@@ -76,7 +76,7 @@ typedef enum {
 
 typedef struct inv_stream {
 	bool_t		st_interrupted;	/* was this stream interrupted ? */
-	
+
 	/* duplicate info from mediafiles for speed */
 	xfs_ino_t	st_startino;	/* the starting pt */
 	off64_t		st_startino_off;
@@ -88,11 +88,11 @@ typedef struct inv_stream {
 } inv_stream_t;
 
 
-/* 
- * inventory_session_t 
+/*
+ * inventory_session_t
  * all the information that is kept on a single dump session of a single
  * file system in the inventory.
- * 
+ *
  */
 
 typedef struct inv_session {
@@ -107,8 +107,8 @@ typedef struct inv_session {
 	char		 s_mountpt[INV_STRLEN];/* path to the mount point */
 	char		 s_devpath[INV_STRLEN];/* path to the device */
 } inv_session_t;
- 
-	
+
+
 /* Is there anything else that you need here, Chuck? */
 typedef struct inv_mediafile {
 	uuid_t		 m_moid;	/* media object id */
@@ -142,13 +142,13 @@ typedef struct invt_strdesc_entry	*inv_stmtoken_t;
 /* inventory_open - initializes access to the inventory
  */
 extern inv_idbtoken_t
-inv_open( 
-	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */	
+inv_open(
+	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */
 	 void 		 *pred );/* uuid_t *,char * mntpt, or char *dev */
 
 
 extern bool_t
-inv_close( 
+inv_close(
 	inv_idbtoken_t tok );
 
 
@@ -165,7 +165,7 @@ inv_writesession_open(
 	char		*devpath );
 
 extern bool_t
-inv_writesession_close( 
+inv_writesession_close(
 	inv_sestoken_t  tok );
 
 extern inv_stmtoken_t
@@ -178,9 +178,9 @@ inv_stream_close(
 	bool_t 		wasinterrupted );
 
 extern bool_t
-inv_put_mediafile( 
-	inv_stmtoken_t 	tok, 
-	uuid_t 		*moid, 
+inv_put_mediafile(
+	inv_stmtoken_t 	tok,
+	uuid_t 		*moid,
 	char 		*label,
 	xfs_ino_t	startino,
 	off64_t		startino_offset,
@@ -190,23 +190,23 @@ inv_put_mediafile(
 /* lasttime_level_lessthan - finds the time of the last dump of the
  * specified file system at a level less than the specified level.
  * if never dumped below the current level, *time is set to NULL.
- * 
+ *
  */
 extern bool_t
-inv_lasttime_level_lessthan( 
+inv_lasttime_level_lessthan(
 	inv_idbtoken_t 		tok,
 	u_char  		level,
 	time32_t		**time );/* out */
 
 extern bool_t
-inv_lastsession_level_lessthan( 
-	inv_idbtoken_t 		tok,			     
+inv_lastsession_level_lessthan(
+	inv_idbtoken_t 		tok,
 	u_char  		level,
 	inv_session_t		**ses );/* out */
 
 extern bool_t
-inv_lastsession_level_equalto( 
-	inv_idbtoken_t 		tok,			     
+inv_lastsession_level_equalto(
+	inv_idbtoken_t 		tok,
 	u_char  		level,
 	inv_session_t		**ses );/* out */
 
@@ -231,8 +231,8 @@ inv_put_session(
 #ifdef DEBUG
 
 bool_t
-inv_DEBUG_printallsessions( 
-	inv_idbtoken_t 	tok,			    
+inv_DEBUG_printallsessions(
+	inv_idbtoken_t 	tok,
 	inv_session_t	**ses );
 
 #endif /* ifdef DEBUG */

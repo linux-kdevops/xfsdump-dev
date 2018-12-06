@@ -210,7 +210,7 @@ ring_put( ring_t *ringp, ring_msg_t *msgp )
 	ringp->r_active_in_ix = ( ringp->r_active_in_ix + 1 )
 				%
 				ringp->r_len;
-	
+
 	/* bump the semaphore for the active queue ("V")
 	 */
 	qsemV( ringp->r_active_qsemh );
@@ -395,7 +395,7 @@ ring_slave_put( ring_t *ringp, ring_msg_t *msgp )
 	ringp->r_ready_in_ix = ( ringp->r_ready_in_ix + 1 )
 			       %
 			       ringp->r_len;
-	
+
 	/* bump the semaphore for the ready queue ("V")
 	 */
 	qsemV( ringp->r_ready_qsemh );

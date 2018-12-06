@@ -427,7 +427,7 @@ inomap_sync_pers( char *hkdir )
 						 SEGPERHNK * ( hnkcnt - 1 )
 						 -
 						 1 ) ];
-	
+
 	/* now all inomap operators will work
 	 */
 	return BOOL_TRUE;

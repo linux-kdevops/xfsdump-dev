@@ -87,7 +87,7 @@ fstab_commit(WINDOW *win, node_t *current, node_t *list)
 	    memmove(fstabentry,
 		    fstabentry + 1,
 		    (sizeof(invt_fstab_t) * (fstab_file[fidx].counter->ic_curnum - fstabentry_idx - 1)));
-	    
+
 	    fstab_file[fidx].data[d->data_idx] = NULL;
 
 	    for(i = d->data_idx + 1; i < fstab_file[fidx].numrecords; i++) {
@@ -119,7 +119,7 @@ fstab_commit(WINDOW *win, node_t *current, node_t *list)
 
 	/* copy new data to mmap */
 	memmove(dest, fstabentry, sizeof(*fstabentry));
-	
+
 	/* increment counter */
 	fstab_file[0].counter->ic_curnum++;
     }
@@ -137,7 +137,7 @@ fstab_select(WINDOW *win, node_t *current, node_t *list)
 	return 0;
     }
     d = (data_t *)(current->data);
-	
+
     if(d->expanded == TRUE) {
 	return menu_collapse(win, current, list);
     }

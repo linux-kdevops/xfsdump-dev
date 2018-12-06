@@ -53,7 +53,7 @@ idx_insert_newentry( int fd, /* kept locked EX by caller */
 	inv_oflag_t forwhat = INV_SEARCH_N_MOD;
 /*	invt_entry_t ient;
 	ient.ie_timeperiod.tp_start = ient.ie_timeperiod.tp_end = tm; */
-	
+
 	/* If time period of the new entry is before our first invindex,
 	   we have to insert a new invindex in the first slot */
 	if ( iarr[0].ie_timeperiod.tp_start > tm ) {
@@ -72,7 +72,7 @@ idx_insert_newentry( int fd, /* kept locked EX by caller */
 			*stobjfd = open( iarr[i].ie_filename, INV_OFLAG(forwhat) );
 			return i;
 		}
-		if ( iarr[i].ie_timeperiod.tp_end == 0  && 
+		if ( iarr[i].ie_timeperiod.tp_end == 0  &&
 		     iarr[i].ie_timeperiod.tp_start  == 0 ) {
 #ifdef INVT_DEBUG
 			mlog( MLOG_DEBUG | MLOG_INV, "INV: end = start \n" );
@@ -80,10 +80,10 @@ idx_insert_newentry( int fd, /* kept locked EX by caller */
 			     iarr[i].ie_timeperiod.tp_start,
 			     iarr[i].ie_timeperiod.tp_end );
 #endif
-			
-			iarr[i].ie_timeperiod.tp_start = 
+
+			iarr[i].ie_timeperiod.tp_start =
 				iarr[i].ie_timeperiod.tp_end = tm;
-			PUT_REC_NOLOCK( fd, iarr, 
+			PUT_REC_NOLOCK( fd, iarr,
 				       icnt->ic_curnum * sizeof(invt_entry_t),
 				       (off64_t) sizeof( invt_counter_t ) );
 #ifdef INVT_DEBUG
@@ -93,57 +93,57 @@ idx_insert_newentry( int fd, /* kept locked EX by caller */
 #endif
 			*stobjfd = open( iarr[i].ie_filename, INV_OFLAG(forwhat) );
 			return i;
-		}	
+		}
 
 
 
-		/* if it is beyond the end of this timeperiod, see if we 
+		/* if it is beyond the end of this timeperiod, see if we
 		   belong to a timeperiod that doesn't have an entry */
 		if ( iarr[i].ie_timeperiod.tp_end < tm ) {
 			/* see if we're the last entry here */
 			if ( i == icnt->ic_curnum - 1 ) {
-				/* our slot is (i+1)th entry. Make the 
+				/* our slot is (i+1)th entry. Make the
 				   timeperiod's the same as it was. As far
-				   as I can see there is no way that 
+				   as I can see there is no way that
 				   timeperiods can overlap.
-				
-				   insert the new entry and write back 
+
+				   insert the new entry and write back
 				   icnt and invindex entry */
-				/* *stobjfd = idx_put_newentry( fd, i+1, iarr, 
+				/* *stobjfd = idx_put_newentry( fd, i+1, iarr,
 							     icnt, &ient );*/
 			      *stobjfd = open( iarr[i].ie_filename, INV_OFLAG(forwhat) );
 			      return i;
 			}
 			/* see if the next entry starts later than us */
 			if ( iarr[i+1].ie_timeperiod.tp_start > tm ) {
-				
-				
+
+
 				/* We have the option of pushing entries
-				   after (i) forward by one slot, and 
+				   after (i) forward by one slot, and
 				   taking the (i+1)th slot, OR just hooking
-				   up with the next entry. 
+				   up with the next entry.
 				   We choose the former. */
-				
+
 				/* the timeperiods had better not overlap */
 				assert(( tm > iarr[i].ie_timeperiod.tp_end ) &&
 				       ( tm < iarr[i+1].ie_timeperiod.tp_start ));
 
-				/* shift everything from (i+1) onwards by 
+				/* shift everything from (i+1) onwards by
 				   one. Then insert the new entry and write
 				   back icnt and invindex entries */
-				/* *stobjfd = idx_put_newentry( fd, i+1, iarr, 
+				/* *stobjfd = idx_put_newentry( fd, i+1, iarr,
 							     icnt, &ient );*/
 			      *stobjfd = open( iarr[i].ie_filename, INV_OFLAG(forwhat) );
 				return i;
 			}
-		}	
-	}		
+		}
+	}
 
 	/* We couldnt find anything that fits */
 	assert( 0 );	/* We can't get here ! */
 	return -1;
 
-	
+
 }
 
 
@@ -154,13 +154,13 @@ idx_insert_newentry( int fd, /* kept locked EX by caller */
 /*----------------------------------------------------------------------*/
 
 int
-idx_put_newentry( 
-	invt_idxinfo_t *idx, 
+idx_put_newentry(
+	invt_idxinfo_t *idx,
 	invt_entry_t *ient )
 {
 	invt_entry_t	*idxarr;
 	int stobjfd;
-	
+
 	int fd = idx->invfd; 	/* kept locked EX by caller */
 	uint index = idx->index + 1;
 	invt_entry_t *iarr = idx->iarr;
@@ -172,25 +172,25 @@ idx_put_newentry(
 
 	icnt->ic_curnum++; /* there is no maximum */
 
-	idxarr = ( invt_entry_t * ) calloc ( icnt->ic_curnum, 
+	idxarr = ( invt_entry_t * ) calloc ( icnt->ic_curnum,
 					     sizeof( invt_entry_t ) );
 	memcpy( idxarr, iarr, ( size_t ) ( sizeof( invt_entry_t ) * index ) );
 
 	/* shift everything from (i+1) onwards by one */
-	if ( index <  icnt->ic_curnum - 1 ) 
-		memcpy( &idxarr[ index + 1 ], &iarr[ index ], 
+	if ( index <  icnt->ic_curnum - 1 )
+		memcpy( &idxarr[ index + 1 ], &iarr[ index ],
 		       ( size_t ) ( ( icnt->ic_curnum - index - 1 ) *
 				    sizeof( invt_entry_t ) ) );
 	/* insert the new entry */
 	memcpy( &idxarr[ index ], ient, sizeof( invt_entry_t ) );
 
-	
+
 	if ( ( PUT_COUNTERS( fd, icnt ) < 0 ) ||
-		( PUT_REC_NOLOCK( fd, idxarr, 
-				  icnt->ic_curnum * sizeof( invt_entry_t ), 
+		( PUT_REC_NOLOCK( fd, idxarr,
+				  icnt->ic_curnum * sizeof( invt_entry_t ),
 				  sizeof( invt_counter_t ) ) < 0 ) ) {
 			/* XXX delete the stobj that we just created */
-			
+
 			memset( ient->ie_filename, 0 , INV_STRLEN );
 			free( idxarr );
 			return -1;
@@ -199,7 +199,7 @@ idx_put_newentry(
 	free( iarr );
 	idx->iarr = idxarr;
 	return stobjfd;
-	
+
 }
 
 
@@ -222,8 +222,8 @@ idx_find_stobj( invt_idxinfo_t *idx,
 	/* since sessions can be inserted in random order, the invindex
 	   table can contain time-periods that don't have corresponding
 	   entries for */
-	if ( GET_ALLHDRS_N_CNTS_NOLOCK( idx->invfd, (void **)&idx->iarr, 
-						     (void **)&idx->icnt, 
+	if ( GET_ALLHDRS_N_CNTS_NOLOCK( idx->invfd, (void **)&idx->iarr,
+						     (void **)&idx->icnt,
 						     sizeof( invt_entry_t ),
 				sizeof( invt_counter_t ) ) < 0 ) {
 		return -1;
@@ -236,7 +236,7 @@ idx_find_stobj( invt_idxinfo_t *idx,
 
 	/* Now figure out where we are going to insert this stobj among the
 	   invindices and put it there */
-	idx->index = idx_insert_newentry( idx->invfd, &stobjfd, idx->iarr, 
+	idx->index = idx_insert_newentry( idx->invfd, &stobjfd, idx->iarr,
 						 idx->icnt, tm );
 
 	return stobjfd;
@@ -267,17 +267,17 @@ idx_create( char *fname, inv_oflag_t forwhat )
 		INV_PERROR ( fname );
 		return INV_TOKEN_NULL;
 	}
-	
+
 	INVLOCK( fd, LOCK_EX );
 	fchmod( fd, INV_PERMS );
 
 #ifdef INVT_DEBUG
 	mlog( MLOG_NITTY | MLOG_INV, "creating InvIndex %s\n", fname);
 #endif
-	
+
 	/* create the first entry in the new inv_index */
 	stobjfd = idx_create_entry( &tok, fd, BOOL_TRUE );
-	
+
 	INVLOCK( fd, LOCK_UN );
 
 	if ( stobjfd < 0 )
@@ -298,11 +298,11 @@ idx_recons_time( time32_t tm, invt_idxinfo_t *idx )
 	if ( tp->tp_start && IS_WITHIN( tp, tm ) )
 		return 1;
 
-	if ( tm > tp->tp_end || tp->tp_end == 0 ) 
+	if ( tm > tp->tp_end || tp->tp_end == 0 )
 		tp->tp_end =  tm;
 	if ( tm < tp->tp_start || tp->tp_start == 0 )
 		tp->tp_start = tm;
-	PUT_REC_NOLOCK( idx->invfd,  &idx->iarr[idx->index], 
+	PUT_REC_NOLOCK( idx->invfd,  &idx->iarr[idx->index],
 		        sizeof( invt_entry_t ), IDX_HDR_OFFSET(idx->index) );
 	return 1;
 }
@@ -332,7 +332,7 @@ idx_put_sesstime( inv_sestoken_t tok, bool_t whichtime)
 		return -1;
 	}
 	ent.ie_timeperiod.tp_end = tok->sd_sesstime;
-	
+
 	if ( whichtime == INVT_STARTTIME || ent.ie_timeperiod.tp_start == 0 ) {
 		ent.ie_timeperiod.tp_start = tok->sd_sesstime;
 	}
@@ -343,18 +343,18 @@ idx_put_sesstime( inv_sestoken_t tok, bool_t whichtime)
 #endif
 	rval = PUT_REC_NOLOCK(fd, &ent, sizeof(invt_entry_t),
 			      tok->sd_invtok->d_invindex_off);
-	
+
 #ifdef INVT_DEBUG
 	{
 		int nindices;
 		invt_entry_t *iarr = NULL;
 		invt_counter_t *icnt = NULL;
-		if ( ( nindices = GET_ALLHDRS_N_CNTS_NOLOCK( fd, 
-						     (void **)&iarr, 
-						     (void **)&icnt, 
+		if ( ( nindices = GET_ALLHDRS_N_CNTS_NOLOCK( fd,
+						     (void **)&iarr,
+						     (void **)&icnt,
 						sizeof( invt_entry_t ),
 				sizeof( invt_counter_t ))) < 0 ) {
-			return -1;		 
+			return -1;
 		}
 		idx_DEBUG_printinvindices( iarr, (uint) nindices );
 		free( iarr );
@@ -381,8 +381,8 @@ idx_put_sesstime( inv_sestoken_t tok, bool_t whichtime)
 /*----------------------------------------------------------------------*/
 
 int
-idx_create_entry(  
-	inv_idbtoken_t *tok, 
+idx_create_entry(
+	inv_idbtoken_t *tok,
 	int invfd, 	/* kept locked EX  by caller */
 	bool_t firstentry )
 {
@@ -392,7 +392,7 @@ idx_create_entry(
 
 
 	memset ( &ent, 0, sizeof( ent ) );
-	
+
 	/* initialize the start and end times to be the same */
 	ent.ie_timeperiod.tp_start = ent.ie_timeperiod.tp_end = (time32_t)0;
 	stobj_makefname( ent.ie_filename );
@@ -422,10 +422,10 @@ idx_create_entry(
 		if ( GET_COUNTERS( invfd, &cnt )  < 0 ) {
 			return -1;
 		}
-		
-		/* XXX check if there are too many indices. if so, create 
+
+		/* XXX check if there are too many indices. if so, create
 		   another and leave a pointer to that in here */
-		
+
 		/* create the new storage object */
 		fd = stobj_create( ent.ie_filename );
 		if ( fd < 0 ) {
@@ -446,7 +446,7 @@ idx_create_entry(
 #endif
 		if (PUT_REC_NOLOCK( invfd, &ent, sizeof( ent ), hoff) < 0 )
 			return -1;
-		
+
 	}
 
 	*tok = get_token( invfd, fd );
@@ -476,14 +476,14 @@ idx_get_stobj( int invfd, inv_oflag_t forwhat, int *index )
 
 	/* if there's space anywhere at all, then it must be in the last
 	   entry. get_lastheader() does the locking */
-	
-	if ((*index = get_lastheader( invfd, (void **)&ent, 
+
+	if ((*index = get_lastheader( invfd, (void **)&ent,
 				       sizeof(invt_entry_t),
 				       sizeof(invt_counter_t) ) ) < 0 )
 		return -1;
 	/* at this point we know that there should be at least one invindex
 	   entry present */
-	assert ( ent != NULL );	
+	assert ( ent != NULL );
 	assert ( ent->ie_filename );
 
 	fd = open( ent->ie_filename, INV_OFLAG(forwhat) );
@@ -510,14 +510,14 @@ idx_DEBUG_printinvindices( invt_entry_t *iarr, uint num )
 		strncpy( s, (char *) iarr[i].ie_filename + k -
 			( INV_UUID_STR_LEN + strlen(INV_STOBJ_PREFIX)), 8 );
 		s[8]= 0;
-		printf("%d. %s \t( %d - %d )\n", i, s, 
+		printf("%d. %s \t( %d - %d )\n", i, s,
 		       iarr[i].ie_timeperiod.tp_start,
 		       iarr[i].ie_timeperiod.tp_end );
 	}
 #undef INV_UUID_STR_LEN
 	printf( "\n ==================================\n");
 	return 1;
-	
+
 }
 
 int
@@ -526,12 +526,12 @@ idx_DEBUG_print ( int fd )
 	int nindices;
 	invt_entry_t *iarr = NULL;
 	invt_counter_t *icnt = NULL;
-	if ( ( nindices = GET_ALLHDRS_N_CNTS_NOLOCK( fd, 
-						    (void **)&iarr, 
-						    (void **)&icnt, 
+	if ( ( nindices = GET_ALLHDRS_N_CNTS_NOLOCK( fd,
+						    (void **)&iarr,
+						    (void **)&icnt,
 						    sizeof( invt_entry_t ),
 				         sizeof( invt_counter_t ))) < 0 ) {
-		return -1;		 
+		return -1;
 	}
 	idx_DEBUG_printinvindices( iarr, (uint) nindices );
 	free( iarr );
@@ -553,7 +553,7 @@ DEBUG_displayallsessions( int fd, invt_seshdr_t *hdr, uint ref,
 	DEBUG_sessionprint( ses, ref, prctx);
 	free( ses->s_streams );
 	free( ses );
-	
+
 	return 0;
 }
 

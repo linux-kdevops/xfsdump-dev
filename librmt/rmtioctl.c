@@ -139,7 +139,7 @@ static int _rmt_ioctl(int, unsigned int, void *);
 /*
  *	Do ioctl on file.  Looks just like ioctl(2) to caller.
  */
- 
+
 int
 rmtioctl(int fildes, unsigned int request, void *arg)
 {
@@ -159,9 +159,9 @@ rmtioctl(int fildes, unsigned int request, void *arg)
 /*
  * WARNING: MTIOCGET code is highly dependent on the format
  *          of mtget on different platforms
- *          We only support Linux 32/ia64 and IRIX 32/64 for this case. 
- *          We use the result of uname(1) (in rmtopen()) and 
- *          the size of the mtget structure to determine which 
+ *          We only support Linux 32/ia64 and IRIX 32/64 for this case.
+ *          We use the result of uname(1) (in rmtopen()) and
+ *          the size of the mtget structure to determine which
  *          architecture it is.
  */
 
@@ -178,7 +178,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 	static int onetrip = 0;
 
 	if (!onetrip) {
-		onetrip = 1; 
+		onetrip = 1;
 		init_mtop_map();
 	}
 
@@ -226,7 +226,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 		 *  Grab the status and read it directly into the structure.
 		 *  Since the data is binary data, and the other machine might
 		 *  be IRIX or Linux of a different byte-order,
-		 *  we have to be careful in converting the data. 
+		 *  we have to be careful in converting the data.
 		 *
 		 *  NOTE: the original /etc/rmt did NOT support a newline after
 		 *  the S command, and Sun still does not.  Neither does the
@@ -243,7 +243,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 		 * and the size of the get structure.
 		 * If we know our rmt host, then verify that the
 		 * structure is the correct size for the supported ones
-		 */ 
+		 */
  		switch (RMTHOST(fildes)) {
 		    case UNAME_UNDEFINED:
 			_rmt_msg(RMTWARN,
@@ -262,10 +262,10 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			break;
 		    case UNAME_LINUX:
 			if (sizeof(struct linux32_mtget) == rc) {
-			    islinux32 = 1;	
+			    islinux32 = 1;
 			}
 			else if (sizeof(struct linux64_mtget) == rc) {
-			    islinux32 = 0;	
+			    islinux32 = 0;
 			}
 			else {
 			    _rmt_msg(RMTWARN,
@@ -316,9 +316,9 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			struct irix_mtget *irixp = (struct irix_mtget *)irixget;
 
 			if (irixp->mt_type > 0xff) {
-			    /* assume that mt_type should fit in 1 byte */ 
+			    /* assume that mt_type should fit in 1 byte */
 
-			    irixp->mt_type   = INT_SWAP(irixp->mt_type, irixp->mt_type);	
+			    irixp->mt_type   = INT_SWAP(irixp->mt_type, irixp->mt_type);
 			    irixp->mt_dsreg  = INT_SWAP(irixp->mt_dsreg, irixp->mt_dsreg);
 			    irixp->mt_erreg  = INT_SWAP(irixp->mt_erreg, irixp->mt_erreg);
 			    irixp->mt_resid  = INT_SWAP(irixp->mt_resid, irixp->mt_resid);
@@ -330,9 +330,9 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			struct linux32_mtget *linuxp = (struct linux32_mtget *)linux32get;
 
 			if (linuxp->mt_type > 0xffff) {
-			    /* assume that mt_type should fit in 2 bytes */ 
+			    /* assume that mt_type should fit in 2 bytes */
 
-			    linuxp->mt_type   = INT_SWAP(linuxp->mt_type, linuxp->mt_type);	
+			    linuxp->mt_type   = INT_SWAP(linuxp->mt_type, linuxp->mt_type);
 			    linuxp->mt_dsreg  = INT_SWAP(linuxp->mt_dsreg, linuxp->mt_dsreg);
 			    linuxp->mt_erreg  = INT_SWAP(linuxp->mt_erreg, linuxp->mt_erreg);
 			    linuxp->mt_resid  = INT_SWAP(linuxp->mt_resid, linuxp->mt_resid);
@@ -346,9 +346,9 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			struct linux64_mtget *linuxp = (struct linux64_mtget *)linux64get;
 
 			if (linuxp->mt_type > 0xffff) {
-			    /* assume that mt_type should fit in 2 bytes */ 
+			    /* assume that mt_type should fit in 2 bytes */
 
-			    linuxp->mt_type   = INT_SWAP(linuxp->mt_type, linuxp->mt_type);	
+			    linuxp->mt_type   = INT_SWAP(linuxp->mt_type, linuxp->mt_type);
 			    linuxp->mt_dsreg  = INT_SWAP(linuxp->mt_dsreg, linuxp->mt_dsreg);
 			    linuxp->mt_erreg  = INT_SWAP(linuxp->mt_erreg, linuxp->mt_erreg);
 			    linuxp->mt_resid  = INT_SWAP(linuxp->mt_resid, linuxp->mt_resid);
@@ -359,8 +359,8 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			}
 		}
 
-		/* 
-		 * now mtget has the correct (byte-swapped if needed) data, 
+		/*
+		 * now mtget has the correct (byte-swapped if needed) data,
                  * so we just need to copy over the fields which are possibly
                  * of different length and different semantics.
 		 */

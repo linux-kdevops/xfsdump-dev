@@ -491,7 +491,7 @@ struct pers {
 
 		partial_rest_t parrest[ STREAM_SIMMAX * 2 - 2 ];
 			/* record of bytes restored to partially restored files.
-			 * Max possible is two per stream except the first 
+			 * Max possible is two per stream except the first
 			 * drive will never finish another drives file and the
 			 * last drive will never leave a file for another to
 			 * complete.
@@ -911,7 +911,7 @@ content_init( int argc, char *argv[ ], size64_t vmsz )
 	int rval;
 	bool_t fullpr;
 
-	/* Calculate the size needed for the persistent inventory 
+	/* Calculate the size needed for the persistent inventory
 	 */
 	for ( perssz = pgsz; perssz < sizeof(pers_t); perssz += pgsz )
 		;
@@ -1289,7 +1289,7 @@ content_init( int argc, char *argv[ ], size64_t vmsz )
 	 * destination directory, unless this is a toc, in which case
 	 * it will be placed in the current directory. in either case, an
 	 * alternate directory may be specified on the command line.
-	 * if this is toconly, modify the housekeeping dir's name with 
+	 * if this is toconly, modify the housekeeping dir's name with
 	 * the pid.
 	 */
 	if ( ! tranp->t_hkdir ) {
@@ -1580,7 +1580,7 @@ content_init( int argc, char *argv[ ], size64_t vmsz )
 			      GETOPT_SETDM );
 			return BOOL_FALSE;
 		}
-		if ( ! restoreextattrpr && 
+		if ( ! restoreextattrpr &&
 		       persp->a.restoreextattrpr != restoreextattrpr) {
 			mlog( MLOG_NORMAL | MLOG_ERROR, _(
 			     "-%c cannot reset flag from previous restore\n"),
@@ -2759,7 +2759,7 @@ content_statline( char **linespp[ ] )
 			 (unsigned long long)tranp->t_direntcnt,
 			 elapsed );
 		assert( strlen( statline[ 0 ] ) < STATLINESZ );
-		
+
 		return 1;
 	}
 
@@ -2799,7 +2799,7 @@ content_statline( char **linespp[ ] )
 		 percent,
 		 elapsed );
 	assert( strlen( statline[ 0 ] ) < STATLINESZ );
-	
+
 	/* return buffer to caller
 	 */
 	return 1;
@@ -3547,7 +3547,7 @@ applynondirdump( drive_t *drivep,
 			 */
 			( * dop->do_get_mark )( drivep, &drivemark );
 
-			/* read the file header. 
+			/* read the file header.
 			 */
 			rv = read_filehdr( drivep, fhdrp, fhcs );
 			switch( rv ) {
@@ -3751,7 +3751,7 @@ Inv_validate_cmdline( void )
 	if ( ok && sessp ) {
 		uuid_t baseid;
 
-		uuid_clear(baseid);	
+		uuid_clear(baseid);
                 askinvforbaseof( baseid, sessp );
 		if ( ! dumpcompat( sessp->s_isresumed,
 				   ( ix_t )( sessp->s_level ),
@@ -3834,13 +3834,13 @@ Media_atnondir( Media_t *Mediap )
  * dump ID. smart enough to know that if purpose was search but is now dir,
  * current media file can be returned again. same for other transitions.
  * always traverses the media object in a forward direction, beginning with
- * current media file, wrapping around to beginning of media if necessary. 
+ * current media file, wrapping around to beginning of media if necessary.
  * also supplies fresh hdr pointers and drive manager. in current
  * implementation these do not change, but will when we use new TLM. does
  * fine positioning within media file according to purpose of request.
  *
- * Note: 
- * The difference between rval and rv. 
+ * Note:
+ * The difference between rval and rv.
  * rval is used for the drive_* functions (e.g. do_begin_read)
  * and will take on values such as DRIVE_ERROR_*.
  * However, it also set to 0 for no error and 1 for error.
@@ -4103,7 +4103,7 @@ Media_mfile_next( Media_t *Mediap,
  * pv: 766024; tes@engr
  * The setting of emptypr, in my opinion, should only happen
  * in the case that the drive does not have a tape online.
- * This corresponds to a couple of cases in prepare_drive(). 
+ * This corresponds to a couple of cases in prepare_drive().
  * Otherwise, when we go to a newmedia we won't be able to eject
  * the tape when we want/need to.
  * This may need to be reviewed in the future.
@@ -4292,7 +4292,7 @@ validate:
 				return RV_NOMORE;
 			}
 		}
-			
+
 		/* if this media file is not part of the desired dump session,
 		 * and preceeding media files on this object were, decide if
 		 * we need to rewind and look at the beginning of the object.
@@ -4699,7 +4699,7 @@ newmedia:
 			return RV_DONE;
 		}
 
-		/* if media not removable, just return 
+		/* if media not removable, just return
 		 */
 		if ( ( * dop->do_get_device_class )( drivep )
 		     ==
@@ -5486,7 +5486,7 @@ pi_addfile( Media_t *Mediap,
 					      "incorporating on-media session "
 					      "inventory into online "
 					      "inventory\n") );
-					inv_put_sessioninfo( &sessinfo ); 
+					inv_put_sessioninfo( &sessinfo );
 				}
 
 				/* convert into pi format
@@ -5807,7 +5807,7 @@ pi_seeobjstrmend( ix_t strmix, ix_t mediaix )
 	      ix++,
 	      objh = DH2O( objh )->o_nexth )
 		;
-	
+
 	/* if an empty object (can happen when dump interrupted),
 	 * nothing need be done, so return
 	 */
@@ -5816,7 +5816,7 @@ pi_seeobjstrmend( ix_t strmix, ix_t mediaix )
 		return;
 	}
 
-	
+
 	/* set object flag
 	 */
 	DH2O( objh )->o_lmfknwnpr = BOOL_TRUE;
@@ -6177,7 +6177,7 @@ pi_neededobjs_nondir_alloc( bool_t *knownholesprp,
 	 * object containing the media file has not been IDed.
 	 */
 	knownobjmissingpr = BOOL_FALSE;
-	
+
 	tailegrp.eg_ino = 0;
 	tailegrp.eg_off = 0;
 
@@ -6459,7 +6459,7 @@ pi_hiteod( ix_t strmix, ix_t objix )
 		;
 	assert( objcnt != 0 );
 	lastobjix = objcnt - 1;
-	
+
 	pi_unlock( );
 
 	/* can't possibly happen, but check for case where pi indicates
@@ -6522,7 +6522,7 @@ pi_hitnextdump( ix_t strmix, ix_t objix, ix_t lastfileix )
 		;
 	assert( objcnt != 0 );
 	lastobjix = objcnt - 1;
-	
+
 	pi_unlock( );
 
 	/* can't possibly happen, but check for case where pi indicates
@@ -6581,7 +6581,7 @@ pi_know_no_more_on_object( purp_t purp, ix_t strmix, ix_t objix )
 	      objh = DH2O( objh )->o_nexth )
 		;
 	assert( objh != DH_NULL );
-	
+
 	/* if don't know last media file on object, return FALSE
 	 */
 	if ( ! DH2O( objh )->o_lmfknwnpr ) {
@@ -6617,7 +6617,7 @@ pi_know_no_more_on_object( purp_t purp, ix_t strmix, ix_t objix )
 			}
 		}
 	}
-	
+
 	pi_unlock( );
 	return BOOL_TRUE;
 }
@@ -6660,7 +6660,7 @@ pi_know_no_more_beyond_on_object( purp_t purp,
 	      objh = DH2O( objh )->o_nexth )
 		;
 	assert( objh != DH_NULL );
-	
+
 	/* if don't know last media file on object, return FALSE
 	 */
 	if ( ! DH2O( objh )->o_lmfknwnpr ) {
@@ -6701,7 +6701,7 @@ pi_know_no_more_beyond_on_object( purp_t purp,
 			}
 		}
 	}
-	
+
 	pi_unlock( );
 	return BOOL_TRUE;
 }
@@ -7483,7 +7483,7 @@ restore_reg( drive_t *drivep,
 	oflags = O_CREAT | O_RDWR;
 	if (persp->a.dstdirisxfspr && bstatp->bs_xflags & XFS_XFLAG_REALTIME)
 		oflags |= O_DIRECT;
-			
+
 	*fdp = open( path, oflags, S_IRUSR | S_IWUSR );
 	if ( *fdp < 0 ) {
 		mlog( MLOG_NORMAL | MLOG_WARNING,
@@ -7654,7 +7654,7 @@ restore_extent_group( drive_t *drivep,
 	}
 
 	/* The extent group has been restored.  If the file is not
-	 * complete, we may need to co-ordinate with other restore 
+	 * complete, we may need to co-ordinate with other restore
 	 * streams to time the restoration of extended attributes
 	 * and certain extended inode flags. Register the portion
 	 * of the file completed here in the persistent state.
@@ -8027,7 +8027,7 @@ restore_symlink( drive_t *drivep,
 	if ( ! tranp->t_toconlypr && path ) {
 		/* create the symbolic link
 		 */
-		/* NOTE: There is no direct way to set mode for 
+		/* NOTE: There is no direct way to set mode for
 		 * sym links. Do it using umask.
 		 * No way of setting times for sym links.
 		 */
@@ -8067,7 +8067,7 @@ restore_symlink( drive_t *drivep,
 
 		if ( persp->a.restoredmpr) {
 		fsdmidata_t fssetdm;
-		
+
 		/*	Restore DMAPI fields. */
 
 		fssetdm.fsd_dmevmask = bstatp->bs_dmevmask;
@@ -8580,15 +8580,15 @@ restore_extent( filehdr_t *fhdrp,
 					    (remaining % da.d_miniosz != 0 ||
 					     remaining < da.d_miniosz) ) {
 						/*
-						 * Since the ring and static 
-						 * buffers from the different 
+						 * Since the ring and static
+						 * buffers from the different
 						 * drives are always large, we
-						 * just need to write to the 
-						 * end of the next block 
+						 * just need to write to the
+						 * end of the next block
 						 * boundry and truncate.
 						 */
 						rttrunc = remaining;
-						remaining += da.d_miniosz - 
+						remaining += da.d_miniosz -
 						   (remaining % da.d_miniosz);
 					}
 					/*
@@ -8784,9 +8784,9 @@ restore_extattr( drive_t *drivep,
 		if ( onlydoreadpr || tranp->t_toconlypr )
 			continue;
 
-		/* NOTE: In the cases below, if we get errors then we issue warnings 
+		/* NOTE: In the cases below, if we get errors then we issue warnings
 		 * but we do not stop the restoration.
-		 * We can still restore the file possibly without the 
+		 * We can still restore the file possibly without the
 		 * extended attributes.
 		 */
 		if ( isdirpr ) {
@@ -8817,7 +8817,7 @@ restore_extattr( drive_t *drivep,
 static bool_t
 restore_dir_extattr_cb( char *path, dah_t dah )
 {
-        /* 
+        /*
          * directory extattr's are built during the directory phase
          * by 1 thread so we only need one extattr buffer
          * -> we pick the 0th one
@@ -8919,14 +8919,14 @@ dump_partials(void)
 				printf("\tino=%llu ",
 				       (unsigned long long)isptr->is_ino);
 				for (j=0, bsptr=isptr->is_bs;
-				     j < drivecnt; 
+				     j < drivecnt;
 				     j++, bsptr++)
 				{
 					if (bsptr->endoffset > 0) {
 						printf("%d:%lld-%lld ",
 						   j, (long long)bsptr->offset,
 						   (long long)bsptr->endoffset);
-					} 
+					}
 				}
 				printf( "\n");
 			}
@@ -8965,19 +8965,19 @@ check_valid_partials(void)
 
 				isptr = &persp->a.parrest[i];
 				for (j=0, bsptr=isptr->is_bs;
-				     j < drivecnt; 
+				     j < drivecnt;
 				     j++, bsptr++)
 				{
 					if (bsptr->endoffset > 0) {
 					    num_partials[j]++;
 					    if (num_partials[j] > 2) {
 						pi_unlock();
-						mlog( MLOG_NORMAL | MLOG_WARNING, 
+						mlog( MLOG_NORMAL | MLOG_WARNING,
 		  "partial_reg: Too many partials (>2) for drive: %d\n", j);
 						dump_partials();
 						exit(EXIT_ERROR);
 					    }
-					} 
+					}
 				}
 			}
 		}
@@ -8991,7 +8991,7 @@ check_valid_partials(void)
  * a dump stream into the persistent state.
  *
  * This is done because DMAPI extended attributes must not be set until
- * the entire file has been restored in order to co-ordinate with the 
+ * the entire file has been restored in order to co-ordinate with the
  * Data Migration Facility (DMF) daemons.  Since extended attributes are
  * recorded with each extent group in the dump, this registry is used to
  * make sure only the final dump stream applies the extended attributes.
@@ -9000,10 +9000,10 @@ check_valid_partials(void)
  * should only be set after all data for a file has been restored.
  */
 static void
-partial_reg( ix_t d_index, 
-	     xfs_ino_t ino, 
-	     off64_t fsize, 
-	     off64_t offset, 
+partial_reg( ix_t d_index,
+	     xfs_ino_t ino,
+	     off64_t fsize,
+	     off64_t offset,
 	     off64_t sz)
 {
 	off64_t	endoffset;
@@ -9012,7 +9012,7 @@ partial_reg( ix_t d_index,
 	int i;
 
 	mlog(MLOG_NITTY, "partial_reg: d_index = %d, ino = %llu, "
-                           "fsize = %lld, offset = %lld, sz = %lld\n", 
+                           "fsize = %lld, offset = %lld, sz = %lld\n",
                            d_index, ino, fsize, offset, sz);
 
 	endoffset = offset + sz;
@@ -9023,7 +9023,7 @@ partial_reg( ix_t d_index,
 	pi_lock();
 
 	/* Search for a matching inode.  Gaps can exist so we must search
-	 * all entries. 
+	 * all entries.
 	 */
 	for (i=0; i < partialmax; i++ ) {
 		if (persp->a.parrest[i].is_ino == ino) {
@@ -9126,7 +9126,7 @@ partial_check (xfs_ino_t ino, off64_t fsize)
 	}
 
 	/* Search for the inode.  Gaps can exist so we must search
-	 * all entries. 
+	 * all entries.
 	 */
 	for (i=0; i < partialmax; i++ ) {
 		if (persp->a.parrest[i].is_ino == ino) {
@@ -9171,9 +9171,9 @@ gapsearch:
 	 * so the search is repeated from the start each time.
 	 */
 	for (i=0, bsptr=isptr->is_bs; i < drivecnt; i++, bsptr++) {
-		if (bsptr->endoffset > 0 && 
-		    bsptr->offset <= curoffset && 
-		    bsptr->endoffset > curoffset) 
+		if (bsptr->endoffset > 0 &&
+		    bsptr->offset <= curoffset &&
+		    bsptr->endoffset > curoffset)
 		{
 			curoffset = bsptr->endoffset;
 			goto gapsearch;
@@ -9237,7 +9237,7 @@ content_overwrite_ok( char *path,
 		return BOOL_FALSE;
 	}
 
-	/* if newer time specified, compare 
+	/* if newer time specified, compare
 	 */
 	if ( persp->a.newerpr ) {
 		if ( ( time32_t )ctime < persp->a.newertime ) {
@@ -9661,7 +9661,7 @@ display_needed_objects( purp_t purp,
 	if ( knownholespr ) {
 		if ( purp == PURP_DIR ) {
 			mlog( MLOG_NORMAL | MLOG_BARE | MLOG_NOLOCK,
-			      bagp ? 
+			      bagp ?
 			      _("\nthere are additional unidentified media "
 			      "objects containing media files not yet tried "
 			      "for directory hierarchy restoral:\n")
@@ -9690,7 +9690,7 @@ display_needed_objects( purp_t purp,
 			      _("\nthere may be unidentified media "
 			      "objects containing media files not yet tried "
 			      "for directory hierarchy restoral:\n") );
-			      
+
 		}
 		if ( purp == PURP_NONDIR ) {
 			mlog( MLOG_NORMAL | MLOG_BARE | MLOG_NOLOCK,

@@ -480,7 +480,7 @@ promptinput( char *buf,
 	 */
 	pthread_sigmask( SIG_SETMASK, &orig_set, NULL );
 	sigemptyset( &dlog_registered_sigs );
-	
+
 	/* check for timeout or interrupt
 	 */
 	if ( nread < 0 ) {

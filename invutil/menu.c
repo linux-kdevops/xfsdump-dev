@@ -109,7 +109,7 @@ menu(WINDOW *win, int line, int col, node_t *list, int keyc, menukey_t *keyv)
     int last_line;
     int size;
 
-    current = list; 
+    current = list;
     last = current;
     current_line = 0;
     last_line = current_line;
@@ -184,7 +184,7 @@ menu(WINDOW *win, int line, int col, node_t *list, int keyc, menukey_t *keyv)
 		node_t *n = current->prev;
 
 		while(n != NULL) {
-		    d = ((data_t *)(n->data)); 
+		    d = ((data_t *)(n->data));
 		    if(d == NULL) {
 			n = n->prev;
 			continue;
@@ -208,7 +208,7 @@ menu(WINDOW *win, int line, int col, node_t *list, int keyc, menukey_t *keyv)
 		node_t *n = current->next;
 
 		while(n != NULL) {
-		    d = ((data_t *)(n->data)); 
+		    d = ((data_t *)(n->data));
 		    if(d == NULL) {
 			n = n->next;
 			continue;
@@ -258,7 +258,7 @@ menu(WINDOW *win, int line, int col, node_t *list, int keyc, menukey_t *keyv)
 		}
 		i = current_line - 1;
 		while(n != NULL) {
-		    d = ((data_t *)(n->data)); 
+		    d = ((data_t *)(n->data));
 		    if(d == NULL) {
 			n = n->prev;
 			continue;

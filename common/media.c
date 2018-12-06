@@ -196,7 +196,7 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 		mediap->m_strategyp = chosen_sp;
 		mediap->m_writehdrp->mh_strategyid = chosen_sp->ms_id;
 	}
-	
+
 	/* initialize the strategy. this will cause each of the managers
 	 * to be initialized as well. if error, return 0.
 	 */
@@ -250,7 +250,7 @@ media_get_upper_hdrs( media_t *mediap,
 
 /* definition of locally defined static functions ****************************/
 
-/* media_alloc - allocate and initialize the generic portions of a media 
+/* media_alloc - allocate and initialize the generic portions of a media
  * descriptor and read and write media headers
  */
 static media_t *

@@ -55,28 +55,28 @@ fstab_getall( invt_fstab_t **arr, invt_counter_t **cnt, int *numfs,
 	int fd;
 
 	fd = open ( INV_FSTAB, INV_OFLAG(forwhat) );
-	
-	if ( fd < 0 ) 
+
+	if ( fd < 0 )
 		return -1; /* if ENOENT, fstab_put_entry will CREAT */
-	
+
 	INVLOCK( fd, LOCK_EX );
-	if (( *numfs = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void**) arr, 
-						 (void **)cnt, 	
-						 sizeof( invt_fstab_t ), 
+	if (( *numfs = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void**) arr,
+						 (void **)cnt,
+						 sizeof( invt_fstab_t ),
 						 sizeof( invt_counter_t ) )
 	     ) < 0 ) {
 		mlog( MLOG_NORMAL | MLOG_INV, _(
 			"INV: couldn't get fstab headers\n") );
 	}
-#ifdef INVT_DEBUG	
-	mlog( MLOG_NITTY | MLOG_INV, "INV: number of filesystems in fstab %d\n", 
+#ifdef INVT_DEBUG
+	mlog( MLOG_NITTY | MLOG_INV, "INV: number of filesystems in fstab %d\n",
 	      *numfs );
 #endif
 	/* fstab is left locked EX on exit. The caller takes does
 	   the unlocking */
 	return fd;
 }
-		
+
 
 /*----------------------------------------------------------------------*/
 /*                                                                      */
@@ -108,10 +108,10 @@ fstab_put_entry( uuid_t *fsidp, char *mntpt, char *dev, inv_oflag_t forwhat )
 			INV_PERROR ( INV_FSTAB );
 			return -1;
 		}
-		
+
 		INVLOCK( fd, LOCK_EX );
 		fchmod( fd, INV_PERMS );
-		
+
 		cnt = (invt_counter_t *) malloc( sizeof ( invt_counter_t ) );
 
 		cnt->ic_maxnum = -1;
@@ -119,18 +119,18 @@ fstab_put_entry( uuid_t *fsidp, char *mntpt, char *dev, inv_oflag_t forwhat )
 		cnt->ic_vernum = INV_VERSION;
 
 	} else if ( numfs > 0 ) {
-		
+
 		for (i = 0; i < numfs; i++) {
 		    if ( uuid_compare( *fsidp, arr[ i ].ft_uuid ) == 0 ) {
-			
+
 /*			if ( ( STREQL( arr[i].ft_mountpt, mntpt ) ) &&
-			    ( STREQL( arr[i].ft_devpath, dev ) ) ) 
+			    ( STREQL( arr[i].ft_devpath, dev ) ) )
 */
 				free ( arr );
 				free ( cnt );
 				close( fd );
 				return 1;
-	     
+
 		}
 	    }
 	    /* entry not found. just follow thru to create a new one */
@@ -146,15 +146,15 @@ fstab_put_entry( uuid_t *fsidp, char *mntpt, char *dev, inv_oflag_t forwhat )
 		memcpy( &ent.ft_uuid, fsidp, sizeof( uuid_t ) );
 		strcpy( ent.ft_mountpt, mntpt );
 		strcpy( ent.ft_devpath, dev );
-		
+
 		/* increase the number of entries first */
 #ifdef INVT_DEBUG
 		mlog( MLOG_NITTY | MLOG_INV,"INV: putting new fstab entry for %s ....\n",
 		      mntpt);
 #endif
 		cnt->ic_curnum++;
-		hoff = (off64_t) ( sizeof( invt_counter_t ) + 
-				 (size_t)( cnt->ic_curnum - 1 ) * 
+		hoff = (off64_t) ( sizeof( invt_counter_t ) +
+				 (size_t)( cnt->ic_curnum - 1 ) *
 				           sizeof( invt_fstab_t ) );
 
 		rval = PUT_COUNTERS( fd, cnt );
@@ -164,7 +164,7 @@ fstab_put_entry( uuid_t *fsidp, char *mntpt, char *dev, inv_oflag_t forwhat )
 
 	}
 	INVLOCK( fd, LOCK_UN );
-	free ( cnt );	
+	free ( cnt );
 	close ( fd );
 	return rval;
 }
@@ -174,8 +174,8 @@ fstab_put_entry( uuid_t *fsidp, char *mntpt, char *dev, inv_oflag_t forwhat )
 
 
 int
-fstab_get_fname( void *pred, 
-		 char *fname, 
+fstab_get_fname( void *pred,
+		 char *fname,
 		 inv_predicate_t bywhat,
 		 inv_oflag_t forwhat)
 {
@@ -205,7 +205,7 @@ fstab_get_fname( void *pred,
 		/* first get hold of the uuid for this mount point/device */
 
 		for (i = 0; i < numfs; i++) {
-			if ( ( bywhat == INV_BY_MOUNTPT && 
+			if ( ( bywhat == INV_BY_MOUNTPT &&
 			     ( STREQL( arr[i].ft_mountpt, pred ) )) ||
 			     ( bywhat == INV_BY_DEVPATH &&
 			     ( STREQL( arr[i].ft_devpath, pred ) )) ) {
@@ -214,16 +214,16 @@ fstab_get_fname( void *pred,
 				break;
 			}
 		}
-#ifdef INVT_DEBUG				
+#ifdef INVT_DEBUG
 		if (! uuidp )
 			mlog( MLOG_DEBUG | MLOG_INV,"INV: get_fname: unable to find %s"
 			      " in the inventory\n", (char *)pred);
 #endif
-		
+
 	} else {
 		uuidp = (uuid_t *)pred;
 	}
-	
+
 	if (! uuidp )
 		return -1;
 
@@ -232,14 +232,14 @@ fstab_get_fname( void *pred,
 	strncpy ( fname, INV_DIRPATH, INV_STRLEN );
 	strcat ( fname, "/" );
 	strcat ( fname, uuidstr);
-	
-	if ( bywhat != INV_BY_UUID ) 
+
+	if ( bywhat != INV_BY_UUID )
 		free ( arr );
 
 	assert( (int) strlen( fname ) < INV_STRLEN );
 	return 1;
-}	
-	
+}
+
 
 void
 fstab_DEBUG_print( invt_fstab_t *arr, int num )

@@ -116,7 +116,7 @@ bag_find( bag_t *bagp,
 	      ;
 	      p = p->be_nextp )
 		;
-	
+
 	if ( ! p || p->be_key != key ) {
 		*payloadpp = 0;
 		return 0;

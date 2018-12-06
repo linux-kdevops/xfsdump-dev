@@ -277,7 +277,7 @@ stream_cnt( void )
 	size_t bitix;
 
 	assert( sizeof( ixmap ) * NBBY >= STREAM_SIMMAX );
-	
+
 	lock();
 	for ( ; p < ep ; p++ ) {
 		if ( p->s_state == S_RUNNING ) {

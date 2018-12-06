@@ -57,7 +57,7 @@
 #define MLOG_SS_TREE	5		/* restore tree */
 #endif /* RESTORE */
 #define MLOG_SS_EXCLFILES 6		/* list excluded files */
-#define MLOG_SS_CNT	7		/* NOTE! bump this when adding ss */	
+#define MLOG_SS_CNT	7		/* NOTE! bump this when adding ss */
 
 #define MLOG_SS_SHIFT	8
 #define MLOG_SS_MASK	( 0xff << MLOG_SS_SHIFT )

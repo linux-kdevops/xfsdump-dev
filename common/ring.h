@@ -150,7 +150,7 @@ struct ring {
 };
 
 typedef struct ring ring_t;
-	
+
 
 /* ring_create - creates a ring. parameters supply the length of the ring,
  * the read/write buffer size, the drive index, a function for reading, a

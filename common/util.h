@@ -60,7 +60,7 @@ typedef char * ( *rfp_t )( void *contextp, size_t wantedsz, size_t *szp, int *st
 typedef void ( * rrbfp_t )( void *contextp, char *bufp, size_t bufsz );
 
 extern int read_buf( char *bufp,
-			  size_t bufsz, 
+			  size_t bufsz,
 			  void *contextp,
 			  rfp_t read_funcp,
 			  rrbfp_t return_read_buf_funcp,

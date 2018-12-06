@@ -695,7 +695,7 @@ content_init( int argc,
 				return BOOL_FALSE;
 			}
 			baseuuidstr = optarg;
-			
+
 			if ( uuid_parse( baseuuidstr, baseuuid ) < 0 ) {
 				mlog( MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument not a valid "
@@ -936,7 +936,7 @@ content_init( int argc,
 						      p->dr_end.sp_ino,
 						      p->dr_end.sp_offset );
 					} else {
-						p->dr_end.sp_flags = STARTPT_FLAGS_END;	
+						p->dr_end.sp_flags = STARTPT_FLAGS_END;
 						mlog( MLOG_DEBUG,
 						      "resume range stream %u "
 						      "ino %llu:%lld to "
@@ -1082,7 +1082,7 @@ content_init( int argc,
 					      p->dr_end.sp_ino,
 					      p->dr_end.sp_offset );
 				} else {
-					p->dr_end.sp_flags = STARTPT_FLAGS_END;	
+					p->dr_end.sp_flags = STARTPT_FLAGS_END;
 					mlog( MLOG_DEBUG,
 					      "resume range stream %u "
 					      "ino %llu:%lld to "
@@ -1420,7 +1420,7 @@ baseuuidbypass:
 			       _("root ino %lld differs from mount dir ino %lld, bind mount?\n"),
 			         sc_rootxfsstatp->bs_ino, rootstat.st_ino);
 	}
-	
+
 	/* alloc a file system handle, to be used with the jdm_open()
 	 * functions.
 	 */
@@ -1481,7 +1481,7 @@ baseuuidbypass:
 	if ( ! ok ) {
 		return BOOL_FALSE;
 	}
-	
+
 	/* ask var to ask inomap to skip files under var if var is in
 	 * the fs being dumped
 	 */
@@ -1555,7 +1555,7 @@ baseuuidbypass:
 	if (drivecnt > 1) {
 	    mlog( MLOG_VERBOSE, _(
 		  "estimated dump size per stream: %llu bytes\n"),
-		    hdr_mfilesz + (filesz + datasz) / drivecnt); 
+		    hdr_mfilesz + (filesz + datasz) / drivecnt);
 	}
 	mlog( MLOG_DEBUG,
 	      "estimated dump header size: %llu bytes\n",
@@ -2010,7 +2010,7 @@ mark_set( drive_t *drivep, xfs_ino_t ino, off64_t offset, int32_t flags )
 		      ino,
 		      offset );
 	}
-		 
+
 	markp->startpt.sp_ino = ino;
 	markp->startpt.sp_offset = offset;
 	markp->startpt.sp_flags = flags;
@@ -2175,7 +2175,7 @@ content_stream_dump( ix_t strmix )
 	 * in the progress stats
 	 */
 	contextp->cc_stat_lastino = 0;
-	
+
 	/* used to detect generation of an empty media file;
 	 * contains at most an inomap and dirdump and null file hdr.
 	 */
@@ -2895,7 +2895,7 @@ dump_dirs( ix_t strmix,
 					continue;
 				}
 				if ( !p->bs_nlink || !p->bs_mode || !p->bs_ino ) {
-					mlog( MLOG_TRACE, 
+					mlog( MLOG_TRACE,
 					      "failed to get valid bulkstat information for inode %llu\n",
 					      p->bs_ino );
 					continue;
@@ -2904,7 +2904,7 @@ dump_dirs( ix_t strmix,
 			if ( ( p->bs_mode & S_IFMT ) != S_IFDIR ) {
 				continue;
 			}
-                        
+
 			rv = dump_dir( strmix, sc_fshandlep, sc_fsfd, p );
 			if ( rv != RV_OK ) {
 				return rv;
@@ -2998,7 +2998,7 @@ dump_dir( ix_t strmix,
 		      statp->bs_ino );
 		return RV_OK; /* continue anyway */
 	}
-	
+
 	mlog( MLOG_TRACE,
 	      "dumping directory ino %llu\n",
 	      statp->bs_ino );
@@ -3020,7 +3020,7 @@ dump_dir( ix_t strmix,
 		close( fd );
 		return rv;
 	}
-	
+
 	/* dump dirents - lots of buffering done here, to achieve OS-
 	 * independence. if proves to be to much overhead, can streamline.
 	 */
@@ -3030,7 +3030,7 @@ dump_dir( ix_t strmix,
 		register size_t reclen;
 
 		nread = getdents_wrap( fd, (char *)gdp, gdsz );
-		
+
 		/* negative count indicates something very bad happened;
 		 * try to gracefully end this dir.
 		 */
@@ -3112,7 +3112,7 @@ dump_dir( ix_t strmix,
 			if ( inomap_get_gen( NULL, p->d_ino, &gen) ) {
 				xfs_bstat_t statbuf;
 				int scrval;
-				
+
 				scrval = bigstat_one( fsfd,
 						      p->d_ino,
 						      &statbuf );
@@ -3361,7 +3361,7 @@ dump_extattr_list( drive_t *drivep,
 		/* Either the retrieve buffer is full, the dump buffer is full,
 		 * or we just put the last attribute into the dump buffer.  In
 		 * any case, fill in the values for any attributes added so far.
-		 */ 
+		 */
 
 		rtrvcnt = rtrvix;
 		if (rtrvcnt > 0) {
@@ -3735,7 +3735,7 @@ dump_file( void *arg1,
 		if ( statp->bs_ino > contextp->cc_stat_lastino ) {
 			contextp->cc_stat_lastino = statp->bs_ino;
 		}
-		mlog( MLOG_DEBUG, "skip as no links for ino %llu\n", 
+		mlog( MLOG_DEBUG, "skip as no links for ino %llu\n",
 			statp->bs_ino);
 		return RV_OK;
 	}
@@ -3746,7 +3746,7 @@ dump_file( void *arg1,
 		if ( statp->bs_ino > contextp->cc_stat_lastino ) {
 			contextp->cc_stat_lastino = statp->bs_ino;
 		}
-		mlog( MLOG_DEBUG, "skip as ino %llu is prior to starpoint\n", 
+		mlog( MLOG_DEBUG, "skip as ino %llu is prior to starpoint\n",
 			statp->bs_ino);
 		return RV_OK;
 	}
@@ -3760,7 +3760,7 @@ dump_file( void *arg1,
 				if ( statp->bs_ino > contextp->cc_stat_lastino ) {
 					contextp->cc_stat_lastino = statp->bs_ino;
 				}
-				mlog( MLOG_DEBUG, "skip as ino %llu is at/beyond starpoint\n", 
+				mlog( MLOG_DEBUG, "skip as ino %llu is at/beyond starpoint\n",
 					statp->bs_ino);
 				return RV_NOMORE;
 			}
@@ -3769,7 +3769,7 @@ dump_file( void *arg1,
 				if ( statp->bs_ino > contextp->cc_stat_lastino ) {
 					contextp->cc_stat_lastino = statp->bs_ino;
 				}
-				mlog( MLOG_DEBUG, "skip as ino %llu is at/beyond starpoint\n", 
+				mlog( MLOG_DEBUG, "skip as ino %llu is at/beyond starpoint\n",
 					statp->bs_ino);
 				return RV_NOMORE;
 			}
@@ -3796,9 +3796,9 @@ dump_file( void *arg1,
 		if ( statp->bs_ino > contextp->cc_stat_lastino ) {
 			contextp->cc_stat_lastino = statp->bs_ino;
 		}
-		mlog( MLOG_DEBUG, "skip as ino %llu is not marked as changed in inomap\n", 
+		mlog( MLOG_DEBUG, "skip as ino %llu is not marked as changed in inomap\n",
 			statp->bs_ino);
-		mlog( MLOG_DEBUG, "ino %llu is in state %d\n", 
+		mlog( MLOG_DEBUG, "ino %llu is in state %d\n",
 			statp->bs_ino, state);
 		return RV_OK;
 	}
@@ -3992,7 +3992,7 @@ dump_file_reg( drive_t *drivep,
 		}
 		assert( ( offset & ( off64_t )( BBSIZE - 1 )) == 0 );
 	}
-		
+
 	/* determine the offset within the file where the dump should end.
 	 * only significant if this is an inode spanning a startpoint.
 	 */
@@ -4303,7 +4303,7 @@ init_extent_group_context( jdm_fshandle_t *fshandlep,
 		return RV_ERROR;
 	}
 
-	/* Check if a mandatory lock is set on the file to try and 
+	/* Check if a mandatory lock is set on the file to try and
 	 * avoid blocking indefinitely on the reads later. Note that
 	 * someone could still set a mandatory lock and hose xfsdump
 	 * after this check but before all reads have completed.
@@ -4597,7 +4597,7 @@ dump_extent_group( drive_t *drivep,
 				continue;
 			}
 		}
-		
+
 		/* if the new bmap entry begins beyond the end of the file,
 		 * we are done.
 		 */
@@ -4609,7 +4609,7 @@ dump_extent_group( drive_t *drivep,
 			*cmpltflgp = BOOL_TRUE;
 			return RV_OK;
 		}
-		
+
 		/* if the new bmap entry begins at or above the stop offset,
 		 * stop. we are done.
 		 */
@@ -4621,7 +4621,7 @@ dump_extent_group( drive_t *drivep,
 			*cmpltflgp = BOOL_TRUE;
 			return RV_OK;
 		}
-		
+
 		/* if the new entry begins below the range of
 		 * interest, modify offset to begin at the
 		 * beginning of the range of interest, and shorten
@@ -4640,13 +4640,13 @@ dump_extent_group( drive_t *drivep,
 		assert( extsz > 0 );
 
 		/* if the resultant extent would put us over maxcnt,
-		 * shorten it, and round up to the next BBSIZE (round 
+		 * shorten it, and round up to the next BBSIZE (round
 		 * upto d_miniosz for realtime).
 		 */
 		if ( extsz > maxcnt - ( bytecnt + sizeof( extenthdr_t ))) {
 			int iosz;
 
-			if (isrealtime) 
+			if (isrealtime)
 				iosz = da.d_miniosz;
 			else
 				iosz = BBSIZE;
@@ -4990,7 +4990,7 @@ dump_filehdr( drive_t *drivep,
 			  ( void * )drivep,
 			  ( gwbfp_t )dop->do_get_write_buf,
 			  ( wfp_t )dop->do_write );
-	
+
 	switch ( rval ) {
 	case 0:
 		rv = RV_OK;
@@ -5027,16 +5027,16 @@ dump_extenthdr( drive_t *drivep,
 	char typestr[20];
 
 	switch( type )  {
-		case EXTENTHDR_TYPE_LAST: 
+		case EXTENTHDR_TYPE_LAST:
 			strcpy( typestr, "LAST" );
 			break;
-		case EXTENTHDR_TYPE_ALIGN: 
+		case EXTENTHDR_TYPE_ALIGN:
 			strcpy( typestr, "ALIGN" );
 			break;
-		case EXTENTHDR_TYPE_DATA: 
+		case EXTENTHDR_TYPE_DATA:
 			strcpy( typestr, "DATA" );
 			break;
-		case EXTENTHDR_TYPE_HOLE: 
+		case EXTENTHDR_TYPE_HOLE:
 			strcpy( typestr, "HOLE" );
 			break;
 		default:
@@ -5717,7 +5717,7 @@ position:
 				if ( status == DRIVE_ERROR_DEVICE ) {
 					mlog( MLOG_NORMAL | MLOG_ERROR | MLOG_MEDIA, _(
 					      "encountered media error "
-					      "attempting BSF\n") ); 
+					      "attempting BSF\n") );
 					goto changemedia;
 				}
 				if ( mrhdrp->mh_mediafileix == 0 ) {
@@ -5778,7 +5778,7 @@ position:
 
 				goto write;
 			}
-			
+
 		case DRIVE_ERROR_OVERWRITE:
 			prevmediapresentpr = mediapresentpr;
 			mediapresentpr = BOOL_TRUE;
@@ -5937,14 +5937,14 @@ erasemedia:
 	virginmediapr = BOOL_UNKNOWN;
 	mediawrittentopr = BOOL_FALSE;
 	goto position;
-	
+
 changemedia:
 	/* if the drive does not support media change, quit.
 	 */
 	if ( ! ( dcaps & DRIVE_CAP_REMOVABLE )) {
 		return RV_ERROR;
 	}
-	
+
 	/* first eject the current media object if capability supported
 	 */
 	assert( mediapresentpr != BOOL_UNKNOWN );
@@ -5963,10 +5963,10 @@ changemedia:
 		return RV_QUIT; /* this return value will cause approp. msg */
 	}
 
-	/* If an alert program has been specified , run it 
+	/* If an alert program has been specified , run it
 	 */
 	if (media_change_alert_program != NULL)
-	   system(media_change_alert_program);  
+	   system(media_change_alert_program);
 
 	/* if media change prompt declined or times out,
 	 * we are done
@@ -6121,9 +6121,9 @@ write:
 					     sizeof( mwhdrp->mh_medialabel ));
 		}
 	}
-	
+
 	mediawrittentopr = BOOL_TRUE;
-	
+
 	/* write hdr is prepared. place it on media
 	 */
 	if ( intr_allowed && cldmgr_stop_requested( )) {
@@ -6614,7 +6614,7 @@ save_quotas( char *mntpnt, quota_info_t *quotainfo )
                 return BOOL_FALSE;
             }
         }
- 
+
         sprintf( buf,
 		 "%s -x -c 'dump %s %s' %s 2> /dev/null",
 		 REPQUOTA,

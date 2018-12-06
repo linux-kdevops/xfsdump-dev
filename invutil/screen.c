@@ -83,6 +83,6 @@ get_string(WINDOW *win, char *prompt, char *response, int len)
     echo();
     wgetnstr(stdscr, response, len);
     noecho();
-    
+
     return 0;
 }

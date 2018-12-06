@@ -60,7 +60,7 @@ get_counters( int fd, void **cntpp, size_t cntsz )
 		*cntpp = NULL;
 		return -1;
 	}
-	
+
 	num = ((invt_counter_t *)(*cntpp))->ic_curnum;
 
 	if ( ( (invt_counter_t *)(*cntpp))->ic_vernum != INV_VERSION ) {
@@ -70,7 +70,7 @@ get_counters( int fd, void **cntpp, size_t cntsz )
 		      (int) INV_VERSION );
 		assert ( ((invt_counter_t *)(*cntpp))->ic_vernum ==
 			INV_VERSION );
-	} 
+	}
 
 	return (int) num;
 }
@@ -100,7 +100,7 @@ get_headers( int fd, void **hdrs, size_t bufsz, size_t off )
 		*hdrs = NULL;
 		return -1;
 	}
-	
+
 	return 1;
 }
 
@@ -111,14 +111,14 @@ get_headers( int fd, void **hdrs, size_t bufsz, size_t off )
 /*----------------------------------------------------------------------*/
 
 int
-get_invtrecord( int fd, void *buf, size_t bufsz, off64_t off, 
+get_invtrecord( int fd, void *buf, size_t bufsz, off64_t off,
 		bool_t dolock )
 {
 	int  nread;
-	
+
 	assert ( fd >= 0 );
-	
-	if ( dolock ) 
+
+	if ( dolock )
 		INVLOCK( fd, LOCK_SH );
 
 	nread = pread(fd, buf, bufsz, (off_t)off);
@@ -129,7 +129,7 @@ get_invtrecord( int fd, void *buf, size_t bufsz, off64_t off,
 		return -1;
 	}
 
-	if ( dolock ) 
+	if ( dolock )
 		INVLOCK( fd, LOCK_UN );
 
 	return nread;
@@ -148,10 +148,10 @@ int
 put_invtrecord( int fd, void *buf, size_t bufsz, off64_t off, bool_t dolock )
 {
 	int nwritten;
-	
+
 	if ( dolock )
 		INVLOCK( fd, LOCK_EX );
-	
+
 	nwritten = pwrite(fd, buf, bufsz, (off_t)off);
 	if (nwritten != (int) bufsz ) {
 		INV_PERROR( _("Error in writing inventory record :") );
@@ -179,8 +179,8 @@ put_invtrecord( int fd, void *buf, size_t bufsz, off64_t off, bool_t dolock )
 int
 get_headerinfo( int fd, void **hdrs, void **cnt,
 	        size_t hdrsz, size_t cntsz, bool_t dolock )
-{	
-	int num; 
+{
+	int num;
 
 	/* get a lock on the table for reading */
 	if ( dolock ) INVLOCK( fd, LOCK_SH );
@@ -207,17 +207,17 @@ get_headerinfo( int fd, void **hdrs, void **cnt,
 
 int
 get_lastheader( int fd, void **ent, size_t hdrsz, size_t cntsz )
-{	
+{
 	int	     	 nindices;
 	void	 	 *arr = NULL;
 	invt_counter_t	 *cnt = NULL;
 	char 		 *pos;
 	/* get the entries in the inv_index */
-	if ( ( nindices = GET_ALLHDRS_N_CNTS( fd, &arr, (void **)&cnt, 
+	if ( ( nindices = GET_ALLHDRS_N_CNTS( fd, &arr, (void **)&cnt,
 					 hdrsz, cntsz )) <= 0 ) {
 		return -1;
 	}
-	
+
 	/* if there's space anywhere at all, then it must be in the last
 	   entry */
 	*ent = malloc( hdrsz );

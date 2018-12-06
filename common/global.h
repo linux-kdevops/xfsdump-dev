@@ -32,7 +32,7 @@
 	 * version 2 adds encoding of holes and a change to on-tape inventory format.
 	 * version 1 adds extended file attribute dumping.
 	 * version 0 xfsrestore can't handle media produced
-	 * by version 1 xfsdump. 
+	 * by version 1 xfsdump.
 	 */
 #define GLOBAL_HDR_VERSION	GLOBAL_HDR_VERSION_3
 
@@ -93,7 +93,7 @@ extern void global_hdr_checksum_set( global_hdr_t *hdrp );
  */
 extern bool_t global_hdr_checksum_check( global_hdr_t *hdrp );
 
-/* global_version_check - if we know this version number, return BOOL_TRUE 
+/* global_version_check - if we know this version number, return BOOL_TRUE
  * else return BOOL_FALSE
  */
 

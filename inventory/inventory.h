@@ -30,8 +30,8 @@
  * knowledge of the functionalities, some abstractions, and even typical queries
  * of dump() and restore() and uses this knowledge in formulating its storage
  * structure on disk. All these things, of course, are completely abstract with
- * respect to the clients of the inventory. 
- * 
+ * respect to the clients of the inventory.
+ *
  */
 
 #define INV_DIRPATH		inv_dirpath()
@@ -45,12 +45,12 @@
 
 typedef uint32_t		inv_version_t;
 
-/* This is the general inventory version. 
+/* This is the general inventory version.
  */
-#define INV_VERSION		(inv_version_t) 1	
+#define INV_VERSION		(inv_version_t) 1
 
 /* This is the version of the on-tape (packed) inventory.
- * version 2 has an extra inv_version_t in it to make everything 
+ * version 2 has an extra inv_version_t in it to make everything
  * 64 bit aligned.
  */
 #define PACKED_INV_VERSION_1	(inv_version_t) 1
@@ -106,13 +106,13 @@ typedef enum {
 	INV_BY_DEVPATH
 } inv_predicate_t;
 
-	
+
 typedef enum {
 	INV_SEARCH_ONLY,
 	INV_SEARCH_N_MOD
 } inv_oflag_t;
 
-		     
+
 typedef struct inv_mediafile {
 	uuid_t		 m_moid;	/* media object id */
 	uint		 m_mfile_index; /* index within the media object */
@@ -122,7 +122,7 @@ typedef struct inv_mediafile {
 	off64_t		 m_endino_off;	/* .. media file with. */
 	off64_t		 m_size;	/* size of mediafile in bytes */
 	bool_t           m_isgood;      /* distinguishes good mfiles */
-	bool_t		 m_isinvdump;	/* is this the mfile that has the dump 
+	bool_t		 m_isinvdump;	/* is this the mfile that has the dump
 					   of the rest of the session? */
 	char		 m_label[INV_STRLEN];	/* media file label */
 } inv_mediafile_t;
@@ -130,12 +130,12 @@ typedef struct inv_mediafile {
 
 typedef struct inv_stream {
 	bool_t		st_interrupted;	/* was this stream interrupted ? */
-	
+
 	/* duplicate info from mediafiles for speed */
 	xfs_ino_t	st_startino;	/* the starting pt */
 	off64_t		st_startino_off;
-	xfs_ino_t	st_endino;  	/* where we actually ended up. this 
-					   means we've written upto but not 
+	xfs_ino_t	st_endino;  	/* where we actually ended up. this
+					   means we've written upto but not
 					   including this breakpoint. */
 	off64_t		st_endino_off;
 	char            st_cmdarg[INV_STRLEN]; /* the driver path user entered */
@@ -144,11 +144,11 @@ typedef struct inv_stream {
 } inv_stream_t;
 
 
-/* 
- * inventory_session_t 
+/*
+ * inventory_session_t
  * all the information that is kept on a single dump session of a single
  * file system in the inventory.
- * 
+ *
  */
 
 typedef struct inv_session {
@@ -164,11 +164,11 @@ typedef struct inv_session {
 	uint		 s_nstreams;	/* num of media streams recorded */
 	inv_stream_t	*s_streams;	/* array of streams */
         uint            s_refnum;      /* storage location dependent ref.
-					   used in displaying the session and 
+					   used in displaying the session and
 					   nowhere else */
-					   
+
 } inv_session_t;
- 
+
 
 
 struct invt_desc_entry;
@@ -186,14 +186,14 @@ typedef struct invt_strdesc_entry	*inv_stmtoken_t;
 /* inventory_open - initializes access to the inventory
  */
 extern inv_idbtoken_t
-inv_open( 
-	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */	
+inv_open(
+	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */
 	 inv_oflag_t      forwhat,/* SEARCH_ONLY, SEARCH_N_MOD */
 	 void 		 *pred );/* uuid_t *,char * mntpt, or char *dev */
 
 
 extern bool_t
-inv_close( 
+inv_close(
 	inv_idbtoken_t	tok );
 
 
@@ -209,16 +209,16 @@ inv_writesession_open(
 	uint		nstreams,
 	time32_t	time,
 	char		*mntpt,
-	char		*devpath );	      
+	char		*devpath );
 
 extern bool_t
-inv_writesession_close( 
+inv_writesession_close(
 	inv_sestoken_t  tok );
 
 extern inv_stmtoken_t
 inv_stream_open(
 	inv_sestoken_t 	tok,
-	char		*cmdarg );	
+	char		*cmdarg );
 
 extern bool_t
 inv_stream_close(
@@ -226,9 +226,9 @@ inv_stream_close(
 	bool_t 		wasinterrupted );
 
 extern bool_t
-inv_put_mediafile( 
-	inv_stmtoken_t 	tok, 
-	uuid_t 		*moid, 
+inv_put_mediafile(
+	inv_stmtoken_t 	tok,
+	uuid_t 		*moid,
 	char 		*label,
 	uint		mfileindex,
 	xfs_ino_t	startino,
@@ -243,26 +243,26 @@ inv_put_mediafile(
 /* lasttime_level_lessthan - finds the time of the last dump of the
  * specified file system at a level less than the specified level.
  * if never dumped below the current level, *time is set to NULL.
- * 
+ *
  */
 extern bool_t
-inv_lasttime_level_lessthan( 
+inv_lasttime_level_lessthan(
 	uuid_t			*fsidp,
 	inv_idbtoken_t 		tok,
 	u_char			level,
 	time32_t		**time); /* out */
 
 extern bool_t
-inv_lastsession_level_lessthan( 
+inv_lastsession_level_lessthan(
 	uuid_t			*fsidp,
-	inv_idbtoken_t 		tok,			     
+	inv_idbtoken_t 		tok,
 	u_char  		level,
 	inv_session_t		**ses); /* out */
 
 extern bool_t
-inv_lastsession_level_equalto( 
+inv_lastsession_level_equalto(
 	uuid_t			*fsidp,
-	inv_idbtoken_t 		tok,			     
+	inv_idbtoken_t 		tok,
 	u_char  		level,
 	inv_session_t		**ses); /* out */
 

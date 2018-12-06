@@ -71,7 +71,7 @@ init_idb( void *pred, inv_predicate_t bywhat, inv_oflag_t forwhat,
 		if (errno != ENOENT) {
 			INV_PERROR ( fname );
 		} else if (forwhat == INV_SEARCH_N_MOD) {
-			*tok = idx_create( fname, forwhat ); 
+			*tok = idx_create( fname, forwhat );
 		} else {
 			/* this happens when the inv is empty and the user
 			   wants to do a search. this is legal - not an error */
@@ -79,7 +79,7 @@ init_idb( void *pred, inv_predicate_t bywhat, inv_oflag_t forwhat,
 		}
 		return I_DONE; /* we are done whether token's NULL or not */
 	}
-	
+
 	/* we've got to do more housekeeping stuff. so signal that */
 	return fd;
 }
@@ -95,7 +95,7 @@ get_token( int invfd, int stobjfd  )
 
 	desc = (invt_desc_entry_t *) malloc
 		( sizeof( invt_desc_entry_t ) );
-	
+
 	desc->d_invindex_fd = invfd;
 	desc->d_stobj_fd  = stobjfd;
 	desc->d_update_flag = 0;
@@ -156,7 +156,7 @@ invmgr_query_all_sessions (
 	bool_t ret = BOOL_FALSE;
 
 	/* if on return, this is still null, the search failed */
-	*outarg = NULL; 
+	*outarg = NULL;
 	assert(inarg);
 
 	fd = fstab_getall( &arr, &cnt, &numfs, forwhat );
@@ -168,11 +168,11 @@ invmgr_query_all_sessions (
 		mlog( MLOG_NORMAL | MLOG_INV, _("INV: Error in fstab\n") );
 		return ret;
 	}
-	
+
 	close( fd );
 
 	for ( i = 0; i < numfs; i++) {
-		if ( fstab_get_fname( &arr[i].ft_uuid, fname, 
+		if ( fstab_get_fname( &arr[i].ft_uuid, fname,
 				     (inv_predicate_t)INV_BY_UUID,
 				     forwhat) < 0 ) {
 			mlog( MLOG_NORMAL | MLOG_INV, _(
@@ -190,7 +190,7 @@ invmgr_query_all_sessions (
 			continue;
 		}
 		result = search_invt(fsidp, invfd, inarg, &objectfound, func);
-		close(invfd);		
+		close(invfd);
 
 		/* if error return BOOL_FALSE */
 		if (result < 0) {
@@ -204,7 +204,7 @@ invmgr_query_all_sessions (
 			ret = BOOL_TRUE;
 		}
 	}
-	
+
 	/* return val indicates if there was an error or not. *buf
 	   says whether the search was successful */
 	return ret;
@@ -222,7 +222,7 @@ invmgr_query_all_sessions (
 /*----------------------------------------------------------------------*/
 
 int
-search_invt( 
+search_invt(
 	uuid_t			*fsidp,
 	int			invfd,
 	void			*arg,
@@ -234,7 +234,7 @@ search_invt(
 	invt_entry_t	*iarr = NULL;
 	invt_counter_t	*icnt = NULL;
 	int	     	nindices;
-	
+
 
 	if (invfd == I_EMPTYINV)
 		return -1;
@@ -245,10 +245,10 @@ search_invt(
 	 */
 	*( char ** )buf = NULL;
 
-	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr, 
-					      (void **)&icnt, 
+	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr,
+					      (void **)&icnt,
 					      sizeof( invt_entry_t ),
-					      sizeof( invt_counter_t )) 
+					      sizeof( invt_counter_t ))
 	      ) <= 0 ) {
 		return -1;
 	}
@@ -271,8 +271,8 @@ search_invt(
 		INVLOCK( fd, LOCK_SH );
 
 		/* Now see if we can find the session we're looking for */
-		if (( nsess = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void **)&harr, 
-						  (void **)&scnt, 
+		if (( nsess = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void **)&harr,
+						  (void **)&scnt,
 						  sizeof( invt_seshdr_t ),
 						 sizeof( invt_sescounter_t ))
 		     ) < 0 ) {
@@ -286,11 +286,11 @@ search_invt(
 		for (j = nsess - 1; j >= 0; j--) {
 			invt_session_t ses;
 
-			/* fd is kept locked until we return from the 
+			/* fd is kept locked until we return from the
 			   callback routine */
 
-			/* Check to see if this session has been pruned 
-			 * by xfsinvutil before checking it. 
+			/* Check to see if this session has been pruned
+			 * by xfsinvutil before checking it.
 			 */
 			if (harr[j].sh_pruned) {
 				continue;
@@ -312,7 +312,7 @@ search_invt(
 
 			found = (* do_chkcriteria)(fd, &harr[j], arg, buf);
 			if (! found ) continue;
-			
+
 			/* we found what we need; just return */
 			INVLOCK( fd, LOCK_UN );
 			close( fd );
@@ -320,11 +320,11 @@ search_invt(
 
 			return found; /* == -1 or 1 */
 		}
-		
+
 		INVLOCK( fd, LOCK_UN );
 		close( fd );
 	}
-	
+
 	return 0;
 }
 
@@ -339,7 +339,7 @@ search_invt(
 
 int
 invmgr_inv_print(
-	int 		invfd, 
+	int 		invfd,
 	invt_pr_ctx_t 	*prctx)
 {
 
@@ -351,16 +351,16 @@ invmgr_inv_print(
 
 	if (invfd == I_EMPTYINV)
 		return 0;
-	
-		
-	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr, 
-					      (void **)&icnt, 
+
+
+	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr,
+					      (void **)&icnt,
 					      sizeof( invt_entry_t ),
-					      sizeof( invt_counter_t )) 
+					      sizeof( invt_counter_t ))
 	      ) <= 0 ) {
 		return -1;
 	}
-	
+
 	free( icnt );
 
 	if (prctx->invidx) {
@@ -385,8 +385,8 @@ invmgr_inv_print(
 		INVLOCK( fd, LOCK_SH );
 
 		/* Now see if we can find the session we're looking for */
-		if (( nsess = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void **)&harr, 
-						  (void **)&scnt, 
+		if (( nsess = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void **)&harr,
+						  (void **)&scnt,
 						  sizeof( invt_seshdr_t ),
 						 sizeof( invt_sescounter_t ))
 		     ) < 0 ) {
@@ -397,11 +397,11 @@ invmgr_inv_print(
 		}
 		free ( scnt );
 		for( s = 0; s < nsess; s++ ) {
-			/* fd is kept locked until we return from the 
+			/* fd is kept locked until we return from the
 			   callback routine */
 
-			/* Check to see if this session has been pruned 
-			 * by xfsinvutil before returning it. 
+			/* Check to see if this session has been pruned
+			 * by xfsinvutil before returning it.
 			 */
 			if ( harr[s].sh_pruned ) {
 				continue;
@@ -410,11 +410,11 @@ invmgr_inv_print(
 			(void)DEBUG_displayallsessions( fd, &harr[ s ],
 						        ref++, prctx);
 		}
-			
+
 		INVLOCK( fd, LOCK_UN );
 		close( fd );
 	}
-	
+
 	free (iarr);
 	return 0;
 }
@@ -440,11 +440,11 @@ invmgr_inv_check(
 
 	if (invfd == I_EMPTYINV)
 		return 0;
-	
-	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr, 
-					      (void **)&icnt, 
+
+	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr,
+					      (void **)&icnt,
 					      sizeof( invt_entry_t ),
-					      sizeof( invt_counter_t )) 
+					      sizeof( invt_counter_t ))
 	      ) <= 0 ) {
 		return -1;
 	}
@@ -466,8 +466,8 @@ invmgr_inv_check(
 		INVLOCK( fd, LOCK_SH );
 
 		/* Now see if we can find the session we're looking for */
-		if (( nsess = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void **)&harr, 
-						  (void **)&scnt, 
+		if (( nsess = GET_ALLHDRS_N_CNTS_NOLOCK( fd, (void **)&harr,
+						  (void **)&scnt,
 						  sizeof( invt_seshdr_t ),
 						 sizeof( invt_sescounter_t ))
 		     ) < 0 ) {
@@ -477,7 +477,7 @@ invmgr_inv_check(
 			continue;
 		}
 		free ( scnt );
-		
+
 		if ((iarr[i].ie_timeperiod.tp_start != harr[0].sh_time) ||
 		    (iarr[i].ie_timeperiod.tp_end != harr[nsess-1].sh_time)) {
 			printf(_("INV: Check %d failed.\n"), i+1);
@@ -496,7 +496,7 @@ invmgr_inv_check(
 		INVLOCK( fd, LOCK_UN );
 		close( fd );
 	}
-	
+
 	return 0;
 }
 
@@ -518,7 +518,7 @@ tm_level_lessthan( int fd, invt_seshdr_t *hdr, void *arg,
 		return 0;
 	if (hdr->sh_level < level ) {
 #ifdef INVT_DEBUG
-		mlog( MLOG_DEBUG | MLOG_INV, "$ found level %d < %d\n", hdr->sh_level, 
+		mlog( MLOG_DEBUG | MLOG_INV, "$ found level %d < %d\n", hdr->sh_level,
 		     level );
 #endif
 		*tm = calloc( 1, sizeof( time32_t ) );
@@ -597,7 +597,7 @@ lastsess_level_equalto( int fd, invt_seshdr_t *hdr,
 /*----------------------------------------------------------------------*/
 bool_t
 insert_session( invt_sessinfo_t *s)
-{	
+{
 	inv_idbtoken_t tok = INV_TOKEN_NULL;
 	int invfd, stobjfd = -1;
 	invt_idxinfo_t	  idx;
@@ -605,7 +605,7 @@ insert_session( invt_sessinfo_t *s)
 	inv_oflag_t       forwhat = INV_SEARCH_N_MOD;
 
 	/* initialize the inventory */
-	if ( ( invfd = init_idb ( (void *) s->ses->s_fsid, 
+	if ( ( invfd = init_idb ( (void *) s->ses->s_fsid,
 				  (inv_predicate_t) INV_BY_UUID,
  				  forwhat,
 				  &tok ) ) < 0 ) {
@@ -616,14 +616,14 @@ insert_session( invt_sessinfo_t *s)
 #endif
 			return BOOL_FALSE;
 		}
-		
+
 		invfd = tok->d_invindex_fd;
 		close( tok->d_stobj_fd );
 		destroy_token( tok );
 	}
-	
+
 	/* at this point we know that invindex has at least one entry
-	
+
 	   First we need to find out if this session is in the inventory
 	   already. To find the storage object that can possibly
 	   contain this session, it suffices to sequentially search the
@@ -644,7 +644,7 @@ insert_session( invt_sessinfo_t *s)
 	if ( ( stobj_insert_session( &idx, stobjfd, s ) < 0 ) ||
 		( idx_recons_time ( s->seshdr->sh_time, &idx ) < 0 ) )
 			ret = BOOL_TRUE;
-		
+
 	INVLOCK( stobjfd, LOCK_UN );
 	INVLOCK( invfd, LOCK_UN );
 
@@ -660,7 +660,7 @@ insert_session( invt_sessinfo_t *s)
 
 	/* and we are done */
 	return BOOL_TRUE;
-	
+
 }
 
 
@@ -717,7 +717,7 @@ bool_t
 invmgr_lockinit( void )
 {
 	if ( invlock_fd == -1 ) {
-		if (( invlock_fd = open( INV_LOCKFILE, 
+		if (( invlock_fd = open( INV_LOCKFILE,
 					O_RDONLY | O_CREAT, S_IRUSR|S_IWUSR )) < 0 ) {
 			INV_PERROR( INV_LOCKFILE );
 			return BOOL_FALSE;
@@ -726,14 +726,14 @@ invmgr_lockinit( void )
 	}
 	return BOOL_TRUE;
 }
-	
-	
+
+
 bool_t
 invmgr_trylock( invt_mode_t mode )
 {
 	int md;
 	assert( invlock_fd >= 0 );
-	
+
 	md = (mode == INVT_RECONSTRUCT) ? LOCK_EX: LOCK_SH;
 
 	if (INVLOCK( invlock_fd, md | LOCK_NB ) < 0)
@@ -746,8 +746,8 @@ void
 invmgr_unlock( void )
 {
 	assert( invlock_fd >= 0 );
-	
-	INVLOCK( invlock_fd, LOCK_UN );	
+
+	INVLOCK( invlock_fd, LOCK_UN );
 
 }
 

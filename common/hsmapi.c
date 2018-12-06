@@ -528,7 +528,7 @@ const	xfs_bstat_t	*statp)
 		dmf_f_ctxtp->candidate = 1;
 		dmf_f_ctxtp->filesize = statp->bs_size;
 		break;
-	
+
 	default:
 		break;
 	}

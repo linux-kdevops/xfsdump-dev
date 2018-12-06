@@ -50,9 +50,9 @@ inv_open( inv_predicate_t bywhat, void *pred )
 	char uuname[ INV_STRLEN ];
 	inv_idbtoken_t tok = INV_TOKEN_NULL;
 	invt_sescounter_t *sescnt = 0;
-	
+
 	int index = 0;
-	
+
 	assert ( pred );
 	if ((fd = init_idb ( pred, bywhat, uuname, &tok )) < 0 )
 		return tok;
@@ -86,9 +86,9 @@ inv_open( inv_predicate_t bywhat, void *pred )
 		printf("$ creating a new storage obj & index entry. \n" );
 #endif
 		close (stobjfd);
-		
+
 		stobjfd = create_invindex_entry( &tok, fd, uuname, BOOL_FALSE );
-		free ( sescnt );		
+		free ( sescnt );
 		if ( stobjfd < 0 ) {
 			close( fd );
 			close( sesslock_fd );
@@ -97,13 +97,13 @@ inv_open( inv_predicate_t bywhat, void *pred )
 		}
 		return tok;
 	}
-	
+
 	free ( sescnt );
 	tok = get_token( fd, stobjfd );
 	tok->d_invindex_off = INVINDEX_HDR_OFFSET( index - 1 );
-	
+
 	return tok;
-	
+
 }
 
 
@@ -124,7 +124,7 @@ inv_close( inv_idbtoken_t tok )
 	destroy_token( tok );
 	close( sesslock_fd );
 	sesslock_fd = -1;
-	
+
 	return BOOL_TRUE;
 }
 
@@ -141,7 +141,7 @@ inv_close( inv_idbtoken_t tok )
 /*----------------------------------------------------------------------*/
 
 bool_t
-inv_lasttime_level_lessthan( 
+inv_lasttime_level_lessthan(
 	inv_idbtoken_t  tok,
 	u_char level,
 	time32_t **tm )
@@ -166,7 +166,7 @@ inv_lasttime_level_lessthan(
 /*----------------------------------------------------------------------*/
 
 bool_t
-inv_lastsession_level_lessthan( 
+inv_lastsession_level_lessthan(
 	inv_idbtoken_t 	tok,
 	u_char		level,
 	inv_session_t 	**ses )
@@ -174,7 +174,7 @@ inv_lastsession_level_lessthan(
 	int 	rval;
 	assert ( tok != INV_TOKEN_NULL );
 
-	rval = search_invt( tok, level, (void **) ses, 
+	rval = search_invt( tok, level, (void **) ses,
 			  (search_callback_t) lastsess_level_lessthan );
 
 	return ( rval < 0) ? BOOL_FALSE: BOOL_TRUE;
@@ -193,14 +193,14 @@ inv_lastsession_level_lessthan(
 
 
 bool_t
-inv_lastsession_level_equalto( 
-	inv_idbtoken_t 	tok,			    
+inv_lastsession_level_equalto(
+	inv_idbtoken_t 	tok,
 	u_char		level,
 	inv_session_t	**ses )
 {
 	int 	rval;
 	assert ( tok != INV_TOKEN_NULL );
-	rval = search_invt( tok, level, (void **) ses, 
+	rval = search_invt( tok, level, (void **) ses,
 			  (search_callback_t) lastsess_level_equalto );
 
 	return ( rval < 0) ? BOOL_FALSE: BOOL_TRUE;
@@ -220,7 +220,7 @@ inv_lastsession_level_equalto(
 /*----------------------------------------------------------------------*/
 
 inv_sestoken_t
-inv_writesession_open( 
+inv_writesession_open(
 	inv_idbtoken_t tok, 	/* token obtained by inventory_open() */
 	uuid_t		*fsid,
 	uuid_t		*sesid,
@@ -256,25 +256,25 @@ inv_writesession_open(
 	/* copy the session information to store */
 	memcpy( &ses->s_sesid, sesid, sizeof( uuid_t ) );
 	memcpy( &ses->s_fsid, fsid, sizeof( uuid_t ) );
-	strcpy( ses->s_label, label );	
-	strcpy( ses->s_mountpt, mntpt );	
-	strcpy( ses->s_devpath, devpath );	
+	strcpy( ses->s_label, label );
+	strcpy( ses->s_mountpt, mntpt );
+	strcpy( ses->s_devpath, devpath );
 	ses->s_max_nstreams = nstreams;
 
 
 	/* s_curstream_off will be set in create_session() */
 
 	fd = tok->d_stobj_fd;
-	
+
 	assert ( fd > 0 );
 
 	hdr.sh_time = time;
-	hdr.sh_level = level;	
+	hdr.sh_level = level;
 	/* sh_streams_off and sh_sess_off will be set in create_session() */
-	
+
 	sestok = get_sesstoken( tok );
 
-	/* we need to put the new session in the appropriate place in 
+	/* we need to put the new session in the appropriate place in
 	   storage object. So first find out howmany sessions are there */
 
 	INVLOCK( fd, LOCK_EX );
@@ -285,14 +285,14 @@ inv_writesession_open(
 		return INV_TOKEN_NULL;
 	}
 
-	/* create the writesession, and get ready for the streams to come 
+	/* create the writesession, and get ready for the streams to come
 	   afterwards */
 	rval = create_session( sestok, fd, sescnt, ses, &hdr );
 	assert (rval > 0);
 
 
 	INVLOCK( fd, LOCK_UN );
- 
+
 	sestok->sd_sesstime = time;
 
 	if ( tok->d_update_flag & NEW_INVINDEX ) {
@@ -325,7 +325,7 @@ bool_t
 inv_writesession_close( inv_sestoken_t tok )
 {
 	int		rval;
-	
+
 	assert ( tok != INV_TOKEN_NULL );
 
 	/* now update end_time in the inv index header */
@@ -357,22 +357,22 @@ inv_stream_open(
 	int fd;
 
 	assert ( tok != INV_TOKEN_NULL );
-	 
+
 	stream.st_nmediafiles = 0;
 	stream.st_interrupted = BOOL_FALSE;
 
-	
+
 	/* XXX yukk... make the token descriptors not pointers */
 	stok = ( inv_stmtoken_t ) malloc( sizeof( invt_strdesc_entry_t ) );
-	
+
 	stok->md_sesstok = tok;
 	stok->md_lastmfile = 0;
-	
+
 	/* get the session to find out where the stream is going to go */
-	fd = tok->sd_invtok->d_stobj_fd; 
+	fd = tok->sd_invtok->d_stobj_fd;
 
 	sess_lock();
-	
+
 	INVLOCK( fd, LOCK_SH );
 	/* get the session header first */
 	if ( GET_REC_NOLOCK( fd, &seshdr, sizeof( invt_seshdr_t ),
@@ -397,13 +397,13 @@ inv_stream_open(
 
 	if ( ses.s_cur_nstreams < ses.s_max_nstreams ) {
 		/* this is where this stream header will be written to */
-		stok->md_stream_off = (off64_t) (sizeof( invt_stream_t ) * 
+		stok->md_stream_off = (off64_t) (sizeof( invt_stream_t ) *
 					         ses.s_cur_nstreams )
 			                         + seshdr.sh_streams_off;
 		ses.s_cur_nstreams++;
-				
+
 		/* write it back. this locks and unlocks fd EXclusively */
-		if ( PUT_REC( fd, &ses, sizeof( ses ), 
+		if ( PUT_REC( fd, &ses, sizeof( ses ),
 			      tok->sd_session_off ) < 0 ) {
 			free ( stok );
 			sess_unlock();
@@ -419,7 +419,7 @@ inv_stream_open(
 	sess_unlock();
 
 	stream.st_firstmfile = stream.st_lastmfile = stok->md_stream_off;
-	
+
 	/* now put the stream header on to the disk */
 	if ( PUT_REC( fd, &stream, sizeof( invt_stream_t ),
 		      stok->md_stream_off ) < 0 ) {
@@ -450,16 +450,16 @@ inv_stream_close(
 	bool_t dowrite = BOOL_FALSE;
 
 	INVLOCK( fd, LOCK_EX );
-	if ((rval = GET_REC_NOLOCK( fd, &strm, sizeof( invt_stream_t ), 
+	if ((rval = GET_REC_NOLOCK( fd, &strm, sizeof( invt_stream_t ),
 			       tok->md_stream_off )) < 0 )
 		goto end;   /* eek :-)   */
-	
+
 	if ( strm.st_interrupted != wasinterrupted ) {
 		strm.st_interrupted = wasinterrupted;
 		dowrite = BOOL_TRUE;
 	}
 
-	/* get the last media file to figure out what our last ino was. 
+	/* get the last media file to figure out what our last ino was.
 	   we have a pointer to that in the stream token */
 	if ( tok->md_lastmfile ){
 		if ( strm.st_endino.ino != tok->md_lastmfile->mf_endino.ino ||
@@ -469,7 +469,7 @@ inv_stream_close(
 			strm.st_endino = tok->md_lastmfile->mf_endino;
 		}
 	}
-			
+
 	if (dowrite) {
 		rval = PUT_REC_NOLOCK(fd, &strm, sizeof(invt_stream_t),
 				      tok->md_stream_off);
@@ -483,7 +483,7 @@ inv_stream_close(
 
 	return ( rval < 0 ) ? BOOL_FALSE: BOOL_TRUE;
 }
- 
+
 
 
 
@@ -494,9 +494,9 @@ inv_stream_close(
 /*----------------------------------------------------------------------*/
 
 bool_t
-inv_put_mediafile( 
-	inv_stmtoken_t 	tok, 
-	uuid_t 		*moid, 
+inv_put_mediafile(
+	inv_stmtoken_t 	tok,
+	uuid_t 		*moid,
 	char 		*label,
 	xfs_ino_t	startino,
 	off64_t		startino_offset,
@@ -512,15 +512,15 @@ inv_put_mediafile(
 	assert ( tok->md_sesstok->sd_invtok->d_stobj_fd >= 0 );
 
 	mf = (invt_mediafile_t *) calloc( 1, sizeof( invt_mediafile_t ) );
-	
+
 	/* copy the media file information */
 	memcpy( &mf->mf_moid, moid, sizeof( uuid_t ) );
-	strcpy( mf->mf_label, label );	
+	strcpy( mf->mf_label, label );
 	mf->mf_startino.ino = startino;
 	mf->mf_startino.offset = startino_offset;
 	mf->mf_endino.ino = endino;
 	mf->mf_endino.offset = endino_offset;
-	
+
 	INVLOCK( tok->md_sesstok->sd_invtok->d_stobj_fd, LOCK_EX );
 	rval = put_mediafile( tok, mf );
 	INVLOCK( tok->md_sesstok->sd_invtok->d_stobj_fd, LOCK_UN );
@@ -555,30 +555,30 @@ inv_get_inolist(
 	invt_entry_t	*iarr = NULL;
 	invt_counter_t	*icnt = NULL;
 	int	     	nindices, i;
-	struct stat64	statbuf;	
+	struct stat64	statbuf;
 	inv_inolist_t 	*curitem;
 
-#ifdef NOTDEF	
+#ifdef NOTDEF
 	*inolist = NULL;
 	curitem = malloc( sizeof( inv_inolist_t ) );
-	
+
 	/* get the array of all indices in the invindex */
-	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr, 
-					      (void **)&icnt, 
+	if ( ( nindices = GET_ALLHDRS_N_CNTS( invfd, (void **)&iarr,
+					      (void **)&icnt,
 					      sizeof( invt_entry_t ),
-					      sizeof( invt_counter_t )) 
+					      sizeof( invt_counter_t ))
 	      ) <= 0 ) {
 		return -1;
 	}
 	free( icnt );
-	
+
 	/* attach all the StObjs */
 	for (i = nindices - 1; i >= 0; i--) {
 		if ( stat64( iarr[i].ie_filename, &statbuf ) < 0 ) {
 			perror( iarr[i].ie_filename );
 			return -1;
 		}
-		
+
 		create_inolist_item( curitem, statbuf.st_ino );
 	}
 	/* The inventory index */
@@ -594,7 +594,7 @@ inv_get_inolist(
 			return -1;
 		}
 	create_inolist_item( curitem, statbuf.st_ino );
-	
+
 	/* sesslock file */
 	if ( stat64( SESSLOCK_FILE, &statbuf ) < 0 ) {
 			perror( SESSLOCK_FILE );
@@ -604,7 +604,7 @@ inv_get_inolist(
 #endif
 
 	return 1;
-		
+
 }
 
 
@@ -634,7 +634,7 @@ inv_get_session(
 
 	/* First get the session header, and the session information. Then
 	   we can figure out how much space to allocate */
-	
+
 }
 
 
@@ -644,12 +644,12 @@ inv_get_session(
 
 /* This prints out all the sessions of a filesystem that are in the inventory */
 bool_t
-inv_DEBUG_printallsessions( 
-	inv_idbtoken_t 	tok,			    
+inv_DEBUG_printallsessions(
+	inv_idbtoken_t 	tok,
 	inv_session_t	**ses )
 {
 	int 	rval;
-	rval = search_invt( tok, 0, (void **) ses, 
+	rval = search_invt( tok, 0, (void **) ses,
 			  (search_callback_t) DEBUG_displayallsessions );
 
 	return ( rval < 0) ? BOOL_FALSE: BOOL_TRUE;

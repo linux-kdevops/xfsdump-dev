@@ -156,7 +156,7 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 				&ses,
 				&strms,
 				&mfiles);
-		    
+
 		    insert_stobj_into_stobjfile(dst_fileidx,
 		    		stobj_filename,
 				stobj_fd,
@@ -180,7 +180,7 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 		tmp_parent = ((data_t *)(dst_n->data))->parent;
 		while(dst_n != NULL) {
 		    node_t *tmp_n1;
-		    
+
 		    dst_d = dst_n->data;
 
 		    /* close affected invidx file and stobj files */
@@ -221,10 +221,10 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 		else {
 		    dest = invidx_file[dst_fileidx].data[invidx_file[dst_fileidx].counter->ic_curnum - 1] + 1;
 		}
-		
+
 		/* copy new data to mmap */
 		memmove(dest, inv_entry, sizeof(*inv_entry));
-	    
+
 		/* increment counter */
 		invidx_file[dst_fileidx].counter->ic_curnum++;
 
@@ -249,13 +249,13 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 		    put_error("Error: unable to copy stobj file: file exists");
 		    return 0;
 		}
-	    
+
 		snprintf(cmd, sizeof(cmd), "cp %s %s", stobjfile, dst_stobjfile);
 		if(system(cmd) != 0) {
 		    put_error("Error: unable to copy stobj file: cp failed");
 		    return 0;
 		}
-	    
+
 		open_stobj(dst_stobjfile);
 		return 0;
 	    }
@@ -319,13 +319,13 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 		put_error("Error: unable to copy stobj file: file exists");
 		return 0;
 	    }
-	    
+
 	    snprintf(cmd, sizeof(cmd), "cp %s %s", stobjfile, dst_stobjfile);
 	    if(system(cmd) != 0) {
 		put_error("Error: unable to copy stobj file: cp failed");
 		return 0;
 	    }
-	    
+
 	    open_stobj(dst_stobjfile);
 	    return 0;
 	}
@@ -335,7 +335,7 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 }
 
 int
-create_stobjfile(int invidx_fileidx, char *filename, int fname_len, 
+create_stobjfile(int invidx_fileidx, char *filename, int fname_len,
 	invt_seshdr_t *hdr, invt_session_t *ses, invt_stream_t *strms,
 	invt_mediafile_t *mfiles)
 {
@@ -386,7 +386,7 @@ read_stobj_info(int fd, int idx, invt_seshdr_t **out_hdr,
 	else {
 	    mfiles = NULL;
 	}
-    }    
+    }
     else {
 	strms = NULL;
 	mfiles = NULL;
@@ -396,7 +396,7 @@ read_stobj_info(int fd, int idx, invt_seshdr_t **out_hdr,
     *out_ses = ses;
     *out_strms = strms;
     *out_mfiles = mfiles;
-    
+
     return fd;
 }
 
@@ -461,7 +461,7 @@ update_invidx_entry(int fd, char *filename, int stobj_fd)
     /* find the start and stop in stobj file */
     lseek(stobj_fd, 0, SEEK_SET);
     read_n_bytes(stobj_fd, &sescnt, sizeof(sescnt), "stobj file");
-    
+
     memset(&hdr, 0, sizeof(hdr));
     first_offset = STOBJ_OFFSET(0,0);
     lseek(stobj_fd, first_offset, SEEK_SET);
@@ -488,7 +488,7 @@ update_invidx_entry(int fd, char *filename, int stobj_fd)
 	    return i;
 	}
     }
-    
+
     entry.ie_timeperiod.tp_start = start_time;
     entry.ie_timeperiod.tp_end = end_time;
     strcpy(entry.ie_filename, filename);
@@ -534,7 +534,7 @@ insert_stobj_into_stobjfile(int invidx_fileidx, char *filename, int fd,
 
 	for(i = pos; i < sescnt.ic_curnum; i++) {
 	    read_stobj_info(fd, i, &s_hdr, &s_ses, &s_strms, &s_mfiles);
-	    
+
 	    insert_stobj_into_stobjfile(invidx_fileidx, new_filename, new_fd, s_hdr, s_ses, s_strms, s_mfiles);
 
 	    free(s_hdr); free(s_ses); free(s_strms); free(s_mfiles);
@@ -585,7 +585,7 @@ insert_stobj_into_stobjfile(int invidx_fileidx, char *filename, int fd,
 
 static void
 stobj_makefname_len( char *fname, int fname_len )
-{	
+{
     /* come up with a new unique name */
     uuid_t	fn;
     char	str[UUID_STR_LEN + 1];
@@ -599,14 +599,14 @@ stobj_makefname_len( char *fname, int fname_len )
 int
 stobj_create( char *fname )
 {
-    int fd;	
+    int fd;
     invt_sescounter_t sescnt;
 
     /* create the new storage object */
     if (( fd = open( fname, O_RDWR | O_EXCL | O_CREAT, S_IRUSR|S_IWUSR )) < 0 ) {
 	return -1;
     }
-    
+
     INVLOCK( fd, LOCK_EX );
     fchmod( fd, INV_PERMS );
 
@@ -618,13 +618,13 @@ stobj_create( char *fname )
 
     lseek(fd, 0, SEEK_SET);
     write_n_bytes ( fd, (char *)&sescnt, sizeof(sescnt), "new stobj file" );
-	
+
     INVLOCK( fd, LOCK_UN );
     return fd;
 }
 
 int
-stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses, 
+stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		   invt_stream_t *strms,
 		   invt_mediafile_t *mfiles )
 {
@@ -639,7 +639,7 @@ stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 	strms[i].st_firstmfile = mfileoff + (off64_t) ((size_t) nmfiles * sizeof( invt_mediafile_t ) );
 	/* now fix the offsets in mediafiles */
 	for ( j = 0; j < strms[i].st_nmediafiles; j++ ) {
-			
+
 	    /* no need to fix the last element's next ptr */
 	    if ( j < strms[i].st_nmediafiles - 1 )
 		mfiles[ nmfiles + j ].mf_nextmf =  strms[i].st_firstmfile + (off64_t) ((j+1) * sizeof( invt_mediafile_t ));
@@ -649,11 +649,11 @@ stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		mfiles[ nmfiles + j ].mf_prevmf = strms[i].st_firstmfile + (off64_t) ((j-1) * sizeof( invt_mediafile_t ));
 	}
 
-	/* adjust the offsets of the first and the last elements 
+	/* adjust the offsets of the first and the last elements
 	   in the mediafile chain */
 	mfiles[ nmfiles ].mf_prevmf = 0;
 	nmfiles += strms[i].st_nmediafiles;
-	mfiles[ nmfiles - 1 ].mf_nextmf = 0;		
+	mfiles[ nmfiles - 1 ].mf_nextmf = 0;
     }
 
     /* first put the streams. hdr already points at the right place */
@@ -663,7 +663,7 @@ stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
     lseek(fd, mfileoff, SEEK_SET);
     write_n_bytes( fd, mfiles, nmfiles * sizeof( invt_mediafile_t ), "stobj file" );
 
-    return 1;	
+    return 1;
 }
 
 /*ARGSUSED*/
@@ -771,7 +771,7 @@ find_invidx_node(node_t *list, int inv_fileidx)
 {
     node_t *n;
     data_t *d;
-    
+
     n = list;
     while(n != NULL && n->data != NULL) {
     	d = n->data;
@@ -783,7 +783,7 @@ find_invidx_node(node_t *list, int inv_fileidx)
 	}
 	n = n->next;
     }
-    
+
     return NULL;
 }
 

@@ -151,7 +151,7 @@ typedef struct timestruct timestruct_t;
 /* bstat_t - bulk stat structure
  *
  * used in filehdr_t below. derived from xfs_bstat_t, to achieve independence
- * from changes to xfs_bstat_t. 
+ * from changes to xfs_bstat_t.
  */
 #define BSTAT_SZ	128
 #define MODE_SZ		4
@@ -209,7 +209,7 @@ bstat_projid(struct bstat *bs)
  *
  * each fs file placed on dump media begins with a FILEHDR_SZ-byte header.
  * following that are one or more variable-length content extents.
- * the content extents contain the actual data associated with the fs file. 
+ * the content extents contain the actual data associated with the fs file.
  */
 #define FILEHDR_SZ	256
 

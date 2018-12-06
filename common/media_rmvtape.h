@@ -21,7 +21,7 @@
 /* media_rmvtape.h - removalable tape media abstraction
  */
 
-/* This structure is overlayed on the mh_specific field of the media_hdr 
+/* This structure is overlayed on the mh_specific field of the media_hdr
  * structure. If is a maximum of 128 byptes long.
  */
 struct media_rmvtape_spec {

@@ -194,7 +194,7 @@ typedef void ( * drive_mcbfp_t )( void *context_t,
  *
  * caller allocates and passes ptr to do_set_mark, along with a callback func.
  * callback returns the record, which must be freed by the original caller.
- * 
+ *
  */
 struct drive_markrec {
 	drive_mark_t dm_log;		/* identifies position within mfile */
@@ -534,7 +534,7 @@ struct drive_ops {
 				/* if d_capabilities has DRIVE_CAP_BSF set,
 				 * drive has the capability to backward space
 				 * count files. returns the number of actual
-				 * files backed to. 
+				 * files backed to.
 				 * can only be invoked when not reading or
 				 * writing (i.e., only after calling end_read
 				 * or end_write, or prior to calling begin_read
@@ -594,8 +594,8 @@ typedef struct drive_ops drive_ops_t;
  * valid after drive_init1() returns successfully
  */
 extern drive_t **drivepp;
-extern size_t drivecnt; 
-extern size_t partialmax; 
+extern size_t drivecnt;
+extern size_t partialmax;
 
 /* drive capabilities - bit positions in the capabilities mask
  * DO NOT CHANGE: used in dh_capabilities field of scsi drive hdr.

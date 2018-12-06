@@ -54,7 +54,7 @@ stobj_insert_session( invt_idxinfo_t *idx,
 		      invt_sessinfo_t *s )
 {
 	invt_sescounter_t *sescnt = NULL;
-	
+
 	if ( GET_SESCOUNTERS( fd, &sescnt ) < 0 ) {
 		INVLOCK( fd, LOCK_UN );
 		return -1;
@@ -64,11 +64,11 @@ stobj_insert_session( invt_idxinfo_t *idx,
 	   duplicating this session */
 	if ( sescnt->ic_curnum > 0 ) {
 		uint i;
-		invt_session_t	*sessions = calloc( sescnt->ic_curnum, 
+		invt_session_t	*sessions = calloc( sescnt->ic_curnum,
 				   sizeof( invt_session_t ) );
 		if ( GET_REC_NOLOCK( fd, sessions, sescnt->ic_curnum *
-				     sizeof( invt_session_t ), 
-				     (off64_t) ( sizeof( *sescnt ) + 
+				     sizeof( invt_session_t ),
+				     (off64_t) ( sizeof( *sescnt ) +
          		sescnt->ic_maxnum * sizeof( invt_seshdr_t ))) < 0 ) {
 			free ( sescnt );
 			free ( sessions );
@@ -76,14 +76,14 @@ stobj_insert_session( invt_idxinfo_t *idx,
 		}
 
 		for( i = 0; i <  sescnt->ic_curnum; i++ ) {
-			if ( uuid_compare( sessions[i].s_sesid, 
+			if ( uuid_compare( sessions[i].s_sesid,
 					   s->ses->s_sesid ) == 0 )
 				break;
 
 		}
 		free ( sessions );
 		if ( i < sescnt->ic_curnum ) {
-			mlog( MLOG_DEBUG | MLOG_INV, 
+			mlog( MLOG_DEBUG | MLOG_INV,
 			      "INV: attempt to insert an "
 			      "existing session.\n"
 			     );
@@ -100,15 +100,15 @@ stobj_insert_session( invt_idxinfo_t *idx,
 		}
 		free( sescnt );
 		return 1;
-		
+
 	}
-			
+
 	if ( stobj_put_session( fd, sescnt, s->ses, s->seshdr, s->strms,
 			        s->mfiles ) < 0 ){
 		free ( sescnt);
 		return -1;
 	}
-	
+
 	free ( sescnt);
 	return 1;
 }
@@ -139,17 +139,17 @@ stobj_find_splitpoint( int fd, invt_seshdr_t *harr, uint ns, time32_t tm )
 	}
 
 
-	/* All the entries have the same sh_time. It's not clear if that's 
+	/* All the entries have the same sh_time. It's not clear if that's
 	   really possible, but either way, we split at the last entry.
 	   This will impact the guarantee that invindex tries to give - that
 	   there's always a unique stobj for every session. */
 	mlog( MLOG_VERBOSE | MLOG_INV, _(
 	      "INV: failed to find a different sh_time to split\n")
 	     );
-	      
+
 	return ns - 1;
-	
-	
+
+
 
 }
 
@@ -162,7 +162,7 @@ stobj_find_splitpoint( int fd, invt_seshdr_t *harr, uint ns, time32_t tm )
 /*----------------------------------------------------------------------*/
 
 int
-stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt, 
+stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 	     invt_sessinfo_t *newsess )
 {
 	invt_seshdr_t 	*harr = NULL;
@@ -174,24 +174,24 @@ stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 
 	if ( GET_SESHEADERS( fd, &harr, ns ) < 0 )
 		return -1;
-	
+
 	assert( harr != NULL );
 
-	if ( ( ix = stobj_find_splitpoint( fd, harr, ns, 
+	if ( ( ix = stobj_find_splitpoint( fd, harr, ns,
 				       newsess->seshdr->sh_time ) ) == 0 )
 		return -1;
-	
+
 	if ( ix == ns ) {
-		ient.ie_timeperiod.tp_start = ient.ie_timeperiod.tp_end = 
+		ient.ie_timeperiod.tp_start = ient.ie_timeperiod.tp_end =
 			 newsess->seshdr->sh_time;
 	} else {
-		ient.ie_timeperiod.tp_start = ient.ie_timeperiod.tp_end = 
+		ient.ie_timeperiod.tp_start = ient.ie_timeperiod.tp_end =
 		harr[ix].sh_time;
 		if ( harr[ix - 1].sh_time >  newsess->seshdr->sh_time )
-			idx->iarr[idx->index].ie_timeperiod.tp_end 
+			idx->iarr[idx->index].ie_timeperiod.tp_end
 				= harr[ix - 1].sh_time;
 		else
-			idx->iarr[idx->index].ie_timeperiod.tp_end 
+			idx->iarr[idx->index].ie_timeperiod.tp_end
 				= newsess->seshdr->sh_time;
 	}
 
@@ -201,7 +201,7 @@ stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 	newsess->stobjfd = idx_put_newentry( idx, &ient );
 	if ( newsess->stobjfd < 0 )
 		return -1;
-	
+
 	if ( ix == ns ) {
 		invt_sescounter_t *scnt = NULL;
 		off64_t rval;
@@ -209,19 +209,19 @@ stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 		/* We dont need to split. So, just put the new session in
 		   the new stobj, and rest in peace */
 		idx->index++;
-		
+
 		if ( GET_SESCOUNTERS( newsess->stobjfd, &scnt ) < 0 )
 			return -1;
-		
-		rval = stobj_put_session( newsess->stobjfd, scnt, 
+
+		rval = stobj_put_session( newsess->stobjfd, scnt,
 				        newsess->ses,
-				        newsess->seshdr, newsess->strms, 
+				        newsess->seshdr, newsess->strms,
 				        newsess->mfiles );
 		free( scnt );
 		return (rval < 0)? -1: 1;
 	}
-		
-	
+
+
 
 	for ( i = ix; i < ns; i++ ) {
 		invt_session_t session;
@@ -229,7 +229,7 @@ stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 		bufszp = 0;
 
 		newsess->seshdr->sh_sess_off = harr[i].sh_sess_off;
-		
+
 		if ( GET_REC_NOLOCK( fd, &session, sizeof( invt_session_t ),
 			     harr[i].sh_sess_off ) < 0 )
 			return -1;
@@ -243,11 +243,11 @@ stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 
 		/* There is no chance of a recursion here */
 		if ( stobj_insert_session( idx, newsess->stobjfd, &sesinfo )
-		     < 0 ) 
+		     < 0 )
 			return -1;
-		
+
 		/* Now delete that session from this StObj */
-		if (! stobj_delete_sessinfo( fd, sescnt, &session, 
+		if (! stobj_delete_sessinfo( fd, sescnt, &session,
 					     &harr[i] ) )
 			return -1;
 		free( bufpp );
@@ -255,14 +255,14 @@ stobj_split( invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 	/* Put the new session in the stobj that we just split. Make
 	   sure that we use the updated sescnt and not the stale stuff
 	   from disk. stobj_put_session() writes sescnt and sessinfo to
-	   disk */ 
-	if ( stobj_put_session( fd, sescnt, newsess->ses, newsess->seshdr, 
+	   disk */
+	if ( stobj_put_session( fd, sescnt, newsess->ses, newsess->seshdr,
 			        newsess->strms, newsess->mfiles ) < 0 ) {
 		free ( sescnt);
 		return -1;
-	}	
+	}
 
-	
+
 	return 1;
 }
 
@@ -288,10 +288,10 @@ stobj_delete_sessinfo( int fd, /* kept locked EX by caller */
 		       invt_sescounter_t *sescnt,
 		       invt_session_t *ses, invt_seshdr_t *hdr )
 {
-	/* we change the sescnt here, but dont write it back to disk 
+	/* we change the sescnt here, but dont write it back to disk
 	   until later */
 	sescnt->ic_curnum--;
-	
+
 	/* there is really no need to take out / zero out the deleted
 	   session. The seshdr and session will be over-written, but
 	   space taken by the streams and mediafiles will be wasted. */
@@ -308,23 +308,23 @@ stobj_delete_sessinfo( int fd, /* kept locked EX by caller */
 
 
 off64_t
-stobj_put_session( 
-	int fd, 
-	invt_sescounter_t *sescnt, 
-	invt_session_t *ses, 
+stobj_put_session(
+	int fd,
+	invt_sescounter_t *sescnt,
+	invt_session_t *ses,
 	invt_seshdr_t *hdr,
 	invt_stream_t *strms,
 	invt_mediafile_t *mfiles )
 {
 	off64_t hoff;
-	
+
 	/* figure out the place where the header will go */
 	hoff =  STOBJ_OFFSET( sescnt->ic_curnum, 0 );
 
 	/* figure out where the session information is going to go. */
 	if ( hdr->sh_sess_off < 0 )
-		hdr->sh_sess_off = STOBJ_OFFSET( sescnt->ic_maxnum, 
-						 sescnt->ic_curnum );	
+		hdr->sh_sess_off = STOBJ_OFFSET( sescnt->ic_maxnum,
+						 sescnt->ic_curnum );
 	sescnt->ic_curnum++;
 
 #ifdef INVT_DEBUG
@@ -334,43 +334,43 @@ stobj_put_session(
 	       (int) sescnt->ic_eof );
 #endif
 
-	/* we need to know where the streams begin, and where the 
+	/* we need to know where the streams begin, and where the
 	   media files will begin, at the end of the streams */
 	hdr->sh_streams_off = sescnt->ic_eof;
 
 	if ( strms == NULL ) {
-		sescnt->ic_eof += (off64_t)( ses->s_max_nstreams * 
+		sescnt->ic_eof += (off64_t)( ses->s_max_nstreams *
 					     sizeof( invt_stream_t ) );
 	} else {
 		uint i;
 		size_t nmf = 0;
-		sescnt->ic_eof += (off64_t)( ses->s_cur_nstreams * 
+		sescnt->ic_eof += (off64_t)( ses->s_cur_nstreams *
 					     sizeof( invt_stream_t ) );
-		for (i=0; i<ses->s_cur_nstreams; i++) 
+		for (i=0; i<ses->s_cur_nstreams; i++)
 			nmf += ( size_t ) strms[i].st_nmediafiles;
-		
-		sescnt->ic_eof += (off64_t)( sizeof( invt_mediafile_t ) 
+
+		sescnt->ic_eof += (off64_t)( sizeof( invt_mediafile_t )
 					     * nmf );
 		if ( stobj_put_streams( fd, hdr, ses, strms, mfiles ) < 0 )
-			return -1; 
+			return -1;
 
 	}
-				  
+
 	/* we write back the counters of this storage object first */
 	if ( PUT_SESCOUNTERS( fd, sescnt ) < 0 )
 		return -1;
-	
+
 	/* write the header next; lseek to the right position */
 	if ( PUT_REC_NOLOCK( fd, hdr, sizeof( invt_seshdr_t ), hoff ) < 0 ) {
 		return -1;
 	}
 
 	/* write the header information to the storage object */
-	if ( PUT_REC_NOLOCK( fd, ses, sizeof( invt_session_t ), 
+	if ( PUT_REC_NOLOCK( fd, ses, sizeof( invt_session_t ),
 			     hdr->sh_sess_off ) < 0 ) {
 		return -1;
 	}
-	
+
 	if ( strms != NULL )
 		stobj_sortheaders( fd, sescnt->ic_curnum );
 
@@ -407,8 +407,8 @@ stobj_sortheaders( int fd, uint num )
 	printf("\nBEF\n" );
 	for (i=0; i<(int)num; i++)
 		printf("%ld\n", (long) hdrs[i].sh_time );
-#endif	
-	qsort( (void*) hdrs, (size_t) num, 
+#endif
+	qsort( (void*) hdrs, (size_t) num,
 	      sizeof( invt_seshdr_t ), stobj_hdrcmp );
 
 #ifdef INVT_DEBUG
@@ -420,7 +420,7 @@ stobj_sortheaders( int fd, uint num )
 		free ( hdrs );
 		return -1;
 	}
-	
+
 	free ( hdrs );
 	return 1;
 
@@ -437,7 +437,7 @@ stobj_sortheaders( int fd, uint num )
 /*----------------------------------------------------------------------*/
 
 int
-stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses, 
+stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		   invt_stream_t *strms,
 		   invt_mediafile_t *mfiles )
 {
@@ -453,39 +453,39 @@ stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		  (off64_t) ((size_t) nmfiles * sizeof( invt_mediafile_t ) );
 		/* now fix the offsets in mediafiles */
 		for ( j = 0; j < strms[i].st_nmediafiles; j++ ) {
-			
+
 			/* no need to fix the last element's next ptr */
 			if ( j < strms[i].st_nmediafiles - 1 )
-				mfiles[ nmfiles + j ].mf_nextmf = 
-				        strms[i].st_firstmfile + 
+				mfiles[ nmfiles + j ].mf_nextmf =
+				        strms[i].st_firstmfile +
 			      (off64_t) ((j+1) * sizeof( invt_mediafile_t ));
 
 			/* no need to fix the first element's prev ptr */
 			if ( j )
-				mfiles[ nmfiles + j ].mf_prevmf = 
-				        strms[i].st_firstmfile + 
+				mfiles[ nmfiles + j ].mf_prevmf =
+				        strms[i].st_firstmfile +
 			    (off64_t) ((j-1) * sizeof( invt_mediafile_t ));
 		}
 
-		/* adjust the offsets of the first and the last elements 
+		/* adjust the offsets of the first and the last elements
 		   in the mediafile chain */
 		mfiles[ nmfiles ].mf_prevmf = 0;
 		nmfiles += strms[i].st_nmediafiles;
 		mfiles[ nmfiles - 1 ].mf_nextmf = 0;
-		
+
 	}
 
 	/* first put the streams. hdr already points at the right place */
-	if ( PUT_REC_NOLOCK( fd, strms, nstm * sizeof( invt_stream_t ), 
+	if ( PUT_REC_NOLOCK( fd, strms, nstm * sizeof( invt_stream_t ),
 			     off ) < 0 )
 		return -1;
-	
-	if ( PUT_REC_NOLOCK( fd, mfiles, nmfiles * sizeof( invt_mediafile_t ), 
+
+	if ( PUT_REC_NOLOCK( fd, mfiles, nmfiles * sizeof( invt_mediafile_t ),
 			     mfileoff ) < 0 )
 		return -1;
 
 	return 1;
-	
+
 }
 
 
@@ -499,14 +499,14 @@ stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 
 void
 stobj_makefname( char *fname )
-{	
+{
 	/* come up with a new unique name */
 	uuid_t	fn;
 	char str[UUID_STR_LEN + 1];
 
 	uuid_generate( fn );
         uuid_unparse( fn, str );
-	
+
 	strcpy( fname, INV_DIRPATH );
 	strcat( fname, "/" );
 	strcat( fname, str );
@@ -516,7 +516,7 @@ stobj_makefname( char *fname )
 }
 
 
- 
+
 
 
 
@@ -525,13 +525,13 @@ stobj_makefname( char *fname )
 int
 stobj_create( char *fname )
 {
-	int fd;	
+	int fd;
 	invt_sescounter_t sescnt;
 	inv_oflag_t forwhat = INV_SEARCH_N_MOD;
 
 #ifdef INVT_DEBUG
 	mlog( MLOG_VERBOSE | MLOG_INV, "INV: creating storage obj %s\n", fname);
-#endif	
+#endif
 
 	/* create the new storage object */
 	if (( fd = open( fname, INV_OFLAG(forwhat) | O_EXCL | O_CREAT, S_IRUSR|S_IWUSR )) < 0 ) {
@@ -539,10 +539,10 @@ stobj_create( char *fname )
 		memset( fname, 0, INV_STRLEN );
 		return -1;
 	}
-	
+
 	INVLOCK( fd, LOCK_EX );
 	fchmod( fd, INV_PERMS );
-	
+
 	sescnt.ic_vernum = INV_VERSION;
 	sescnt.ic_curnum = 0; /* there are no sessions as yet */
 	sescnt.ic_maxnum = INVT_STOBJ_MAXSESSIONS;
@@ -554,7 +554,7 @@ stobj_create( char *fname )
 		close( fd );
 		return -1;
 	}
-	
+
 	INVLOCK( fd, LOCK_UN );
 	return fd;
 }
@@ -569,21 +569,21 @@ stobj_create( char *fname )
 
 
 int
-stobj_create_session( 
-	inv_sestoken_t tok, 
+stobj_create_session(
+	inv_sestoken_t tok,
 	int fd, /* kept locked EX by caller */
-	invt_sescounter_t *sescnt, 
-	invt_session_t *ses, 
+	invt_sescounter_t *sescnt,
+	invt_session_t *ses,
 	invt_seshdr_t *hdr )
 {
 	off64_t hoff;
-	
+
 	assert( tok && sescnt && ses && hdr );
 
 	hdr->sh_sess_off = -1;
 	ses->s_cur_nstreams = 0;
-	
-	if ((hoff = stobj_put_session( fd, sescnt, ses, hdr, NULL, NULL )) 
+
+	if ((hoff = stobj_put_session( fd, sescnt, ses, hdr, NULL, NULL ))
 	    < 0) {
 		return -1;
 	}
@@ -630,7 +630,7 @@ stobj_put_mediafile( inv_stmtoken_t tok, invt_mediafile_t *mf )
 	   we also need to link the new mediafile into the linked-list of
 	   media files of this stream */
 
-	if ( GET_REC_NOLOCK( fd, &stream, sizeof( stream ), 
+	if ( GET_REC_NOLOCK( fd, &stream, sizeof( stream ),
 			     tok->md_stream_off ) < 0 )
 		return -1;
 
@@ -648,34 +648,34 @@ stobj_put_mediafile( inv_stmtoken_t tok, invt_mediafile_t *mf )
 #ifdef INVT_DEBUG
 	mlog (MLOG_VERBOSE, "#################### mediafile #%d "
 	      "###################\n", stream.st_nmediafiles);
-#endif	
+#endif
 	/* add the new mediafile at the tail of the list */
-	
-	mf->mf_nextmf = tok->md_stream_off; 
+
+	mf->mf_nextmf = tok->md_stream_off;
 	mf->mf_prevmf = stream.st_lastmfile;
 
-	
+
 	if ( tok->md_lastmfile )
-		tok->md_lastmfile->mf_nextmf = pos;	
+		tok->md_lastmfile->mf_nextmf = pos;
 	else {
 		stream.st_firstmfile = pos;
 	}
 
 	stream.st_lastmfile = pos;
 
-	
+
 	/* write the stream to disk */
-	if ( PUT_REC_NOLOCK( fd, &stream, sizeof( stream ), 
+	if ( PUT_REC_NOLOCK( fd, &stream, sizeof( stream ),
 			     tok->md_stream_off ) < 0 )
 		return -1;
-	
+
 	/* write the prev media file to disk too */
 	if ( tok->md_lastmfile ) {
-		rval = PUT_REC_NOLOCK( fd, tok->md_lastmfile, 
-				       sizeof( invt_mediafile_t ), 
+		rval = PUT_REC_NOLOCK( fd, tok->md_lastmfile,
+				       sizeof( invt_mediafile_t ),
 				       mf->mf_prevmf );
 		free (  tok->md_lastmfile );
-		if ( rval < 0 ) 
+		if ( rval < 0 )
 			return -1;
 	}
 
@@ -709,11 +709,11 @@ stobj_put_mediafile( inv_stmtoken_t tok, invt_mediafile_t *mf )
 /*----------------------------------------------------------------------*/
 
 int
-stobj_get_sessinfo ( inv_sestoken_t tok, invt_seshdr_t *hdr, 
+stobj_get_sessinfo ( inv_sestoken_t tok, invt_seshdr_t *hdr,
 		     invt_session_t *ses )
 {
 	int rval;
-	int fd = tok->sd_invtok->d_stobj_fd; 
+	int fd = tok->sd_invtok->d_stobj_fd;
 
 	/* get the session header first */
 	if ( ( rval = GET_REC_NOLOCK( fd, hdr, sizeof( invt_seshdr_t ),
@@ -721,7 +721,7 @@ stobj_get_sessinfo ( inv_sestoken_t tok, invt_seshdr_t *hdr,
 		rval = GET_REC_NOLOCK( fd, ses, sizeof( invt_session_t ),
 			     tok->sd_session_off );
 	}
-	
+
 	return rval;
 }
 
@@ -759,9 +759,9 @@ stobj_pack_sessinfo( int fd, invt_session_t *ses, invt_seshdr_t *hdr,
 		free ( strms );
 		return BOOL_FALSE;
 	}
-	
+
 	for ( i = 0; i < ses->s_cur_nstreams; i++ )
-		sessz += sizeof( invt_mediafile_t ) * 
+		sessz += sizeof( invt_mediafile_t ) *
 			 (size_t) strms[i].st_nmediafiles;
 
 	/* Now we know how big this entire thing is going to be */
@@ -770,15 +770,15 @@ stobj_pack_sessinfo( int fd, invt_session_t *ses, invt_seshdr_t *hdr,
 
 	/* Copy everything. Note that we don't bother to adjust the offsets
 	   either in the seshdr or in the mediafiles, because we don't need
-	   those in order to restore this session ( since everything's 
+	   those in order to restore this session ( since everything's
 	   contiguous ) */
 
-	/* magic cookie that we put for sanity checking in case of an 
+	/* magic cookie that we put for sanity checking in case of an
 	   earthquake or something :) */
-	strcpy( sesbuf, INVTSESS_COOKIE ); 
+	strcpy( sesbuf, INVTSESS_COOKIE );
 	sesbuf += (size_t)( strlen( INVTSESS_COOKIE ) * sizeof( char ) );
-	
-	/* This was originally INV_VERSION. Changed it to mean packed inventory 
+
+	/* This was originally INV_VERSION. Changed it to mean packed inventory
 	 * version number and added another inv_version_t to contain the INV_VERSION.
 	 * The primary intent of this change was to make everything 64 bit aligned,
 	 * but we also got the advantage of separating the packed inv version from
@@ -805,11 +805,11 @@ stobj_pack_sessinfo( int fd, invt_session_t *ses, invt_seshdr_t *hdr,
 	/* now append all the mediafiles */
 	for ( i = 0; i < ses->s_cur_nstreams; i++ ) {
 		off = strms[i].st_firstmfile;
-		for ( j = 0; j < strms[i].st_nmediafiles; 
-		     j++, 
+		for ( j = 0; j < strms[i].st_nmediafiles;
+		     j++,
 		     off = mf.mf_nextmf ) {
 			assert( off );
-			if ( GET_REC_NOLOCK( fd, &mf, 
+			if ( GET_REC_NOLOCK( fd, &mf,
 					     sizeof( invt_mediafile_t ),
 					     off ) <= 0 ) {
 				free( strms );
@@ -837,8 +837,8 @@ stobj_pack_sessinfo( int fd, invt_session_t *ses, invt_seshdr_t *hdr,
 
 bool_t
 stobj_getsession_byuuid(
-	int fd, 
-	invt_seshdr_t *hdr, 
+	int fd,
+	invt_seshdr_t *hdr,
 	void *sesid,
 	void **buf )
 {
@@ -848,19 +848,19 @@ stobj_getsession_byuuid(
 	if ( GET_REC_NOLOCK( fd, &ses, sizeof( invt_session_t ),
 			     hdr->sh_sess_off ) < 0 )
 		return -1;
-	
+
 	/* now see if this is the one that caller is askin for */
 	if (uuid_compare(ses.s_sesid, *((uuid_t *)sesid))) {
-		return BOOL_FALSE;	
+		return BOOL_FALSE;
 	}
 
-	/* yay. we found the session. so, make the session struct and 
+	/* yay. we found the session. so, make the session struct and
 	   put it in the buffer */
 	stobj_copy_invsess(fd, hdr, &ses, (inv_session_t **)buf);
 
 	return BOOL_TRUE;
-	
-}		
+
+}
 
 
 
@@ -873,8 +873,8 @@ stobj_getsession_byuuid(
 
 bool_t
 stobj_getsession_bylabel(
-	int fd, 
-	invt_seshdr_t *hdr, 
+	int fd,
+	invt_seshdr_t *hdr,
 	void *seslabel,
 	void **buf )
 {
@@ -887,16 +887,16 @@ stobj_getsession_bylabel(
 
 	/* now see if this is the one that caller is askin for */
 	if (! STREQL(ses.s_label, (char *)seslabel)) {
-		return BOOL_FALSE;	
+		return BOOL_FALSE;
 	}
 
-	/* yay. we found the session. so, make the session struct and 
+	/* yay. we found the session. so, make the session struct and
 	   put it in the buffer */
 	stobj_copy_invsess(fd, hdr, &ses, (inv_session_t **)buf);
 
 	return BOOL_TRUE;
-	
-}	
+
+}
 
 
 /*----------------------------------------------------------------------*/
@@ -907,8 +907,8 @@ stobj_getsession_bylabel(
 
 /* ARGSUSED */
 bool_t
-stobj_delete_mobj(int fd, 
-		  invt_seshdr_t *hdr, 
+stobj_delete_mobj(int fd,
+		  invt_seshdr_t *hdr,
 		  void *arg ,
 		  void **buf )
 {
@@ -928,28 +928,28 @@ stobj_delete_mobj(int fd,
 
 	/* now get all the streams of this session */
 	strms = calloc ( ses.s_cur_nstreams, sizeof( invt_stream_t ) );
-	if ( GET_REC_NOLOCK( fd, strms, 
-			     sizeof( invt_stream_t ) * ses.s_cur_nstreams, 
+	if ( GET_REC_NOLOCK( fd, strms,
+			     sizeof( invt_stream_t ) * ses.s_cur_nstreams,
 			     hdr->sh_streams_off ) < 0 ) {
 		free ( strms );
 		return BOOL_FALSE;
 	}
-	
+
 	/* now look at all the mediafiles in all the streams */
 	for ( i = 0; i < ses.s_cur_nstreams; i++ ) {
 		off = strms[i].st_firstmfile;
 		nmfiles = strms[i].st_nmediafiles;
 		mfiles = mf = calloc( nmfiles, sizeof( invt_mediafile_t ) );
-		for ( j = 0; j < nmfiles; 
-		     j++, 
+		for ( j = 0; j < nmfiles;
+		     j++,
 		     off = mf->mf_nextmf,
 		     mf++ ) {
-				
+
 /*  The prob is that we need to keep track of where we got these mfiles from
     as we get them, or we wont know how to put them back if they are dirty.
 */
 			assert( off );
-			if ( GET_REC_NOLOCK( fd, mf, 
+			if ( GET_REC_NOLOCK( fd, mf,
 					     sizeof( invt_mediafile_t ),
 					     off ) <= 0 ) {
 				free( strms );
@@ -969,7 +969,7 @@ stobj_delete_mobj(int fd,
 				printf(" found one\n" );
 #endif
 
-/*                                dirty = BOOL_TRUE;	
+/*                                dirty = BOOL_TRUE;
 
 				if ( j == 0 )
 				       strms[i].st_firstmfile = mf->mf_nextmf;
@@ -1003,7 +1003,7 @@ stobj_delete_mobj(int fd,
 /*----------------------------------------------------------------------*/
 
 bool_t
-stobj_unpack_sessinfo(  
+stobj_unpack_sessinfo(
         void              *bufp,
         size_t             bufsz,
 	invt_sessinfo_t   *s )
@@ -1011,9 +1011,9 @@ stobj_unpack_sessinfo(
 	uint 		 i;
 	char	         *tmpbuf;
 	char 		 *p = (char *)bufp;
-	
+
 	assert ( bufp );
-	
+
 	tmpbuf = (char *)malloc(bufsz);
 
 	/* first make sure that the magic cookie at the beginning is right.
@@ -1038,16 +1038,16 @@ stobj_unpack_sessinfo(
 		p += sizeof( inv_version_t );
 
 		/* We hit a 64 bit alignment issue at this point leading to a
-		 * SIGBUS and core dump. The best way to handle it is to 
+		 * SIGBUS and core dump. The best way to handle it is to
 		 * bcopy the remaining part of bufp to a new malloc'ed area
 		 * which will be 64 bit aligned. This is a memory leak , but not much.
 		 * Have to do this because xfsrestore does another round of
 		 * unpack later , so can't disturb the original data.
-		 * This is fixed in PACKED_INV_VERSION_2 by adding another (inv_version_t) to 
+		 * This is fixed in PACKED_INV_VERSION_2 by adding another (inv_version_t) to
 		 * have the INV_VERSION. This makes everything 64 bit aligned.
 		 */
 
-		tempsz = bufsz - (strlen( INVTSESS_COOKIE ) * sizeof( char )) 
+		tempsz = bufsz - (strlen( INVTSESS_COOKIE ) * sizeof( char ))
 			       - sizeof( inv_version_t ) ;
 		temp_p = calloc(1, tempsz);
 		bcopy(p, temp_p, tempsz);
@@ -1063,7 +1063,7 @@ stobj_unpack_sessinfo(
 		      "INV: inv_put_session: unknown packed inventory version"
 		      " %d\n"), *( inv_version_t *) p);
 		return BOOL_FALSE;
-	} 
+	}
 
 	xlate_invt_seshdr((invt_seshdr_t *)p, (invt_seshdr_t *)tmpbuf, 1);
 	bcopy(tmpbuf, p, sizeof(invt_seshdr_t));
@@ -1071,7 +1071,7 @@ stobj_unpack_sessinfo(
 	/* get the seshdr and then, the remainder of the session */
 	s->seshdr = (invt_seshdr_t *)p;
 	s->seshdr->sh_sess_off = -1;
-	p += sizeof( invt_seshdr_t );	
+	p += sizeof( invt_seshdr_t );
 
 
 	xlate_invt_session((invt_session_t *)p, (invt_session_t *)tmpbuf, 1);
@@ -1094,11 +1094,11 @@ stobj_unpack_sessinfo(
 		uint j;
 		invt_mediafile_t *mmf = s->mfiles;
 		for (i=0; i< s->ses->s_cur_nstreams; i++ ) {
-			for (j=0; j< s->strms[ i ].st_nmediafiles; 
+			for (j=0; j< s->strms[ i ].st_nmediafiles;
 			     j++, mmf++ )
 				xlate_invt_mediafile((invt_mediafile_t *)mmf, (invt_mediafile_t *)tmpbuf, 1);
 				bcopy(tmpbuf, mmf, sizeof(invt_mediafile_t));
-				put_invtrecord( tmpfd, &mmf->mf_moid, 
+				put_invtrecord( tmpfd, &mmf->mf_moid,
 					 sizeof( uuid_t ), 0, SEEK_END, 0 );
 		}
 		close( tmpfd );
@@ -1108,16 +1108,16 @@ stobj_unpack_sessinfo(
 		p += (size_t) ( s->strms[ i ].st_nmediafiles )
 			* sizeof( invt_mediafile_t );
 	}
-	
-	/* sanity check the size of the buffer given to us vs. the size it 
+
+	/* sanity check the size of the buffer given to us vs. the size it
 	   should be */
 	if ( (size_t) ( p - (char *) bufp ) != bufsz ) {
-		mlog( MLOG_DEBUG | MLOG_INV, "p-bufp %d != bufsz %d entsz %d\n",  
+		mlog( MLOG_DEBUG | MLOG_INV, "p-bufp %d != bufsz %d entsz %d\n",
 		      (int)( p - (char *) bufp ), (int) bufsz,
 	      (int) ( sizeof( invt_entry_t ) ) );
 	}
 	assert( (size_t) ( p - (char *) bufp ) == bufsz );
-	
+
 	return BOOL_TRUE;
 }
 
@@ -1138,7 +1138,7 @@ stobj_make_invsess( int fd, inv_session_t **buf, invt_seshdr_t *hdr )
 	    < 0 ) {
 		return -1;
 	}
-	
+
 	return stobj_copy_invsess(fd, hdr, &ses, buf);
 }
 
@@ -1168,7 +1168,7 @@ stobj_convert_strm(inv_stream_t *expstrm, invt_stream_t *strm)
 
 	expstrm->st_interrupted = strm->st_interrupted;
 	expstrm->st_startino = strm->st_startino.ino;
-	expstrm->st_startino_off = 
+	expstrm->st_startino_off =
 		strm->st_startino.offset;
 	expstrm->st_endino = strm->st_endino.ino;
 	expstrm->st_endino_off = strm->st_endino.offset;
@@ -1181,7 +1181,7 @@ stobj_convert_strm(inv_stream_t *expstrm, invt_stream_t *strm)
 }
 
 void
-stobj_convert_session(inv_session_t *ises, invt_session_t *ses, 
+stobj_convert_session(inv_session_t *ises, invt_session_t *ses,
 		      invt_seshdr_t *hdr)
 {
 	ises->s_time = hdr->sh_time;
@@ -1208,7 +1208,7 @@ stobj_convert_session(inv_session_t *ises, invt_session_t *ses,
 /*----------------------------------------------------------------------*/
 
 int
-stobj_copy_invsess(int fd,  
+stobj_copy_invsess(int fd,
 		   invt_seshdr_t *hdr,
 		   invt_session_t *ses,
 		   inv_session_t **buf)
@@ -1218,11 +1218,11 @@ stobj_copy_invsess(int fd,
 	int i;
 	invt_mediafile_t mf;
 
-	strms = calloc ( ses->s_cur_nstreams, sizeof( invt_stream_t ) ); 
+	strms = calloc ( ses->s_cur_nstreams, sizeof( invt_stream_t ) );
 
 	/* load in all the stream-headers */
-	if ( GET_REC_NOLOCK( fd, strms, 
-			     ses->s_cur_nstreams * sizeof( invt_stream_t ), 
+	if ( GET_REC_NOLOCK( fd, strms,
+			     ses->s_cur_nstreams * sizeof( invt_stream_t ),
 			     hdr->sh_streams_off ) < 0 ) {
 		free (strms);
 		return -1;
@@ -1231,13 +1231,13 @@ stobj_copy_invsess(int fd,
 	ises = calloc( 1, sizeof( inv_session_t ) );
 	stobj_convert_session(ises, ses, hdr);
 	ises->s_streams = calloc(ses->s_cur_nstreams, sizeof( inv_stream_t ));
-	
+
 	/* fill in the stream structures too */
 	i = (int) ses->s_cur_nstreams;
 	while ( i-- ) {
 		off64_t		 off;
 		uint            j, nmf;
-		
+
 		stobj_convert_strm(&ises->s_streams[i], &strms[i]);
 		nmf = strms[i].st_nmediafiles;
 		off = strms[i].st_firstmfile;
@@ -1247,11 +1247,11 @@ stobj_copy_invsess(int fd,
 						    sizeof( inv_mediafile_t ) );
 		assert( !nmf || ises->s_streams[i].st_mediafiles );
 
-		for ( j = 0; j < nmf; 
-		      j++, 
+		for ( j = 0; j < nmf;
+		      j++,
 		      off = mf.mf_nextmf ) {
 			assert( off );
-			if ( GET_REC_NOLOCK( fd, &mf, 
+			if ( GET_REC_NOLOCK( fd, &mf,
 					     sizeof( invt_mediafile_t ),
 					     off ) <= 0 ) {
 				INV_PERROR( "stobj::make_invsess\n" );
@@ -1272,9 +1272,9 @@ stobj_copy_invsess(int fd,
 				return -1;
 			}
 		}
-		
+
 	}
-	
+
 
 	free( strms );
 	*buf = ises;
@@ -1314,7 +1314,7 @@ stobj_convert_sessinfo(inv_session_t **buf, invt_sessinfo_t *sinfo)
 					     mf++ );
 		}
 	}
-	
+
 	*buf = ises;
 }
 
@@ -1323,7 +1323,7 @@ stobj_convert_sessinfo(inv_session_t **buf, invt_sessinfo_t *sinfo)
 int
 stobj_hdrcmp( const void *h1, const void *h2 )
 {
-	return (int) ( ((invt_seshdr_t *)h1)->sh_time - 
+	return (int) ( ((invt_seshdr_t *)h1)->sh_time -
 		       ((invt_seshdr_t *)h2)->sh_time );
 }
 
@@ -1354,21 +1354,21 @@ mobj_eql ( inv_mediafile_t *mfp, invt_mobjinfo_t *mobj )
 {
 
 	if ( mobj->type == INVT_MOID ) {
-		if ( !uuid_compare( *((uuid_t*) mobj->value), 
+		if ( !uuid_compare( *((uuid_t*) mobj->value),
 			      mfp->m_moid) ) {
 			return BOOL_TRUE;
 		}
 	} else {
-		if ( STREQL( (char*) mobj->value, 
+		if ( STREQL( (char*) mobj->value,
 			    mfp->m_label ) ) {
 			return BOOL_TRUE;
 		}
 	}
-	
+
 	return BOOL_FALSE;
 }
 
-  
+
 bool_t
 check_for_mobj ( inv_session_t *ses, invt_mobjinfo_t *mobj )
 {
@@ -1405,7 +1405,7 @@ DEBUG_sessionprint( inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 		if (!check_for_mobj (ses, mobj))
 			return;
 	}
-		
+
 	if ( ref == 0 || fsidxprinted != (uint) prctx->index ) {
 		fsidxprinted = (uint) prctx->index;
 
@@ -1413,7 +1413,7 @@ DEBUG_sessionprint( inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 		uuid_unparse( ses->s_fsid, str );
 		printf("\tfs id:\t\t%s\n", str);
 	}
-	
+
 	if (prctx->depth == PR_FSONLY)
 		return;
 
@@ -1431,7 +1431,7 @@ DEBUG_sessionprint( inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 	printf("\t\tresumed:\t%s\n", ses->s_isresumed ? "YES" : "NO" );
 	printf( "\t\tsubtree:\t%s\n", ses->s_ispartial ? "YES" : "NO" );
 	printf("\t\tstreams:\t%d\n", ses->s_nstreams );
-	
+
 	if (prctx->depth == PR_SESSONLY )
 		return;
 
@@ -1474,7 +1474,7 @@ DEBUG_sessionprint( inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 			}
 			printf( "\t\t\t\tmfile size:\t%llu\n",
 				(unsigned long long)mfp->m_size);
-			
+
 			if (! mfp->m_isinvdump) {
 				printf( "\t\t\t\tmfile start:"
 					"\tino %llu offset %lld\n",

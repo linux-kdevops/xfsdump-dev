@@ -25,19 +25,19 @@ typedef unsigned int    minor_t;
  * have been defined in sys/mtio.h and are supported in ST as well.
  * See sys/mtio.h for details.
  *
- *  operations (mt_op values for MTIOCTOP) 
+ *  operations (mt_op values for MTIOCTOP)
  *
- * #define MTFSF	1	 forward space file 
- * #define MTBSF	2	 backward space file 
- * #define MTFSR	3	 forward space record 
- * #define MTBSR	4	 backward space record 
+ * #define MTFSF	1	 forward space file
+ * #define MTBSF	2	 backward space file
+ * #define MTFSR	3	 forward space record
+ * #define MTBSR	4	 backward space record
  * #define MTWEOF	5	 write an end-of-file record
- * #define MTREW	6	 rewind 
- * #define MTOFFL	7	 rewind and put the drive offline 
- * #define MTNOP	8	 no operation, sets status only 
- * #define MTRETEN	9	 retention operation 
- * #define MTEOM	12	 space to end of recorded data 
- * #define MTERASE	13	 erase tape from current position to EOT 
+ * #define MTREW	6	 rewind
+ * #define MTOFFL	7	 rewind and put the drive offline
+ * #define MTNOP	8	 no operation, sets status only
+ * #define MTRETEN	9	 retention operation
+ * #define MTEOM	12	 space to end of recorded data
+ * #define MTERASE	13	 erase tape from current position to EOT
  * #define MTSETBLK	20	 set block length
  * #define MTSEEK	22	 Seek to the given block number.  Not all
  *				 drives support this option.  For drives
@@ -48,19 +48,19 @@ typedef unsigned int    minor_t;
  *				 799 decimal) the program #).  For seeking
  *				 to times in audio mode, see MTSETAUDIO.
  * #define MTWSM	27	 write mt_count setmarks (DAT)
- * #define MTUNLOAD	31	 unload tape from drive 
+ * #define MTUNLOAD	31	 unload tape from drive
  * #define MTSETPART	33	 skip to partition in mt_count (DAT); for
  * 				 DDS format DAT drives (only ones
  * 				 supported current), partition 1 is the
  * 				 first partition on the tape (nearest
  * 				 BOT), and partition 0 is the remainder of
- * 				 the tape. 
+ * 				 the tape.
  * #define MTMKPART	34	 create partition (DAT), count is
  * 				 multiplied by 1 Mybte (2^20 bytes) to
  * 				 give the size of partition 1; if 0, then
  * 				 changes tape to a single partition
- * 				 tape. 
- * 
+ * 				 tape.
+ *
  */
 
 #define MTRET		MTRETEN	/* retention operation */
@@ -82,8 +82,8 @@ typedef unsigned int    minor_t;
 				 * now). Remains set until same ioctl is
 				 * reused, or until reboot. */
 
-/* MTSPECOP - special drive specific operations.  
- * These use the mtop structure. 
+/* MTSPECOP - special drive specific operations.
+ * These use the mtop structure.
  * MTSPECOP subcodes start at 0x6000.
  */
 #define MTSCSI_CIPHER_SEC_ON	0x6001	/* enable reporting of recovered
@@ -137,7 +137,7 @@ struct	mtget_sgi	{
 	/* the following two registers are device dependent */
 	unsigned short	mt_dsreg;	/* ``drive status'' register */
 	short	mt_erreg;		/* ``error'' register */
-	short	mt_resid;		/* residual count; for SCSI, this is 
+	short	mt_resid;		/* residual count; for SCSI, this is
 					 * used to report the current partition
 					 * # for DAT tapes that are partitioned
 					 */
@@ -242,7 +242,7 @@ struct	mtvid {
 	A value of 0 indicates no limit
 	When using the variable block size device, the lastread
 	field is determined by reading one block and then spacing
-	backwards, if no i/o has yet been done to this tape.  Unlike 
+	backwards, if no i/o has yet been done to this tape.  Unlike
 	MTIOCGETBLKSIZE, all quantities are in bytes.
 */
 struct mtblkinfo {
@@ -283,13 +283,13 @@ typedef	struct	irix5_mtscsi_rdlog {
 	unsigned short	mtlen;		/* Size of buffer receiving log	*/
 	app32_ptr_t	mtarg;		/* Buffer pointer		*/
 } irix5_mtscsi_rdlog_t;
-#endif /* _KERNEL */	
+#endif /* _KERNEL */
 
 
 
 /* structure and defines for MT[GS]ETAUDIO.
  * When using SETAUDIO to locate to a particular point, the type
- * should be set to one of the MTAUDPOSN_* values, 
+ * should be set to one of the MTAUDPOSN_* values,
  * and only the corresponding fields need be filled in.  See the DAT
  * audio spec for more detail on the definitions of the different times.
  * There are 34 frames per second, legal values are 0 through 33.  The
@@ -354,16 +354,16 @@ struct mt_capablity  {
         are also used in tpsc.h */
 
 /* The expected relative behaviour of MT_EW, MT_EOT and MTANSI can be
-   described as follows. 
+   described as follows.
    - writing from BOT, with MTANSI disabled, when LEOT is encountered,
      MT_EW and MT_EOT are set. If MTANSI is now enabled, MT_EOT will be
      reset and writing will be permitted until PEOT is encountered,
      whereupon MT_EOT will again be set and will remain so until the
      tape is repositioned.
    - reading from BOT, MT_EOT will be set when PEOT is
-     encountered. LEOT is not normally reported by the drive, and therefore 
-     MT_EW will normally not be set, unless the drive supports the REW mode 
-     bit. (few do) 
+     encountered. LEOT is not normally reported by the drive, and therefore
+     MT_EW will normally not be set, unless the drive supports the REW mode
+     bit. (few do)
 */
 
 #define MT_EOT		0x01	/* tape is at end of media */
@@ -621,8 +621,8 @@ struct mt_capablity  {
 #define MTCAN_LDREW	0x1000000 /* Issue Rewind instead of Load command. Used
 				   * in conjunction with MTCANT_LOAD. */
 
-/* 
- * Definitions for MTGETATTR 
+/*
+ * Definitions for MTGETATTR
  */
 
 /* Definition of MTGETATTR return struct */
@@ -663,7 +663,7 @@ struct mt_fpmsg {
 			char   display_type;	/* Display Type: Set to 0x80 */
 			char   msg_type:3,      /* Message type: 0x00 = General
 						 * Status message */
-		               msg_cntrl:3,     /* Message control: 
+		               msg_cntrl:3,     /* Message control:
 						   0 = Display message 0
 						   1 = Display message 1
 						   2 = Flash message 0
@@ -677,7 +677,7 @@ struct mt_fpmsg {
 			char   msg2[8];	        /* message 2 */
 		} ibm3590;
 		struct {		/* Format for Fujitsu Diana 1,2,3 */
-			char   display_mode:3, 
+			char   display_mode:3,
 		               display_len:1,
 		               flash:1,
 		               half_msg:1,
@@ -706,7 +706,7 @@ struct mt_fpmsg {
 #define diana_msg2		u.diana.msg2
 
 /* Definition of MTGETPOS/MTSETPOS structure */
-#define MAX_VEND_POS_SIZE	256	/* Maximum vendor specific position 
+#define MAX_VEND_POS_SIZE	256	/* Maximum vendor specific position
 					 * data size. */
 struct	vendor_specific_pos
 {

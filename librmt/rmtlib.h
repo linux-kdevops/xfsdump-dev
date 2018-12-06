@@ -51,7 +51,7 @@
  *
  *	READ --- Return the number of the read side file descriptor
  *	WRITE --- Return the number of the write side file descriptor
- *	RMTHOST --- Return an id which says host type from uname    
+ *	RMTHOST --- Return an id which says host type from uname
  */
 
 /* rmt msg types */

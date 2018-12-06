@@ -64,7 +64,7 @@ static int mlog_sym_lookup( char * );
 
 static size_t mlog_streamcnt;
 
-static char mlog_levelstr[ 3 ]; 
+static char mlog_levelstr[ 3 ];
 
 #define MLOG_SS_NAME_MAX	15
 #ifdef DUMP
@@ -201,7 +201,7 @@ mlog_init1( int argc, char *argv[ ] )
 				int suboptix;
 				char *valstr;
 
-				suboptix = getsubopt( &options, 
+				suboptix = getsubopt( &options,
 						      (constpp)suboptstrs,
 						      &valstr );
 				if ( suboptix < 0 ) {
@@ -349,7 +349,7 @@ mlog_override_level( int levelarg )
 	level = levelarg & MLOG_LEVELMASK;
 	ss = ( ix_t )( ( levelarg & MLOG_SS_MASK ) >> MLOG_SS_SHIFT );
 
-	if (ss == MLOG_SS_GEN) { /* do level for all subsys */  
+	if (ss == MLOG_SS_GEN) { /* do level for all subsys */
 	    for (ss = 0 ; ss < MLOG_SS_CNT ; ss++ ) {
 		mlog_level_ss[ ss ] = level;
 	    }
@@ -381,7 +381,7 @@ mlog_va( int levelarg, char *fmt, va_list args )
 	if ( level > mlog_level_ss[ ss ] ) {
 		return;
 	}
-	
+
 	if ( ! ( levelarg & MLOG_NOLOCK )) {
 		mlog_lock( );
 	}
@@ -473,7 +473,7 @@ struct rv_map {
 static struct rv_map
 rvs[_RV_NUM] = {
        /* Return Code	Displayed Code	Explanation */
-	{ RV_OK,	"OK",		"success" }, 
+	{ RV_OK,	"OK",		"success" },
 	{ RV_NOTOK,	"ERASE_FAILED",	"media erase request denied" },
 	{ RV_NOMORE,	"NOMORE",	"no more work to do" },
 	{ RV_EOD,	"EOD",		"ran out of data" },
@@ -502,7 +502,7 @@ rvs[_RV_NUM] = {
 	{ RV_UNKNOWN,	"UNKNOWN",	"unknown error" },
 };
 
-static struct rv_map 
+static struct rv_map
 rv_unknown = {
 	  _RV_NUM,	"???",		"unknown error code"
 };
@@ -638,7 +638,7 @@ _mlog_exit_hint( const char *file, int line, rv_t rv )
 
 	tid = pthread_self();
 	rvp = rv_getdesc(rv);
-	
+
 	mlog( MLOG_DEBUG | MLOG_NOLOCK,
 	      "%s: %d: mlog_exit_hint called: "
 	      "hint: %s (%s)\n",
@@ -660,7 +660,7 @@ _mlog_exit_hint( const char *file, int line, rv_t rv )
 
 	if ( pthread_equal( tid, parenttid ) )
 		mlog_main_exit_hint = rv;
-	else 
+	else
 		stream_set_hint( tid, rv );
 
 }
