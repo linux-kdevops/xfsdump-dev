@@ -581,12 +581,14 @@ main( int argc, char *argv[] )
 		sigaction( SIGTERM, &sa, NULL );
 		sigaction( SIGQUIT, &sa, NULL );
 
+#ifdef DUMP
 		ok = drive_init2( argc,
 				  argv,
-#ifdef DUMP
 				  gwhdrtemplatep );
 #endif /* DUMP */
 #ifdef RESTORE
+		ok = drive_init2( argc,
+				  argv,
 				  ( global_hdr_t * )0 );
 #endif /* RESTORE */
 		if ( ! ok ) {
@@ -629,12 +631,14 @@ main( int argc, char *argv[] )
 	 * time-consuming chore. drive_init3 will synchronize with each slave.
 	 */
 	if ( ! init_error ) {
+#ifdef DUMP
 		ok = drive_init2( argc,
 				  argv,
-#ifdef DUMP
 				  gwhdrtemplatep );
 #endif /* DUMP */
 #ifdef RESTORE
+		ok = drive_init2( argc,
+				  argv,
 				  ( global_hdr_t * )0 );
 #endif /* RESTORE */
 		if ( ! ok ) {

@@ -2585,11 +2585,12 @@ read_label( drive_t *drivep )
 	if (( nread == 0 )  /* takes care of sun */
 	      ||            /* now handle SGI */
 	      (nread < 0 && saved_errno == ENOSPC )) {
-		mlog( MLOG_NORMAL | MLOG_DRIVE,
 #ifdef DUMP
+		mlog( MLOG_NORMAL | MLOG_DRIVE,
 		      _("encountered EOD : assuming blank media\n") );
 #endif
 #ifdef RESTORE
+		mlog( MLOG_NORMAL | MLOG_DRIVE,
 		      _("encountered EOD : end of data\n") );
 #endif
 		( void )rewind_and_verify( drivep );
