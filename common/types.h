@@ -33,9 +33,11 @@
 #define XFSDUMP_DIRPATH	inv_basepath()
 
 /*
- * Should be, but isn't, defined in uuid/uuid.h
+ * If not defined in uuid/uuid.h
  */
+#ifndef UUID_STR_LEN
 #define UUID_STR_LEN	36
+#endif
 
 /* fundamental page size - probably should not be hardwired, but
  * for now we will
