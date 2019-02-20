@@ -42,7 +42,7 @@
 #include "drive.h"
 
 extern char *progname;
-extern void usage( void );
+extern void usage(void);
 extern pthread_t parenttid;
 
 #ifdef DUMP
@@ -52,7 +52,7 @@ static FILE *mlog_fp = NULL; /* stderr */;
 static FILE *mlog_fp = NULL; /* stdout */;
 #endif /* RESTORE */
 
-int mlog_level_ss[ MLOG_SS_CNT ];
+int mlog_level_ss[MLOG_SS_CNT];
 
 int mlog_showlevel = BOOL_FALSE;
 
@@ -60,11 +60,11 @@ int mlog_showss = BOOL_FALSE;
 
 int mlog_timestamp = BOOL_FALSE;
 
-static int mlog_sym_lookup( char * );
+static int mlog_sym_lookup(char *);
 
 static size_t mlog_streamcnt;
 
-static char mlog_levelstr[ 3 ];
+static char mlog_levelstr[3];
 
 #define MLOG_SS_NAME_MAX	15
 #ifdef DUMP
@@ -76,9 +76,9 @@ static char mlog_levelstr[ 3 ];
 #endif /* DUMP */
 #define N(a) (sizeof((a)) / sizeof((a)[0]))
 
-static char mlog_ssstr[ MLOG_SS_NAME_MAX + 2 ];
+static char mlog_ssstr[MLOG_SS_NAME_MAX + 2];
 
-static char mlog_tsstr[ 10 ];
+static char mlog_tsstr[10];
 
 struct mlog_sym {
 	char *sym;
@@ -87,7 +87,7 @@ struct mlog_sym {
 
 typedef struct mlog_sym mlog_sym_t;
 
-char *mlog_ss_names[ MLOG_SS_CNT ] = {
+char *mlog_ss_names[MLOG_SS_CNT] = {
 	"general",	/* MLOG_SS_GEN */
 	"proc",		/* MLOG_SS_PROC */
 	"drive",	/* MLOG_SS_DRIVE */
@@ -102,7 +102,7 @@ char *mlog_ss_names[ MLOG_SS_CNT ] = {
 	"excluded_files" /* MLOG_SS_EXCLFILES */
 };
 
-static mlog_sym_t mlog_sym[ ] = {
+static mlog_sym_t mlog_sym[] = {
 	{"0",		MLOG_SILENT},
 	{"1",		MLOG_VERBOSE},
 	{"2",		MLOG_TRACE},
@@ -122,7 +122,7 @@ static rv_t mlog_main_exit_return = RV_NONE;
 static rv_t mlog_main_exit_hint = RV_NONE;
 
 void
-mlog_init0( void )
+mlog_init0(void)
 {
 	int i;
 
@@ -134,17 +134,17 @@ mlog_init0( void )
 #endif /* RESTORE */
 
 	/* initialize stream count. will be updated later by call to
-	 * mlog_tell_streamcnt( ), after drive layer has counted drives
+	 * mlog_tell_streamcnt(), after drive layer has counted drives
 	 */
 	mlog_streamcnt = 1;
 
-	for( i = 0 ; i < MLOG_SS_CNT ; i++ ) {
-		mlog_level_ss[ i ] = MLOG_VERBOSE;
+	for(i = 0 ; i < MLOG_SS_CNT ; i++) {
+		mlog_level_ss[i] = MLOG_VERBOSE;
 	}
 }
 
 bool_t
-mlog_init1( int argc, char *argv[ ] )
+mlog_init1(int argc, char *argv[])
 {
 	char **suboptstrs;
 	ix_t ssix;
@@ -154,105 +154,105 @@ mlog_init1( int argc, char *argv[ ] )
 
 	/* prepare an array of suboption token strings. this will be the
 	 * concatenation of the subsystem names with the verbosity symbols.
-	 * this array of char pts must be null terminated for getsubopt( 3 ).
+	 * this array of char pts must be null terminated for getsubopt(3).
 	 */
-	vsymcnt = sizeof( mlog_sym ) / sizeof( mlog_sym[ 0 ] );
-	suboptstrs = ( char ** )calloc( MLOG_SS_CNT + vsymcnt + 1,
-					sizeof( char * ));
-	assert( suboptstrs );
-	for ( soix = 0 ; soix < MLOG_SS_CNT ; soix++ ) {
-		assert( strlen( mlog_ss_names[ soix ] ) <= MLOG_SS_NAME_MAX );
+	vsymcnt = sizeof(mlog_sym) / sizeof(mlog_sym[0]);
+	suboptstrs = (char **)calloc(MLOG_SS_CNT + vsymcnt + 1,
+					sizeof(char *));
+	assert(suboptstrs);
+	for (soix = 0 ; soix < MLOG_SS_CNT ; soix++) {
+		assert(strlen(mlog_ss_names[soix]) <= MLOG_SS_NAME_MAX);
 			/* unrelated, but opportunity to chk */
-		suboptstrs[ soix ] = mlog_ss_names[ soix ];
+		suboptstrs[soix] = mlog_ss_names[soix];
 	}
-	for ( ; soix < MLOG_SS_CNT + vsymcnt ; soix++ ) {
-		suboptstrs[ soix ] = mlog_sym[ soix - MLOG_SS_CNT ].sym;
+	for (; soix < MLOG_SS_CNT + vsymcnt ; soix++) {
+		suboptstrs[soix] = mlog_sym[soix - MLOG_SS_CNT].sym;
 	}
-	suboptstrs[ soix ] = 0;
+	suboptstrs[soix] = 0;
 
 	/* set all of the subsystem log levels to -1, so we can see which
 	 * subsystems where explicitly called out. those which weren't will
 	 * be given the "general" level.
 	 */
-	for ( ssix = 0 ; ssix < MLOG_SS_CNT ; ssix++ ) {
-		mlog_level_ss[ ssix ] = -1;
+	for (ssix = 0 ; ssix < MLOG_SS_CNT ; ssix++) {
+		mlog_level_ss[ssix] = -1;
 	}
-	mlog_level_ss[ MLOG_SS_GEN ] = MLOG_VERBOSE;
+	mlog_level_ss[MLOG_SS_GEN] = MLOG_VERBOSE;
 
 	/* get command line options
 	 */
 	optind = 1;
 	opterr = 0;
-	while ( ( c = getopt( argc, argv, GETOPT_CMDSTRING )) != EOF ) {
+	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		char *options;
 
-		switch ( c ) {
+		switch (c) {
 		case GETOPT_VERBOSITY:
-			if ( ! optarg || optarg[ 0 ] == '-' ) {
-				fprintf( stderr,
+			if (! optarg || optarg[0] == '-') {
+				fprintf(stderr,
 					 _("%s: -%c argument missing\n"),
 					 progname,
-					 c );
-				usage( );
+					 c);
+				usage();
 				return BOOL_FALSE;
 			}
 			options = optarg;
-			while ( *options ) {
+			while (*options) {
 				int suboptix;
 				char *valstr;
 
-				suboptix = getsubopt( &options,
+				suboptix = getsubopt(&options,
 						      (constpp)suboptstrs,
-						      &valstr );
-				if ( suboptix < 0 ) {
-					fprintf( stderr,
+						      &valstr);
+				if (suboptix < 0) {
+					fprintf(stderr,
 						 _("%s: -%c argument invalid\n"),
 						 progname,
-						 c );
-					usage( );
+						 c);
+					usage();
 					return BOOL_FALSE;
 				}
-				assert( ( ix_t )suboptix
+				assert((ix_t)suboptix
 					<
-					MLOG_SS_CNT + vsymcnt );
-				if ( suboptix < MLOG_SS_CNT ) {
-					if ( ! valstr ) {
-						fprintf( stderr,
+					MLOG_SS_CNT + vsymcnt);
+				if (suboptix < MLOG_SS_CNT) {
+					if (! valstr) {
+						fprintf(stderr,
 							 _("%s: -%c subsystem "
 							 "subargument "
 							 "%s requires a "
 							 "verbosity value\n"),
 							 progname,
 							 c,
-						mlog_ss_names[ suboptix ] );
-						usage( );
+						mlog_ss_names[suboptix]);
+						usage();
 						return BOOL_FALSE;
 					}
-					ssix = ( ix_t )suboptix;
-					mlog_level_ss[ ssix ] =
-						    mlog_sym_lookup( valstr );
+					ssix = (ix_t)suboptix;
+					mlog_level_ss[ssix] =
+						    mlog_sym_lookup(valstr);
 				} else {
-					if ( valstr ) {
-						fprintf( stderr,
+					if (valstr) {
+						fprintf(stderr,
 							 _("%s: -%c argument "
 							 "does not require "
 							 "a value\n"),
 							 progname,
-							 c );
-						usage( );
+							 c);
+						usage();
 						return BOOL_FALSE;
 					}
 					ssix = MLOG_SS_GEN;
-					mlog_level_ss[ ssix ] =
-				    mlog_sym_lookup( suboptstrs[ suboptix ] );
+					mlog_level_ss[ssix] =
+				    mlog_sym_lookup(suboptstrs[suboptix]);
 				}
-				if ( mlog_level_ss[ ssix ] < 0 ) {
-					fprintf( stderr,
+				if (mlog_level_ss[ssix] < 0) {
+					fprintf(stderr,
 						 _("%s: -%c argument "
 						 "invalid\n"),
 						 progname,
-						 c );
-					usage( );
+						 c);
+					usage();
 					return BOOL_FALSE;
 				}
 			}
@@ -269,25 +269,25 @@ mlog_init1( int argc, char *argv[ ] )
 		}
 	}
 
-	free( ( void * )suboptstrs );
+	free((void *)suboptstrs);
 
 	/* give subsystems not explicitly called out the "general" verbosity
 	 */
-	for ( ssix = 0 ; ssix < MLOG_SS_CNT ; ssix++ ) {
-		if ( mlog_level_ss[ ssix ] < 0 ) {
-			assert( mlog_level_ss[ ssix ] == -1 );
-			assert( mlog_level_ss[ MLOG_SS_GEN ] >= 0 );
-			mlog_level_ss[ ssix ] = mlog_level_ss[ MLOG_SS_GEN ];
+	for (ssix = 0 ; ssix < MLOG_SS_CNT ; ssix++) {
+		if (mlog_level_ss[ssix] < 0) {
+			assert(mlog_level_ss[ssix] == -1);
+			assert(mlog_level_ss[MLOG_SS_GEN] >= 0);
+			mlog_level_ss[ssix] = mlog_level_ss[MLOG_SS_GEN];
 		}
 	}
 
 	/* prepare a string for optionally displaying the log level
 	 */
-	mlog_levelstr[ 0 ] = 0;
-	mlog_levelstr[ 1 ] = 0;
-	mlog_levelstr[ 2 ] = 0;
-	if ( mlog_showlevel ) {
-		mlog_levelstr[ 0 ] = ':';
+	mlog_levelstr[0] = 0;
+	mlog_levelstr[1] = 0;
+	mlog_levelstr[2] = 0;
+	if (mlog_showlevel) {
+		mlog_levelstr[0] = ':';
 	}
 
 #ifdef DUMP
@@ -296,7 +296,7 @@ mlog_init1( int argc, char *argv[ ] )
 	 * mlog_fd set to stderr, see if we can switch
 	 * to stdout.
 	 */
-	if ( optind >= argc ||  strcmp( argv[ optind ], "-" )) {
+	if (optind >= argc ||  strcmp(argv[optind ], "-")) {
 		mlog_fp = stdout;
 	}
 #endif /* DUMP */
@@ -307,31 +307,31 @@ mlog_init1( int argc, char *argv[ ] )
 }
 
 bool_t
-mlog_init2( void )
+mlog_init2(void)
 {
 	/* allocate a qlock
 	 */
-	mlog_qlockh = qlock_alloc( QLOCK_ORD_MLOG );
+	mlog_qlockh = qlock_alloc(QLOCK_ORD_MLOG);
 
 	return BOOL_TRUE;
 }
 
 void
-mlog_tell_streamcnt( size_t streamcnt )
+mlog_tell_streamcnt(size_t streamcnt)
 {
 	mlog_streamcnt = streamcnt;
 }
 
 void
-mlog_lock( void )
+mlog_lock(void)
 {
-	qlock_lock( mlog_qlockh );
+	qlock_lock(mlog_qlockh);
 }
 
 void
-mlog_unlock( void )
+mlog_unlock(void)
 {
-	qlock_unlock( mlog_qlockh );
+	qlock_unlock(mlog_qlockh);
 }
 
 /*
@@ -341,122 +341,122 @@ mlog_unlock( void )
  * too much output.
  */
 void
-mlog_override_level( int levelarg )
+mlog_override_level(int levelarg)
 {
 	int level;
 	ix_t ss; /* SubSystem */
 
 	level = levelarg & MLOG_LEVELMASK;
-	ss = ( ix_t )( ( levelarg & MLOG_SS_MASK ) >> MLOG_SS_SHIFT );
+	ss = (ix_t)((levelarg & MLOG_SS_MASK) >> MLOG_SS_SHIFT);
 
 	if (ss == MLOG_SS_GEN) { /* do level for all subsys */
-	    for (ss = 0 ; ss < MLOG_SS_CNT ; ss++ ) {
-		mlog_level_ss[ ss ] = level;
+	    for (ss = 0 ; ss < MLOG_SS_CNT ; ss++) {
+		mlog_level_ss[ss] = level;
 	    }
 	}
 	else { /* do a particular subsys */
-	    mlog_level_ss[ ss ] = level;
+	    mlog_level_ss[ss] = level;
 	}
 }
 
 void
-mlog( int levelarg, char *fmt, ... )
+mlog(int levelarg, char *fmt, ...)
 {
 	va_list args;
-	va_start( args, fmt );
-	mlog_va( levelarg, fmt, args );
-	va_end( args );
+	va_start(args, fmt);
+	mlog_va(levelarg, fmt, args);
+	va_end(args);
 }
 
 void
-mlog_va( int levelarg, char *fmt, va_list args )
+mlog_va(int levelarg, char *fmt, va_list args)
 {
 	int level;
 	ix_t ss;
 
 	level = levelarg & MLOG_LEVELMASK;
-	ss = ( ix_t )( ( levelarg & MLOG_SS_MASK ) >> MLOG_SS_SHIFT );
+	ss = (ix_t)((levelarg & MLOG_SS_MASK) >> MLOG_SS_SHIFT);
 
-	assert( ss < MLOG_SS_CNT );
-	if ( level > mlog_level_ss[ ss ] ) {
+	assert(ss < MLOG_SS_CNT);
+	if (level > mlog_level_ss[ss]) {
 		return;
 	}
 
-	if ( ! ( levelarg & MLOG_NOLOCK )) {
-		mlog_lock( );
+	if (! (levelarg & MLOG_NOLOCK)) {
+		mlog_lock();
 	}
 
-	if ( ! ( levelarg & MLOG_BARE )) {
+	if (! (levelarg & MLOG_BARE)) {
 		int streamix;
-		streamix = stream_getix( pthread_self( ) );
+		streamix = stream_getix(pthread_self());
 
-		if ( mlog_showss ) {
-			sprintf( mlog_ssstr, ":%s", mlog_ss_names[ ss ] );
+		if (mlog_showss) {
+			sprintf(mlog_ssstr, ":%s", mlog_ss_names[ ss]);
 		} else {
-			mlog_ssstr[ 0 ] = 0;
+			mlog_ssstr[0] = 0;
 		}
 
-		if ( mlog_timestamp ) {
-			time_t now = time( 0 );
-			struct tm *tmp = localtime( &now );
-			sprintf( mlog_tsstr,
+		if (mlog_timestamp) {
+			time_t now = time(0);
+			struct tm *tmp = localtime(&now);
+			sprintf(mlog_tsstr,
 				 ":%02d.%02d.%02d",
 				 tmp->tm_hour,
 				 tmp->tm_min,
-				 tmp->tm_sec );
-			assert( strlen( mlog_tsstr ) < sizeof( mlog_tsstr ));
+				 tmp->tm_sec);
+			assert(strlen(mlog_tsstr) < sizeof(mlog_tsstr));
 		} else {
-			mlog_tsstr[ 0 ] = 0;
+			mlog_tsstr[0] = 0;
 		}
 
-		if ( mlog_showlevel ) {
-			mlog_levelstr[ 0 ] = ':';
-			if ( level > 9 ) {
-				mlog_levelstr[ 1 ] = '?';
+		if (mlog_showlevel) {
+			mlog_levelstr[0] = ':';
+			if (level > 9) {
+				mlog_levelstr[1] = '?';
 			} else {
-				mlog_levelstr[ 1 ] = ( char )
-						     ( level
+				mlog_levelstr[1] = (char)
+						     (level
 						       +
-						       ( int )'0' );
+						       (int)'0');
 			}
 		} else {
-			mlog_levelstr[ 0 ] = 0;
+			mlog_levelstr[0] = 0;
 		}
-		if ( streamix != -1 && mlog_streamcnt > 1 ) {
-			fprintf( mlog_fp,
+		if (streamix != -1 && mlog_streamcnt > 1) {
+			fprintf(mlog_fp,
 				 _("%s%s%s%s: drive %d: "),
 				 progname,
 				 mlog_tsstr,
 				 mlog_ssstr,
 				 mlog_levelstr,
-				 streamix );
+				 streamix);
 		} else {
-			fprintf( mlog_fp,
+			fprintf(mlog_fp,
 				 "%s%s%s%s: ",
 				 progname,
 				 mlog_tsstr,
 				 mlog_ssstr,
-				 mlog_levelstr );
+				 mlog_levelstr);
 		}
-		if ( levelarg & MLOG_NOTE ) {
-			fprintf( mlog_fp,
-				 "NOTE: " );
+		if (levelarg & MLOG_NOTE) {
+			fprintf(mlog_fp,
+				 "NOTE: ");
 		}
-		if ( levelarg & MLOG_WARNING ) {
-			fprintf( mlog_fp,
-				 "WARNING: " );
+		if (levelarg & MLOG_WARNING) {
+			fprintf(mlog_fp,
+				 "WARNING: ");
 		}
-		if ( levelarg & MLOG_ERROR ) {
-			fprintf( mlog_fp,
-				 "ERROR: " );
+		if (levelarg & MLOG_ERROR) {
+			fprintf(mlog_fp,
+				 "ERROR: ");
 		}
 	}
 
-	vfprintf( mlog_fp, fmt, args );
-	fflush( mlog_fp );
+	vfprintf(mlog_fp, fmt, args);
+	fflush(mlog_fp);
 
-	if ( ! ( levelarg & MLOG_NOLOCK )) {
-		mlog_unlock( );
+	if (! (levelarg & MLOG_NOLOCK)) {
+		mlog_unlock();
 	}
 }
 
@@ -569,7 +569,7 @@ rv_getdesc(rv_t rv)
  */
 
 int
-_mlog_exit( const char *file, int line, int exit_code, rv_t rv )
+_mlog_exit(const char *file, int line, int exit_code, rv_t rv)
 {
 	pthread_t tid;
 	const struct rv_map *rvp;
@@ -578,7 +578,7 @@ _mlog_exit( const char *file, int line, int exit_code, rv_t rv )
 	rvp = rv_getdesc(rv);
 
 
-	mlog( MLOG_DEBUG | MLOG_NOLOCK,
+	mlog(MLOG_DEBUG | MLOG_NOLOCK,
 	      "%s: %d: mlog_exit called: "
 	      "exit_code: %s return: %s (%s)\n",
 	      file, line,
@@ -586,7 +586,7 @@ _mlog_exit( const char *file, int line, int exit_code, rv_t rv )
 	      rvp->rv_string, rvp->rv_desc);
 
 	if (rv < 0 || rv >= _RV_NUM) {
-		mlog( MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK,
+		mlog(MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK,
 		      "mlog_exit(): bad return code");
 		return exit_code;
 	}
@@ -598,7 +598,7 @@ _mlog_exit( const char *file, int line, int exit_code, rv_t rv )
 	 * most accurate information about the termination condition.
 	 */
 
-	if ( pthread_equal( tid, parenttid ) ) {
+	if (pthread_equal(tid, parenttid)) {
 		if (mlog_main_exit_code == -1) {
 			mlog_main_exit_code = exit_code;
 			mlog_main_exit_return = rv;
@@ -631,7 +631,7 @@ _mlog_exit( const char *file, int line, int exit_code, rv_t rv )
 }
 
 void
-_mlog_exit_hint( const char *file, int line, rv_t rv )
+_mlog_exit_hint(const char *file, int line, rv_t rv)
 {
 	pthread_t tid;
 	const struct rv_map *rvp;
@@ -639,14 +639,14 @@ _mlog_exit_hint( const char *file, int line, rv_t rv )
 	tid = pthread_self();
 	rvp = rv_getdesc(rv);
 
-	mlog( MLOG_DEBUG | MLOG_NOLOCK,
+	mlog(MLOG_DEBUG | MLOG_NOLOCK,
 	      "%s: %d: mlog_exit_hint called: "
 	      "hint: %s (%s)\n",
 	      file, line,
 	      rvp->rv_string, rvp->rv_desc);
 
 	if (rv < 0 || rv >= _RV_NUM) {
-		mlog( MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK,
+		mlog(MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK,
 		      "mlog_exit_hint(): bad return code");
 		return;
 	}
@@ -658,22 +658,22 @@ _mlog_exit_hint( const char *file, int line, rv_t rv )
 	 * information about the termination condition.
 	 */
 
-	if ( pthread_equal( tid, parenttid ) )
+	if (pthread_equal(tid, parenttid))
 		mlog_main_exit_hint = rv;
 	else
-		stream_set_hint( tid, rv );
+		stream_set_hint(tid, rv);
 
 }
 
 rv_t
-mlog_get_hint( void )
+mlog_get_hint(void)
 {
 	stream_state_t states[] = { S_RUNNING };
 	/* REFERENCED */
 	bool_t ok;
 	rv_t hint;
 
-	if ( pthread_equal( pthread_self(), parenttid ) )
+	if (pthread_equal(pthread_self(), parenttid))
 		return mlog_main_exit_hint;
 
 	ok = stream_get_exit_status(pthread_self(), states, N(states),
@@ -720,7 +720,7 @@ mlog_exit_flush(void)
 	if (ntids > 0) {
 
 		/* print the state of all the streams */
-		fprintf(mlog_fp, _("%s: %s Summary:\n"), progname, PROGSTR_CAPS );
+		fprintf(mlog_fp, _("%s: %s Summary:\n"), progname, PROGSTR_CAPS);
 
 		for (i = 0; i < ntids; i++) {
 			stream_state_t state;
@@ -785,15 +785,15 @@ mlog_exit_flush(void)
 }
 
 static int
-mlog_sym_lookup( char *sym )
+mlog_sym_lookup(char *sym)
 {
 	mlog_sym_t *p = mlog_sym;
 	mlog_sym_t *ep = mlog_sym
 			 +
-			 sizeof( mlog_sym ) / sizeof( mlog_sym[ 0 ] );
+			 sizeof(mlog_sym) / sizeof(mlog_sym[0]);
 
-	for ( ; p < ep ; p++ ) {
-		if ( ! strcmp( sym, p->sym )) {
+	for (; p < ep ; p++) {
+		if (! strcmp(sym, p->sym)) {
 			return p->level;
 		}
 	}
@@ -802,7 +802,7 @@ mlog_sym_lookup( char *sym )
 }
 
 void
-fold_init( fold_t fold, char *infostr, char c )
+fold_init(fold_t fold, char *infostr, char c)
 {
 	size_t infolen;
 	size_t dashlen;
@@ -812,36 +812,36 @@ fold_init( fold_t fold, char *infostr, char c )
 	char *endp;
 	ix_t cnt;
 
-	assert( sizeof( fold_t ) == FOLD_LEN + 1 );
+	assert(sizeof(fold_t) == FOLD_LEN + 1);
 
-	infolen = strlen( infostr );
-	if ( infolen > FOLD_LEN - 4 ) {
+	infolen = strlen(infostr);
+	if (infolen > FOLD_LEN - 4) {
 		infolen = FOLD_LEN - 4;
 	}
 	dashlen = FOLD_LEN - infolen - 3;
 	predashlen = dashlen / 2;
 	postdashlen = dashlen - predashlen;
 
-	p = &fold[ 0 ];
-	endp = &fold[ sizeof( fold_t ) - 1 ];
+	p = &fold[0];
+	endp = &fold[sizeof(fold_t) - 1];
 
-	assert( p < endp );
+	assert(p < endp);
 	*p++ = ' ';
-	for ( cnt = 0 ; cnt < predashlen && p < endp ; cnt++, p++ ) {
+	for (cnt = 0 ; cnt < predashlen && p < endp ; cnt++, p++) {
 		*p = c;
 	}
-	assert( p < endp );
+	assert(p < endp);
 	*p++ = ' ';
-	assert( p < endp );
-	assert( p + infolen < endp );
-	strcpy( p, infostr );
+	assert(p < endp);
+	assert(p + infolen < endp);
+	strcpy(p, infostr);
 	p += infolen;
-	assert( p < endp );
+	assert(p < endp);
 	*p++ = ' ';
-	assert( p < endp );
-	for ( cnt = 0 ; cnt < postdashlen && p < endp ; cnt++, p++ ) {
+	assert(p < endp);
+	for (cnt = 0 ; cnt < postdashlen && p < endp ; cnt++, p++) {
 		*p = c;
 	}
-	assert( p <= endp );
+	assert(p <= endp);
 	*p = 0;
 }

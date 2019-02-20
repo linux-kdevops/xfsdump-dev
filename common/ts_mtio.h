@@ -42,7 +42,7 @@ typedef unsigned int    minor_t;
  * #define MTSEEK	22	 Seek to the given block number.  Not all
  *				 drives support this option.  For drives
  *				 that support audio, the block number
- *				 actually becomes the program number ( 0
+ *				 actually becomes the program number (0
  *				 meaning leadin area, 0xfffffffe meaning
  *				 leadout, and other values (currently 1-
  *				 799 decimal) the program #).  For seeking

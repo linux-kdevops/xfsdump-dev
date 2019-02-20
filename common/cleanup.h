@@ -24,20 +24,20 @@
 
 typedef void cleanup_t;
 
-extern void cleanup_init( void );
+extern void cleanup_init(void);
 
-extern cleanup_t *cleanup_register( void ( *funcp )( void *arg1, void *arg2 ),
+extern cleanup_t *cleanup_register(void (*funcp)(void *arg1, void *arg2),
 				    void *arg1,
-				    void *arg2 );
+				    void *arg2);
 
 extern cleanup_t *cleanup_register_early(
-				    void ( *funcp )( void *arg1, void *arg2 ),
+				    void (*funcp)(void *arg1, void *arg2),
 				    void *arg1,
-				    void *arg2 );
+				    void *arg2);
 
-extern void cleanup_cancel( cleanup_t *cleanupp );
+extern void cleanup_cancel(cleanup_t *cleanupp);
 
-extern void cleanup( void );
-extern void cleanup_early( void );
+extern void cleanup(void);
+extern void cleanup_early(void);
 
 #endif /* CLEANUP_H */

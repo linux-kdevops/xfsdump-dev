@@ -32,14 +32,14 @@
  *
  * if bufp is null, writes bufsz zeros.
  */
-typedef char * ( * gwbfp_t )( void *contextp, size_t wantedsz, size_t *szp);
-typedef int ( * wfp_t )( void *contextp, char *bufp, size_t bufsz );
+typedef char * (* gwbfp_t)(void *contextp, size_t wantedsz, size_t *szp);
+typedef int (* wfp_t)(void *contextp, char *bufp, size_t bufsz);
 
-extern int write_buf( char *bufp,
+extern int write_buf(char *bufp,
 			   size_t bufsz,
 			   void *contextp,
 			   gwbfp_t get_write_buf_funcp,
-			   wfp_t write_funcp );
+			   wfp_t write_funcp);
 
 
 /* read_buf - converts the normal manager read method into something simpler
@@ -56,21 +56,21 @@ extern int write_buf( char *bufp,
  * status of the first failure of the read funcp. if no read failures occur,
  * *statp will be zero.
  */
-typedef char * ( *rfp_t )( void *contextp, size_t wantedsz, size_t *szp, int *statp );
-typedef void ( * rrbfp_t )( void *contextp, char *bufp, size_t bufsz );
+typedef char * (*rfp_t)(void *contextp, size_t wantedsz, size_t *szp, int *statp);
+typedef void (* rrbfp_t)(void *contextp, char *bufp, size_t bufsz);
 
-extern int read_buf( char *bufp,
+extern int read_buf(char *bufp,
 			  size_t bufsz,
 			  void *contextp,
 			  rfp_t read_funcp,
 			  rrbfp_t return_read_buf_funcp,
-			  int *statp );
+			  int *statp);
 
 
 
 /* strncpyterm - like strncpy, but guarantees the destination is null-terminated
  */
-extern char *strncpyterm( char *s1, char *s2, size_t n );
+extern char *strncpyterm(char *s1, char *s2, size_t n);
 
 /* bigstat - efficient file status gatherer. presents an iterative
  * callback interface, invoking the caller's callback for each in-use
@@ -80,19 +80,19 @@ extern char *strncpyterm( char *s1, char *s2, size_t n );
  * stat is set to zero. return value set to errno if the system call fails,
  * or EINTR if optional pre-emption func returns TRUE.
  */
-#define BIGSTAT_ITER_DIR	( 1 << 0 )
-#define BIGSTAT_ITER_NONDIR	( 1 << 1 )
-#define BIGSTAT_ITER_ALL	( ~0 )
+#define BIGSTAT_ITER_DIR	(1 << 0)
+#define BIGSTAT_ITER_NONDIR	(1 << 1)
+#define BIGSTAT_ITER_ALL	(~0)
 
 typedef int (*bstat_cbfp_t)(void *arg1,
 				 jdm_fshandle_t *fshandlep,
 				 int fsfd,
-				 xfs_bstat_t *statp );
+				 xfs_bstat_t *statp);
 
 typedef xfs_ino_t (*bstat_seekfp_t)(void *arg1,
 				    xfs_ino_t lastino);
 
-extern int bigstat_iter( jdm_fshandle_t *fshandlep,
+extern int bigstat_iter(jdm_fshandle_t *fshandlep,
 			      int fsfd,
 			      int selector,
 			      xfs_ino_t start_ino,
@@ -101,20 +101,20 @@ extern int bigstat_iter( jdm_fshandle_t *fshandlep,
 			      bstat_seekfp_t seekfp,
 			      void * seek_arg1,
 			      int *statp,
-			      bool_t ( pfp )( int ), /* preemption chk func */
+			      bool_t (pfp)(int), /* preemption chk func */
 			      xfs_bstat_t *buf,
-			      size_t buflen );
+			      size_t buflen);
 
-extern int bigstat_one( int fsfd,
+extern int bigstat_one(int fsfd,
 			     xfs_ino_t ino,
-			     xfs_bstat_t *statp );
+			     xfs_bstat_t *statp);
 
-extern int inogrp_iter( int fsfd,
-			     int ( * fp )( void *arg1,
+extern int inogrp_iter(int fsfd,
+			     int (* fp)(void *arg1,
 				     		int fsfd,
-						xfs_inogrp_t *inogrp ),
+						xfs_inogrp_t *inogrp),
 			     void * arg1,
-			     int *statp );
+			     int *statp);
 
 /* calls the callback for every entry in the directory specified
  * by the stat buffer. supplies the callback with a file system
@@ -122,31 +122,31 @@ extern int inogrp_iter( int fsfd,
  *
  * NOTE: does NOT invoke callback for "." or ".."!
  *
- * caller may supply getdents buffer. size must be >= sizeof( dirent_t )
+ * caller may supply getdents buffer. size must be >= sizeof(dirent_t)
  * + MAXPATHLEN. if not supplied (usrgdp NULL), one will be malloc()ed.
  *
  * if the callback returns non-zero, returns 1 with cbrval set to the
  * callback's return value. if syscall fails, returns -1 with errno set.
  * otherwise returns 0.
  */
-extern int diriter( jdm_fshandle_t *fshandlep,
+extern int diriter(jdm_fshandle_t *fshandlep,
 			 int fsfd,
 			 xfs_bstat_t *statp,
-			 int ( *cbfp )( void *arg1,
+			 int (*cbfp)(void *arg1,
 					     jdm_fshandle_t *fshandlep,
 					     int fsfd,
 					     xfs_bstat_t *statp,
-					     char *namep ),
+					     char *namep),
 			 void *arg1,
 			 int *cbrvalp,
 			 char *usrgdp,
-			 size_t usrgdsz );
+			 size_t usrgdsz);
 
 
 
 /* macro to copy uuid structures
  */
-#define COPY_LABEL( lab1, lab2) ( bcopy( lab1, lab2, GLOBAL_HDR_STRING_SZ) )
+#define COPY_LABEL(lab1, lab2) (bcopy(lab1, lab2, GLOBAL_HDR_STRING_SZ))
 
 /*
  * Align pointer up to alignment

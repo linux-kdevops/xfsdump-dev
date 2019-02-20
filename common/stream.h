@@ -41,21 +41,21 @@
 
 typedef enum { S_FREE, S_RUNNING, S_ZOMBIE } stream_state_t;
 
-extern void stream_init( void );
-extern void stream_register( pthread_t tid, int streamix );
+extern void stream_init(void);
+extern void stream_register(pthread_t tid, int streamix);
 /* NOTE: lock() must be held when calling stream_dead */
-extern void stream_dead( pthread_t tid );
-extern void stream_free( pthread_t tid );
-extern int stream_find_all( stream_state_t states[],
+extern void stream_dead(pthread_t tid);
+extern void stream_free(pthread_t tid);
+extern int stream_find_all(stream_state_t states[],
 			    int nstates,
 			    pthread_t tids[],
-			    int ntids );
-extern int stream_getix( pthread_t tid );
-extern void stream_set_code( pthread_t tid, int code );
-extern void stream_set_return( pthread_t tid, rv_t rv );
-extern void stream_set_hint( pthread_t tid, rv_t rv );
-extern bool_t stream_exists( pthread_t tid );
-extern bool_t stream_get_exit_status( pthread_t tid,
+			    int ntids);
+extern int stream_getix(pthread_t tid);
+extern void stream_set_code(pthread_t tid, int code);
+extern void stream_set_return(pthread_t tid, rv_t rv);
+extern void stream_set_hint(pthread_t tid, rv_t rv);
+extern bool_t stream_exists(pthread_t tid);
+extern bool_t stream_get_exit_status(pthread_t tid,
 				      stream_state_t states[],
 				      int nstates,
 				      stream_state_t *state,
@@ -63,7 +63,7 @@ extern bool_t stream_get_exit_status( pthread_t tid,
 				      int *exit_code,
 				      rv_t *exit_return,
 				      rv_t *exit_hint);
-extern size_t stream_cnt( void );
+extern size_t stream_cnt(void);
 
 
 #endif /* STREAM_H */

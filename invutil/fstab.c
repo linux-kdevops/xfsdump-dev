@@ -83,7 +83,7 @@ fstab_commit(WINDOW *win, node_t *current, node_t *list)
 
 	fstabentry_idx = (int)(((long)fstabentry - (long)fstab_file[fidx].mapaddr - sizeof(invt_counter_t)) / sizeof(invt_fstab_t));
 
-	if ( fstab_file[fidx].counter->ic_curnum > 1 ) {
+	if (fstab_file[fidx].counter->ic_curnum > 1) {
 	    memmove(fstabentry,
 		    fstabentry + 1,
 		    (sizeof(invt_fstab_t) * (fstab_file[fidx].counter->ic_curnum - fstabentry_idx - 1)));
@@ -355,7 +355,7 @@ remmap_fstab(int fidx, int num)
 
     nEntries = fstab_file[fidx].counter->ic_curnum;
 
-    munmap( fstab_file[fidx].mapaddr,
+    munmap(fstab_file[fidx].mapaddr,
 	    (nEntries * sizeof(invt_fstab_t)) + sizeof(invt_counter_t));
 
     /* need to lseek on the file to grow it to the right size - no autogrow on linux */
@@ -395,9 +395,9 @@ open_fstab(char *fstabname)
     char		*name;
     invt_counter_t	cnt;
 
-    fd = open_and_lock( fstabname, FILE_WRITE, wait_for_locks );
+    fd = open_and_lock(fstabname, FILE_WRITE, wait_for_locks);
     if (fd < 0) {
-	fprintf( stderr, "%s: abnormal termination\n", g_programName );
+	fprintf(stderr, "%s: abnormal termination\n", g_programName);
 	exit(1);
     }
 
@@ -426,7 +426,7 @@ close_fstab(int fidx)
 
     fstabentries = fstab_file[fidx].counter->ic_curnum;
 
-    munmap( fstab_file[fidx].mapaddr,
+    munmap(fstab_file[fidx].mapaddr,
 	    (fstab_file[fidx].counter->ic_curnum * sizeof(invt_fstab_t)) + sizeof(invt_counter_t));
 
     if ((fstabentries != 0)  && (fstabentries < fstab_file[fidx].nEntries)) {
@@ -437,7 +437,7 @@ close_fstab(int fidx)
     close(fstab_file[fidx].fd);
 
     if (fstabentries == 0) {
-	unlink( fstab_file[fidx].name );
+	unlink(fstab_file[fidx].name);
     }
 
     free(fstab_file[fidx].name);

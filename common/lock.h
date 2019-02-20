@@ -18,10 +18,10 @@
 #ifndef LOCK_H
 #define LOCK_H
 
-extern bool_t lock_init( void );
+extern bool_t lock_init(void);
 
-extern void lock( void );
+extern void lock(void);
 
-extern void unlock( void );
+extern void unlock(void);
 
 #endif /* LOCK_H */

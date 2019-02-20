@@ -49,35 +49,35 @@ static char inv_dirpathp[MGR_PATH_MAX];
 static char inv_lockfilep[MGR_PATH_MAX];
 
 char *
-inv_dirpath( void )
+inv_dirpath(void)
 {
 	assert(inv_base);
 	return inv_dirpathp;
 }
 
 char *
-inv_fstab( void )
+inv_fstab(void)
 {
 	assert(inv_base);
 	return inv_fstabp;
 }
 
 char *
-inv_lockfile( void )
+inv_lockfile(void)
 {
 	assert(inv_base);
 	return inv_lockfilep;
 }
 
 char *
-inv_basepath( void )
+inv_basepath(void)
 {
 	assert(inv_base);
 	return inv_base;
 }
 
 int
-inv_setup_base( void )
+inv_setup_base(void)
 {
 	struct stat64 new_sbuf, old_sbuf;
 	int new_exists, old_exists;

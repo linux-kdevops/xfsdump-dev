@@ -46,8 +46,8 @@ char *	GetNameOfInvIndex (char *, uuid_t);
 char *	GetNameOfStobj (char *inv_path, char *filename);
 void	CheckAndPruneFstab(
 		char *, bool_t, char *, uuid_t *, uuid_t *, time32_t, char *);
-int	CheckAndPruneInvIndexFile( bool_t, char *, uuid_t *, time32_t, char *);
-int	CheckAndPruneStObjFile( bool_t, char *, uuid_t *, time32_t, char *);
+int	CheckAndPruneInvIndexFile(bool_t, char *, uuid_t *, time32_t, char *);
+int	CheckAndPruneStObjFile(bool_t, char *, uuid_t *, time32_t, char *);
 int	uses_specified_mf_label(
 		invt_seshdr_t *, invt_session_t *, char	*, char *);
 time32_t ParseDate(char *);
@@ -57,7 +57,7 @@ void	read_n_bytes(int, void *, size_t, char *);
 void	write_n_bytes(int, void *, size_t, char *);
 void *	mmap_n_bytes(int, size_t, bool_t, char *);
 void	ListFstab(void);
-int	ListInvIndexFile( char *);
+int	ListInvIndexFile(char *);
 int	ListStObjFile(char *);
 int	invutil_interactive(char *, char *, uuid_t *, time32_t timeSecs);
 int	mntpnt_equal(char *s1, char *s2);

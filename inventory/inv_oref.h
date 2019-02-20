@@ -120,7 +120,7 @@ typedef struct invt_oref {
  * For locking/unlocking orefs - mode { LOCK_SH, LOCK_EX, LOCK_UN }
  */
 
-#define OREF_LOCKMODE_EQL(oref, mode) ((oref)->lockflag == mode )
+#define OREF_LOCKMODE_EQL(oref, mode) ((oref)->lockflag == mode)
 #define OREF_ISLOCKED(oref)	      ((oref)->lockflag == 0 ||
 				       (oref)->lockflag == LOCK_UN)
 

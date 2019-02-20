@@ -66,22 +66,22 @@
  * with a handle checksum.
  */
 #define HDLSUMCNT		4
-#define	HDLSUMSHIFT		( NBBY * sizeof ( dah_t ) - HDLSUMCNT )
-#define	HDLSUMLOMASK		( ( 1 << HDLSUMCNT ) - 1 )
-#define	HDLSUMMASK		( HDLSUMLOMASK << HDLSUMSHIFT )
+#define	HDLSUMSHIFT		(NBBY * sizeof (dah_t) - HDLSUMCNT)
+#define	HDLSUMLOMASK		((1 << HDLSUMCNT) - 1)
+#define	HDLSUMMASK		(HDLSUMLOMASK << HDLSUMSHIFT)
 #define HDLDIXCNT		HDLSUMSHIFT
-#define HDLDIXMASK		( ( 1 << HDLDIXCNT ) - 1 )
-#define HDLGETSUM( h )		( ( uint16_t )				\
-				  ( ( ( int )h >> HDLSUMSHIFT )		\
+#define HDLDIXMASK		((1 << HDLDIXCNT) - 1)
+#define HDLGETSUM(h)		((uint16_t)				\
+				  (((int)h >> HDLSUMSHIFT)		\
 				    &					\
-				    HDLSUMLOMASK ))
-#define HDLGETDIX( h )		( ( dix_t )( ( int )h & HDLDIXMASK ))
-#define HDLMKHDL( s, d )	( ( dah_t )( ( ( ( int )s << HDLSUMSHIFT )\
+				    HDLSUMLOMASK))
+#define HDLGETDIX(h)		((dix_t)((int)h & HDLDIXMASK))
+#define HDLMKHDL(s, d)	((dah_t)((((int)s << HDLSUMSHIFT)\
 					       &			\
-					       HDLSUMMASK )		\
+					       HDLSUMMASK)		\
 					  |				\
-					  ( ( int )d & HDLDIXMASK )))
-#define DIX_MAX			( ( off64_t )HDLDIXMASK )
+					  ((int)d & HDLDIXMASK)))
+#define DIX_MAX			((off64_t)HDLDIXMASK)
 
 /* each dirattr will hold two check fields: a handle checksum, and unique
  * pattern, to differentiate a valid dirattr from random file contents.
@@ -90,13 +90,13 @@
 
 #else /* DIRATTRCHK */
 
-#define DIX_MAX			( ( ( off64_t )1			\
+#define DIX_MAX			(((off64_t)1			\
 				    <<					\
-				    ( ( off64_t )NBBY			\
+				    ((off64_t)NBBY			\
 				      *					\
-				      ( off64_t )sizeof( dah_t )))	\
+				      (off64_t)sizeof(dah_t)))	\
 				  -					\
-				  ( off64_t )2 ) /* 2 to avoid DAH_NULL */
+				  (off64_t)2) /* 2 to avoid DAH_NULL */
 
 #endif /* DIRATTRCHK */
 
@@ -123,7 +123,7 @@ struct dirattr {
 
 typedef struct dirattr dirattr_t;
 
-#define DIRATTR_EXTATTROFFNULL	( ( off64_t )OFF64MAX )
+#define DIRATTR_EXTATTROFFNULL	((off64_t)OFF64MAX)
 
 /* dirattr persistent context definition
  */
@@ -164,12 +164,12 @@ typedef struct dirattr_tran dirattr_tran_t;
  * in the lseek64 system call.
  */
 typedef off64_t dix_t;
-#define DIX2OFF( dix )	( ( off64_t )( dix * ( off64_t )sizeof( dirattr_t )   \
+#define DIX2OFF(dix)	((off64_t)(dix * (off64_t)sizeof(dirattr_t)   \
 				       +				      \
-				       ( off64_t )DIRATTR_PERS_SZ ))
-#define OFF2DIX( doff )	( ( dix_t )( ( doff - ( off64_t )DIRATTR_PERS_SZ )    \
+				       (off64_t)DIRATTR_PERS_SZ))
+#define OFF2DIX(doff)	((dix_t)((doff - (off64_t)DIRATTR_PERS_SZ)    \
 				     /					      \
-				     ( off64_t )sizeof( dirattr_t )))
+				     (off64_t)sizeof(dirattr_t)))
 
 
 /* declarations of externally defined global symbols *************************/
@@ -178,10 +178,10 @@ extern size_t pgsz;
 
 /* forward declarations of locally defined static functions ******************/
 
-static void dirattr_get( dah_t );
-static void dirattr_cacheflush( void );
+static void dirattr_get(dah_t);
+static void dirattr_cacheflush(void);
 #ifdef DIRATTRCHK
-static uint16_t calcdixcum( dix_t dix );
+static uint16_t calcdixcum(dix_t dix);
 #endif /* DIRATTRCHK */
 
 
@@ -199,58 +199,58 @@ static dirattr_pers_t *dpp = 0;
 /* definition of locally defined global functions ****************************/
 
 bool_t
-dirattr_init( char *hkdir, bool_t resume, uint64_t dircnt )
+dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 {
-	if ( dtp ) {
+	if (dtp) {
 		return BOOL_TRUE;
 	}
 
 	/* sanity checks
 	 */
-	assert( sizeof( dirattr_pers_t ) <= DIRATTR_PERS_SZ );
-	assert( ! dtp );
-	assert( ! dpp );
+	assert(sizeof(dirattr_pers_t) <= DIRATTR_PERS_SZ);
+	assert(! dtp);
+	assert(! dpp);
 
 	/* allocate and initialize context
 	 */
-	dtp = ( dirattr_tran_t * )calloc( 1, sizeof( dirattr_tran_t ));
-	assert( dtp );
+	dtp = (dirattr_tran_t *)calloc(1, sizeof(dirattr_tran_t));
+	assert(dtp);
 	dtp->dt_cachedh = DAH_NULL;
 	dtp->dt_fd = -1;
 	dtp->dt_extattrfd = -1;
 
 	/* generate a string containing the pathname of the dirattr file
 	 */
-	dtp->dt_pathname = open_pathalloc( hkdir, dirattrfile, 0 );
+	dtp->dt_pathname = open_pathalloc(hkdir, dirattrfile, 0);
 
 	/* open the dirattr file
 	 */
-	if ( resume ) {
+	if (resume) {
 		/* open existing file
 		 */
-		dtp->dt_fd = open( dtp->dt_pathname, O_RDWR );
-		if ( dtp->dt_fd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_ERROR, _(
+		dtp->dt_fd = open(dtp->dt_pathname, O_RDWR);
+		if (dtp->dt_fd < 0) {
+			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not find directory attributes file %s: "
 			      "%s\n"),
 			      dtp->dt_pathname,
-			      strerror( errno ));
+			      strerror(errno));
 			return BOOL_FALSE;
 		}
 	} else {
 		/* create the dirattr file, first unlinking any older version
 		 * laying around
 		 */
-		( void )unlink( dtp->dt_pathname );
-		dtp->dt_fd = open( dtp->dt_pathname,
+		(void)unlink(dtp->dt_pathname);
+		dtp->dt_fd = open(dtp->dt_pathname,
 				   O_RDWR | O_CREAT | O_EXCL,
-				   S_IRUSR | S_IWUSR );
-		if ( dtp->dt_fd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_ERROR, _(
+				   S_IRUSR | S_IWUSR);
+		if (dtp->dt_fd < 0) {
+			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not create directory attributes file %s: "
 			      "%s\n"),
 			      dtp->dt_pathname,
-			      strerror( errno ));
+			      strerror(errno));
 			return BOOL_FALSE;
 		}
 
@@ -264,7 +264,7 @@ dirattr_init( char *hkdir, bool_t resume, uint64_t dircnt )
 		int loglevel;
 		size_t trycnt;
 
-		for ( trycnt = 0,
+		for (trycnt = 0,
 		      successpr = BOOL_FALSE,
 		      ioctlcmd = XFS_IOC_RESVSP64,
 		      loglevel = MLOG_VERBOSE
@@ -273,25 +273,25 @@ dirattr_init( char *hkdir, bool_t resume, uint64_t dircnt )
 		      ;
 		      trycnt++,
 		      ioctlcmd = XFS_IOC_ALLOCSP64,
-		      loglevel = max( MLOG_NORMAL, loglevel - 1 )) {
+		      loglevel = max(MLOG_NORMAL, loglevel - 1)) {
 			off64_t initsz;
 			struct flock64 flock64;
 			int rval;
 
-			if ( ! ioctlcmd ) {
+			if (! ioctlcmd) {
 				continue;
 			}
 
-			initsz = ( off64_t )DIRATTR_PERS_SZ
+			initsz = (off64_t)DIRATTR_PERS_SZ
 				 +
-				 ( ( off64_t )dircnt * sizeof( dirattr_t ));
+				 ((off64_t)dircnt * sizeof(dirattr_t));
 			flock64.l_whence = 0;
 			flock64.l_start = 0;
 			flock64.l_len = initsz;
-			rval = ioctl( dtp->dt_fd, ioctlcmd, &flock64 );
-			if ( rval ) {
-				if ( errno != ENOTTY ) {
-					mlog( loglevel | MLOG_NOTE, _(
+			rval = ioctl(dtp->dt_fd, ioctlcmd, &flock64);
+			if (rval) {
+				if (errno != ENOTTY) {
+					mlog(loglevel | MLOG_NOTE, _(
 					      "attempt to reserve %lld bytes for %s "
 					      "using %s "
 					      "failed: %s (%d)\n"),
@@ -302,8 +302,8 @@ dirattr_init( char *hkdir, bool_t resume, uint64_t dircnt )
 					      "XFS_IOC_RESVSP64"
 					      :
 					      "XFS_IOC_ALLOCSP64",
-					      strerror( errno ),
-					      errno );
+					      strerror(errno),
+					      errno);
 				}
 			} else {
 				successpr = BOOL_TRUE;
@@ -314,23 +314,23 @@ dirattr_init( char *hkdir, bool_t resume, uint64_t dircnt )
 
 	/* mmap the persistent descriptor
 	 */
-	assert( ! ( DIRATTR_PERS_SZ % pgsz ));
-	dpp = ( dirattr_pers_t * )mmap_autogrow( DIRATTR_PERS_SZ,
+	assert(! (DIRATTR_PERS_SZ % pgsz));
+	dpp = (dirattr_pers_t *)mmap_autogrow(DIRATTR_PERS_SZ,
 				        dtp->dt_fd,
-				        ( off_t )0 );
-	assert( dpp );
-	if ( dpp == ( dirattr_pers_t * )-1 ) {
-		mlog( MLOG_NORMAL | MLOG_ERROR, _(
+				        (off_t)0);
+	assert(dpp);
+	if (dpp == (dirattr_pers_t *)-1) {
+		mlog(MLOG_NORMAL | MLOG_ERROR, _(
 		      "unable to map %s: %s\n"),
 		      dtp->dt_pathname,
-		      strerror( errno ));
+		      strerror(errno));
 		return BOOL_FALSE;
 	}
 
 	/* initialize persistent state
 	 */
-	if ( ! resume ) {
-		dpp->dp_appendoff = ( off64_t )DIRATTR_PERS_SZ;
+	if (! resume) {
+		dpp->dp_appendoff = (off64_t)DIRATTR_PERS_SZ;
 	}
 
 	/* initialize transient state
@@ -340,53 +340,53 @@ dirattr_init( char *hkdir, bool_t resume, uint64_t dircnt )
 	/* calculate the dir extattr pathname, and set the fd to -1.
 	 * file will be created on demand.
 	 */
-	dtp->dt_extattrpathname = open_pathalloc( hkdir, dirextattrfile, 0 );
+	dtp->dt_extattrpathname = open_pathalloc(hkdir, dirextattrfile, 0);
 	dtp->dt_extattrfd = -1;
 	dtp->dt_extattrfdbadpr = BOOL_FALSE;
-	if ( resume ) {
-		( void )unlink( dtp->dt_extattrpathname );
+	if (resume) {
+		(void)unlink(dtp->dt_extattrpathname);
 	}
 
 	return BOOL_TRUE;
 }
 
 void
-dirattr_cleanup( void )
+dirattr_cleanup(void)
 {
 	/* REFERENCED */
 	int rval;
 
-	if ( ! dtp ) {
+	if (! dtp) {
 		return;
 	}
-	if ( dpp ) {
-		rval = munmap( ( void * )dpp, DIRATTR_PERS_SZ );
-		assert( ! rval );
+	if (dpp) {
+		rval = munmap((void *)dpp, DIRATTR_PERS_SZ);
+		assert(! rval);
 		dpp = 0;
 	}
-	if ( dtp->dt_fd >= 0 ) {
-		( void )close( dtp->dt_fd );
+	if (dtp->dt_fd >= 0) {
+		(void)close(dtp->dt_fd);
 		dtp->dt_fd = -1;
 	}
-	if ( dtp->dt_pathname ) {
-		( void )unlink( dtp->dt_pathname );
-		free( ( void * )dtp->dt_pathname );
+	if (dtp->dt_pathname) {
+		(void)unlink(dtp->dt_pathname);
+		free((void *)dtp->dt_pathname);
 	}
-	if ( dtp->dt_extattrfd >= 0 ) {
-		( void )close( dtp->dt_extattrfd );
+	if (dtp->dt_extattrfd >= 0) {
+		(void)close(dtp->dt_extattrfd);
 		dtp->dt_extattrfd = -1;
 	}
-	if ( dtp->dt_extattrpathname ) {
-		( void )unlink( dtp->dt_extattrpathname );
-		free( ( void * )dtp->dt_extattrpathname );
+	if (dtp->dt_extattrpathname) {
+		(void)unlink(dtp->dt_extattrpathname);
+		free((void *)dtp->dt_extattrpathname);
 	}
 
-	free( ( void * )dtp );
+	free((void *)dtp);
 	dtp = 0;
 }
 
 dah_t
-dirattr_add( filehdr_t *fhdrp )
+dirattr_add(filehdr_t *fhdrp)
 {
 	dirattr_t dirattr;
 	off64_t oldoff;
@@ -398,21 +398,21 @@ dirattr_add( filehdr_t *fhdrp )
 
 	/* sanity checks
 	 */
-	assert( dtp );
-	assert( dpp );
+	assert(dtp);
+	assert(dpp);
 
 	/* make sure file pointer is positioned to write at end of file
 	 */
-	if ( ! dtp->dt_at_endpr ) {
+	if (! dtp->dt_at_endpr) {
 		off64_t newoff;
-		newoff = lseek64( dtp->dt_fd, dpp->dp_appendoff, SEEK_SET );
-		if ( newoff == ( off64_t )-1 ) {
-			mlog( MLOG_NORMAL | MLOG_ERROR, _(
+		newoff = lseek64(dtp->dt_fd, dpp->dp_appendoff, SEEK_SET);
+		if (newoff == (off64_t)-1) {
+			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "lseek of dirattr failed: %s\n"),
-			      strerror( errno ));
+			      strerror(errno));
 			return DAH_NULL;
 		}
-		assert( dpp->dp_appendoff == newoff );
+		assert(dpp->dp_appendoff == newoff);
 		dtp->dt_at_endpr = BOOL_TRUE;
 	}
 
@@ -425,25 +425,25 @@ dirattr_add( filehdr_t *fhdrp )
 	/* calculate the index of this dirattr
 	 */
 	oldoff = dpp->dp_appendoff;
-	dix = OFF2DIX( oldoff );
-	assert( dix <= DIX_MAX );
+	dix = OFF2DIX(oldoff);
+	assert(dix <= DIX_MAX);
 
 	/* populate a dirattr
 	 */
-	dirattr.d_mode = ( mode_t )fhdrp->fh_stat.bs_mode;
-	dirattr.d_uid = ( uid_t )fhdrp->fh_stat.bs_uid;
-	dirattr.d_gid = ( gid_t )fhdrp->fh_stat.bs_gid;
-	dirattr.d_atime = ( time32_t )fhdrp->fh_stat.bs_atime.tv_sec;
-	dirattr.d_mtime = ( time32_t )fhdrp->fh_stat.bs_mtime.tv_sec;
-	dirattr.d_ctime = ( time32_t )fhdrp->fh_stat.bs_ctime.tv_sec;
+	dirattr.d_mode = (mode_t)fhdrp->fh_stat.bs_mode;
+	dirattr.d_uid = (uid_t)fhdrp->fh_stat.bs_uid;
+	dirattr.d_gid = (gid_t)fhdrp->fh_stat.bs_gid;
+	dirattr.d_atime = (time32_t)fhdrp->fh_stat.bs_atime.tv_sec;
+	dirattr.d_mtime = (time32_t)fhdrp->fh_stat.bs_mtime.tv_sec;
+	dirattr.d_ctime = (time32_t)fhdrp->fh_stat.bs_ctime.tv_sec;
 	dirattr.d_xflags = fhdrp->fh_stat.bs_xflags;
-	dirattr.d_extsize = ( uint32_t )fhdrp->fh_stat.bs_extsize;
+	dirattr.d_extsize = (uint32_t)fhdrp->fh_stat.bs_extsize;
 	dirattr.d_projid = bstat_projid(&(fhdrp->fh_stat));
 	dirattr.d_dmevmask = fhdrp->fh_stat.bs_dmevmask;
-	dirattr.d_dmstate = ( uint32_t )fhdrp->fh_stat.bs_dmstate;
+	dirattr.d_dmstate = (uint32_t)fhdrp->fh_stat.bs_dmstate;
 #ifdef DIRATTRCHK
 	dirattr.d_unq = DIRATTRUNQ;
-	sum = calcdixcum( dix );
+	sum = calcdixcum(dix);
 	dirattr.d_sum = sum;
 #endif /* DIRATTRCHK */
 	dirattr.d_extattroff = DIRATTR_EXTATTROFFNULL;
@@ -455,20 +455,20 @@ dirattr_add( filehdr_t *fhdrp )
 
 	/* update the next write offset
 	 */
-	assert( dpp->dp_appendoff <= OFF64MAX - ( off64_t )sizeof(dirattr_t) );
-	dpp->dp_appendoff += ( off64_t )sizeof(dirattr_t);
+	assert(dpp->dp_appendoff <= OFF64MAX - (off64_t)sizeof(dirattr_t));
+	dpp->dp_appendoff += (off64_t)sizeof(dirattr_t);
 
 #ifdef DIRATTRCHK
-	dah = HDLMKHDL( sum, dix );
+	dah = HDLMKHDL(sum, dix);
 #else /* DIRATTRCHK */
-	dah = ( dah_t )dix;
+	dah = (dah_t)dix;
 #endif /* DIRATTRCHK */
 
 	return dah;
 }
 
 void
-dirattr_addextattr( dah_t dah, extattrhdr_t *ahdrp )
+dirattr_addextattr(dah_t dah, extattrhdr_t *ahdrp)
 {
 	off64_t oldoff;
 	off64_t off;
@@ -479,25 +479,25 @@ dirattr_addextattr( dah_t dah, extattrhdr_t *ahdrp )
 
 	/* pull the selected dir attributes into the cache
 	 */
-	dirattr_get( dah );
+	dirattr_get(dah);
 
 	/* open/create extended attributes file if not yet done
 	 */
-	if ( dtp->dt_extattrfd < 0 ) {
-		if ( dtp->dt_extattrfdbadpr ) {
+	if (dtp->dt_extattrfd < 0) {
+		if (dtp->dt_extattrfdbadpr) {
 			return;
 		}
-		dtp->dt_extattrfd = open( dtp->dt_extattrpathname,
+		dtp->dt_extattrfd = open(dtp->dt_extattrpathname,
 					  O_RDWR | O_CREAT,
-					  S_IRUSR | S_IWUSR );
-		if ( dtp->dt_extattrfd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+					  S_IRUSR | S_IWUSR);
+		if (dtp->dt_extattrfd < 0) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not open/create directory "
 			      "extended attributes file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return;
 		}
@@ -507,34 +507,34 @@ dirattr_addextattr( dah_t dah, extattrhdr_t *ahdrp )
 	 */
 	off = dtp->dt_cached_dirattr.d_extattroff;
 	oldoff = DIRATTR_EXTATTROFFNULL;
-	while ( off != DIRATTR_EXTATTROFFNULL ) {
-		seekoff = lseek64( dtp->dt_extattrfd, off, SEEK_SET );
-		if ( seekoff < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+	while (off != DIRATTR_EXTATTROFFNULL) {
+		seekoff = lseek64(dtp->dt_extattrfd, off, SEEK_SET);
+		if (seekoff < 0) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not seek to into extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return;
 		}
-		assert( seekoff == off );
+		assert(seekoff == off);
 
 		oldoff = off;
 
-		nread = read( dtp->dt_extattrfd,
-			      ( void * )&off,
-			      sizeof( off ));
-		if ( nread != ( int )sizeof( off )) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		nread = read(dtp->dt_extattrfd,
+			      (void *)&off,
+			      sizeof(off));
+		if (nread != (int)sizeof(off)) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not read extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return;
 		}
@@ -542,42 +542,42 @@ dirattr_addextattr( dah_t dah, extattrhdr_t *ahdrp )
 
 	/* append the extended attributes
 	 */
-	off = lseek64( dtp->dt_extattrfd, 0, SEEK_END );
-	if ( off < 0 ) {
-		mlog( MLOG_NORMAL | MLOG_WARNING, _(
+	off = lseek64(dtp->dt_extattrfd, 0, SEEK_END);
+	if (off < 0) {
+		mlog(MLOG_NORMAL | MLOG_WARNING, _(
 		      "could not seek to end of extended attributes "
 		      "file %s: "
 		      "%s (%d)\n"),
 		      dtp->dt_extattrpathname,
-		      strerror( errno ),
-		      errno );
+		      strerror(errno),
+		      errno);
 		dtp->dt_extattrfdbadpr = BOOL_TRUE;
 		return;
 	}
 	nulloff = DIRATTR_EXTATTROFFNULL;
-	nwritten = write( dtp->dt_extattrfd,
-			  ( void * )&nulloff,
-			  sizeof( nulloff ));
-	if ( nwritten != ( int )sizeof( nulloff )) {
-		mlog( MLOG_NORMAL | MLOG_WARNING, _(
+	nwritten = write(dtp->dt_extattrfd,
+			  (void *)&nulloff,
+			  sizeof(nulloff));
+	if (nwritten != (int)sizeof(nulloff)) {
+		mlog(MLOG_NORMAL | MLOG_WARNING, _(
 		      "could not write extended attributes "
 		      "file %s: "
 		      "%s (%d)\n"),
 		      dtp->dt_extattrpathname,
-		      strerror( errno ),
-		      errno );
+		      strerror(errno),
+		      errno);
 		dtp->dt_extattrfdbadpr = BOOL_TRUE;
 		return;
 	}
-	nwritten = write( dtp->dt_extattrfd, ( void * )ahdrp, ahdrp->ah_sz );
-	if ( nwritten != ( int )( ahdrp->ah_sz )) {
-		mlog( MLOG_NORMAL | MLOG_WARNING, _(
+	nwritten = write(dtp->dt_extattrfd, (void *)ahdrp, ahdrp->ah_sz);
+	if (nwritten != (int)(ahdrp->ah_sz)) {
+		mlog(MLOG_NORMAL | MLOG_WARNING, _(
 		      "could not write at end of extended attributes "
 		      "file %s: "
 		      "%s (%d)\n"),
 		      dtp->dt_extattrpathname,
-		      strerror( errno ),
-		      errno );
+		      strerror(errno),
+		      errno);
 		dtp->dt_extattrfdbadpr = BOOL_TRUE;
 		return;
 	}
@@ -585,34 +585,34 @@ dirattr_addextattr( dah_t dah, extattrhdr_t *ahdrp )
 	/* fill in the offset of the extended attributes into the
 	 * linked list
 	 */
-	if ( oldoff == DIRATTR_EXTATTROFFNULL ) {
+	if (oldoff == DIRATTR_EXTATTROFFNULL) {
 		dtp->dt_cached_dirattr.d_extattroff = off;
-		dirattr_cacheflush( );
+		dirattr_cacheflush();
 	} else {
-		seekoff = lseek64( dtp->dt_extattrfd, oldoff, SEEK_SET );
-		if ( seekoff < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		seekoff = lseek64(dtp->dt_extattrfd, oldoff, SEEK_SET);
+		if (seekoff < 0) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not seek to into extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return;
 		}
-		assert( seekoff == oldoff );
-		nwritten = write( dtp->dt_extattrfd,
-				  ( void * )&off,
-				  sizeof( off ));
-		if ( nwritten != ( int )sizeof( off )) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		assert(seekoff == oldoff);
+		nwritten = write(dtp->dt_extattrfd,
+				  (void *)&off,
+				  sizeof(off));
+		if (nwritten != (int)sizeof(off)) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not write extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return;
 		}
@@ -620,35 +620,35 @@ dirattr_addextattr( dah_t dah, extattrhdr_t *ahdrp )
 }
 
 bool_t
-dirattr_cb_extattr( dah_t dah,
-		    bool_t ( * cbfunc )( extattrhdr_t *ahdrp,
-				         void *ctxp ),
+dirattr_cb_extattr(dah_t dah,
+		    bool_t (* cbfunc)(extattrhdr_t *ahdrp,
+				         void *ctxp),
 		    extattrhdr_t *ahdrp,
-		    void *ctxp )
+		    void *ctxp)
 {
 	off64_t off;
 
 	/* pull the selected dir attributes into the cache
 	 */
-	dirattr_get( dah );
+	dirattr_get(dah);
 
 	/* open/create extended attributes file if not yet done
 	 */
-	if ( dtp->dt_extattrfd < 0 ) {
-		if ( dtp->dt_extattrfdbadpr ) {
+	if (dtp->dt_extattrfd < 0) {
+		if (dtp->dt_extattrfdbadpr) {
 			return BOOL_TRUE;
 		}
-		dtp->dt_extattrfd = open( dtp->dt_extattrpathname,
+		dtp->dt_extattrfd = open(dtp->dt_extattrpathname,
 					  O_RDWR | O_CREAT,
-					  S_IRUSR | S_IWUSR );
-		if ( dtp->dt_extattrfd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+					  S_IRUSR | S_IWUSR);
+		if (dtp->dt_extattrfd < 0) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not open/create directory "
 			      "extended attributes file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return BOOL_TRUE;
 		}
@@ -657,7 +657,7 @@ dirattr_cb_extattr( dah_t dah,
 	/* walk through the dirattr list for this dah
 	 */
 	off = dtp->dt_cached_dirattr.d_extattroff;
-	while ( off != DIRATTR_EXTATTROFFNULL ) {
+	while (off != DIRATTR_EXTATTROFFNULL) {
 		off64_t seekoff;
 		int nread;
 		off64_t nextoff;
@@ -666,77 +666,77 @@ dirattr_cb_extattr( dah_t dah,
 
 		/* seek to the extattr
 		 */
-		seekoff = lseek64( dtp->dt_extattrfd, off, SEEK_SET );
-		if ( seekoff < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		seekoff = lseek64(dtp->dt_extattrfd, off, SEEK_SET);
+		if (seekoff < 0) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not seek to into extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return BOOL_TRUE;
 		}
-		assert( seekoff == off );
+		assert(seekoff == off);
 
 		/* peel off the next offset
 		 */
-		nread = read( dtp->dt_extattrfd,
-			      ( void * )&nextoff,
-			      sizeof( nextoff ));
-		if ( nread != ( int )sizeof( nextoff )) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		nread = read(dtp->dt_extattrfd,
+			      (void *)&nextoff,
+			      sizeof(nextoff));
+		if (nread != (int)sizeof(nextoff)) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not read extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return BOOL_TRUE;
 		}
 
 		/* read the extattr hdr
 		 */
-		nread = read( dtp->dt_extattrfd,
-			      ( void * )ahdrp,
-			      EXTATTRHDR_SZ );
-		if ( nread != EXTATTRHDR_SZ ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		nread = read(dtp->dt_extattrfd,
+			      (void *)ahdrp,
+			      EXTATTRHDR_SZ);
+		if (nread != EXTATTRHDR_SZ) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not read extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return BOOL_TRUE;
 		}
 
 		/* read the remainder of the extattr
 		 */
-		recsz = ( size_t )ahdrp->ah_sz;
-		assert( recsz >= EXTATTRHDR_SZ );
-		nread = read( dtp->dt_extattrfd,
-			      ( void * )&ahdrp[ 1 ],
-			      recsz - EXTATTRHDR_SZ );
-		if ( nread != ( int )( recsz - EXTATTRHDR_SZ )) {
-			mlog( MLOG_NORMAL | MLOG_WARNING, _(
+		recsz = (size_t)ahdrp->ah_sz;
+		assert(recsz >= EXTATTRHDR_SZ);
+		nread = read(dtp->dt_extattrfd,
+			      (void *)&ahdrp[1],
+			      recsz - EXTATTRHDR_SZ);
+		if (nread != (int)(recsz - EXTATTRHDR_SZ)) {
+			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "could not read extended attributes "
 			      "file %s: "
 			      "%s (%d)\n"),
 			      dtp->dt_extattrpathname,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 			dtp->dt_extattrfdbadpr = BOOL_TRUE;
 			return BOOL_TRUE;
 		}
 
 		/* call the callback func
 		 */
-		ok = ( * cbfunc )( ahdrp, ctxp );
-		if ( ! ok ) {
+		ok = (* cbfunc)(ahdrp, ctxp);
+		if (! ok) {
 			return BOOL_FALSE;
 		}
 
@@ -749,7 +749,7 @@ dirattr_cb_extattr( dah_t dah,
 }
 
 void
-dirattr_update( dah_t dah, filehdr_t *fhdrp )
+dirattr_update(dah_t dah, filehdr_t *fhdrp)
 {
 	dix_t dix;
 #ifdef DIRATTRCHK
@@ -762,73 +762,73 @@ dirattr_update( dah_t dah, filehdr_t *fhdrp )
 
 	/* sanity checks
 	 */
-	assert( dtp );
-	assert( dpp );
+	assert(dtp);
+	assert(dpp);
 
-	assert( dah != DAH_NULL );
+	assert(dah != DAH_NULL);
 
 #ifdef DIRATTRCHK
-	sum = HDLGETSUM( dah );
-	dix = HDLGETDIX( dah );
+	sum = HDLGETSUM(dah);
+	dix = HDLGETDIX(dah);
 #else /* DIRATTRCHK */
-	dix = ( dix_t )dah;
+	dix = (dix_t)dah;
 #endif /* DIRATTRCHK */
 
-	assert( dix >= 0 );
-	assert( dix <= DIX_MAX );
+	assert(dix >= 0);
+	assert(dix <= DIX_MAX);
 
-	argoff = DIX2OFF( dix );
-	assert( argoff >= 0 );
-	assert( argoff >= ( off64_t )DIRATTR_PERS_SZ );
-	assert( argoff <= dpp->dp_appendoff - ( off64_t )sizeof( dirattr_t ));
+	argoff = DIX2OFF(dix);
+	assert(argoff >= 0);
+	assert(argoff >= (off64_t)DIRATTR_PERS_SZ);
+	assert(argoff <= dpp->dp_appendoff - (off64_t)sizeof(dirattr_t));
 
 #ifdef DIRATTRCHK
-	dirattr_get( dah );
-	assert( dtp->dt_cached_dirattr.d_unq == DIRATTRUNQ );
-	assert( dtp->dt_cached_dirattr.d_sum == sum );
+	dirattr_get(dah);
+	assert(dtp->dt_cached_dirattr.d_unq == DIRATTRUNQ);
+	assert(dtp->dt_cached_dirattr.d_sum == sum);
 #endif /* DIRATTRCHK */
 
-	if ( dtp->dt_at_endpr && dtp->dt_off ) {
+	if (dtp->dt_at_endpr && dtp->dt_off) {
 		if (dirattr_flush() != RV_OK) {
-			assert( 0 );
+			assert(0);
 			return;
 		}
 	}
 
 	/* seek to the dirattr
 	 */
-	newoff = lseek64( dtp->dt_fd, argoff, SEEK_SET );
-	if ( newoff == ( off64_t )-1 ) {
-		mlog( MLOG_NORMAL, _(
+	newoff = lseek64(dtp->dt_fd, argoff, SEEK_SET);
+	if (newoff == (off64_t)-1) {
+		mlog(MLOG_NORMAL, _(
 		      "lseek of dirattr failed: %s\n"),
-		      strerror( errno ));
-		assert( 0 );
+		      strerror(errno));
+		assert(0);
 	}
-	assert( newoff == argoff );
+	assert(newoff == argoff);
 
 	/* populate a dirattr
 	 */
-	dirattr.d_mode = ( mode_t )fhdrp->fh_stat.bs_mode;
-	dirattr.d_uid = ( uid_t )fhdrp->fh_stat.bs_uid;
-	dirattr.d_gid = ( gid_t )fhdrp->fh_stat.bs_gid;
-	dirattr.d_atime = ( time32_t )fhdrp->fh_stat.bs_atime.tv_sec;
-	dirattr.d_mtime = ( time32_t )fhdrp->fh_stat.bs_mtime.tv_sec;
-	dirattr.d_ctime = ( time32_t )fhdrp->fh_stat.bs_ctime.tv_sec;
+	dirattr.d_mode = (mode_t)fhdrp->fh_stat.bs_mode;
+	dirattr.d_uid = (uid_t)fhdrp->fh_stat.bs_uid;
+	dirattr.d_gid = (gid_t)fhdrp->fh_stat.bs_gid;
+	dirattr.d_atime = (time32_t)fhdrp->fh_stat.bs_atime.tv_sec;
+	dirattr.d_mtime = (time32_t)fhdrp->fh_stat.bs_mtime.tv_sec;
+	dirattr.d_ctime = (time32_t)fhdrp->fh_stat.bs_ctime.tv_sec;
 	dirattr.d_xflags = fhdrp->fh_stat.bs_xflags;
-	dirattr.d_extsize = ( uint32_t )fhdrp->fh_stat.bs_extsize;
+	dirattr.d_extsize = (uint32_t)fhdrp->fh_stat.bs_extsize;
 	dirattr.d_projid = bstat_projid(&(fhdrp->fh_stat));
 	dirattr.d_dmevmask = fhdrp->fh_stat.bs_dmevmask;
-	dirattr.d_dmstate = ( uint32_t )fhdrp->fh_stat.bs_dmstate;
+	dirattr.d_dmstate = (uint32_t)fhdrp->fh_stat.bs_dmstate;
 	dirattr.d_extattroff = DIRATTR_EXTATTROFFNULL;
 
 	/* write the dirattr
 	 */
-	nwritten = write( dtp->dt_fd, ( void * )&dirattr, sizeof( dirattr ));
-	if ( ( size_t )nwritten != sizeof( dirattr )) {
-		mlog( MLOG_NORMAL, _(
+	nwritten = write(dtp->dt_fd, (void *)&dirattr, sizeof(dirattr));
+	if ((size_t)nwritten != sizeof(dirattr)) {
+		mlog(MLOG_NORMAL, _(
 		      "update of dirattr failed: %s\n"),
-		      strerror( errno ));
-		assert( 0 );
+		      strerror(errno));
+		assert(0);
 	}
 
 	dtp->dt_at_endpr = BOOL_FALSE;
@@ -837,84 +837,84 @@ dirattr_update( dah_t dah, filehdr_t *fhdrp )
 
 /* ARGSUSED */
 void
-dirattr_del( dah_t dah )
+dirattr_del(dah_t dah)
 {
 }
 
 mode_t
-dirattr_get_mode( dah_t dah )
+dirattr_get_mode(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_mode;
 }
 
 uid_t
-dirattr_get_uid( dah_t dah )
+dirattr_get_uid(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_uid;
 }
 
 uid_t
-dirattr_get_gid( dah_t dah )
+dirattr_get_gid(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_gid;
 }
 
 time32_t
-dirattr_get_atime( dah_t dah )
+dirattr_get_atime(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_atime;
 }
 
 time32_t
-dirattr_get_mtime( dah_t dah )
+dirattr_get_mtime(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_mtime;
 }
 
 time32_t
-dirattr_get_ctime( dah_t dah )
+dirattr_get_ctime(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_ctime;
 }
 
 uint32_t
-dirattr_get_xflags( dah_t dah )
+dirattr_get_xflags(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_xflags;
 }
 
 uint32_t
-dirattr_get_extsize( dah_t dah )
+dirattr_get_extsize(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_extsize;
 }
 
 uint32_t
-dirattr_get_projid( dah_t dah )
+dirattr_get_projid(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_projid;
 }
 
 uint32_t
-dirattr_get_dmevmask( dah_t dah )
+dirattr_get_dmevmask(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_dmevmask;
 }
 
 uint32_t
-dirattr_get_dmstate( dah_t dah )
+dirattr_get_dmstate(dah_t dah)
 {
-	dirattr_get( dah );
+	dirattr_get(dah);
 	return dtp->dt_cached_dirattr.d_dmstate;
 }
 
@@ -925,24 +925,24 @@ dirattr_flush()
 
 	/* sanity checks
 	*/
-	assert ( dtp );
+	assert (dtp);
 
 	if (dtp->dt_off) {
 		/* write the accumulated dirattr entries
 		*/
-		nwritten = write( dtp->dt_fd, ( void * )dtp->dt_buf, dtp->dt_off);
-		if ( nwritten != dtp->dt_off ) {
-			if ( nwritten < 0 ) {
-				mlog( MLOG_NORMAL | MLOG_ERROR,
+		nwritten = write(dtp->dt_fd, (void *)dtp->dt_buf, dtp->dt_off);
+		if (nwritten != dtp->dt_off) {
+			if (nwritten < 0) {
+				mlog(MLOG_NORMAL | MLOG_ERROR,
 					_("write of dirattr buffer failed: %s\n"),
-					strerror( errno ));
+					strerror(errno));
 			} else {
-				mlog( MLOG_NORMAL | MLOG_ERROR,
+				mlog(MLOG_NORMAL | MLOG_ERROR,
 					_("write of dirattr buffer failed: "
 					"expected to write %ld, actually "
 					"wrote %ld\n"), dtp->dt_off, nwritten);
 			}
-			assert( 0 );
+			assert(0);
 			return RV_UNKNOWN;
 		}
 		dtp->dt_off = 0;
@@ -953,7 +953,7 @@ dirattr_flush()
 /* definition of locally defined static functions ****************************/
 
 static void
-dirattr_get( dah_t dah )
+dirattr_get(dah_t dah)
 {
 	dix_t dix;
 	off64_t argoff;
@@ -965,65 +965,65 @@ dirattr_get( dah_t dah )
 
 	/* sanity checks
 	 */
-	assert( dtp );
-	assert( dpp );
+	assert(dtp);
+	assert(dpp);
 
-	assert( dah != DAH_NULL );
+	assert(dah != DAH_NULL);
 
 	/* if we are already holding this dirattr in cache,
 	 * just return
 	 */
-	if ( dtp->dt_cachedh == dah ) {
+	if (dtp->dt_cachedh == dah) {
 		return;
 	}
 
 #ifdef DIRATTRCHK
-	sum = HDLGETSUM( dah );
-	dix = HDLGETDIX( dah );
+	sum = HDLGETSUM(dah);
+	dix = HDLGETDIX(dah);
 #else /* DIRATTRCHK */
-	dix = ( dix_t )dah;
+	dix = (dix_t)dah;
 #endif /* DIRATTRCHK */
-	assert( dix >= 0 );
-	assert( dix <= DIX_MAX );
+	assert(dix >= 0);
+	assert(dix <= DIX_MAX);
 
-	argoff = DIX2OFF( dix );
-	assert( argoff >= 0 );
-	assert( argoff >= ( off64_t )DIRATTR_PERS_SZ );
-	assert( argoff <= dpp->dp_appendoff - ( off64_t )sizeof( dirattr_t ));
+	argoff = DIX2OFF(dix);
+	assert(argoff >= 0);
+	assert(argoff >= (off64_t)DIRATTR_PERS_SZ);
+	assert(argoff <= dpp->dp_appendoff - (off64_t)sizeof(dirattr_t));
 
-	if ( dtp->dt_at_endpr && dtp->dt_off ) {
+	if (dtp->dt_at_endpr && dtp->dt_off) {
 		if (dirattr_flush() != RV_OK) {
-			assert( 0 );
+			assert(0);
 			return;
 		}
 	}
 
 	/* seek to the dirattr
 	 */
-	newoff = lseek64( dtp->dt_fd, argoff, SEEK_SET );
-	if ( newoff == ( off64_t )-1 ) {
-		mlog( MLOG_NORMAL, _(
+	newoff = lseek64(dtp->dt_fd, argoff, SEEK_SET);
+	if (newoff == (off64_t)-1) {
+		mlog(MLOG_NORMAL, _(
 		      "lseek of dirattr failed: %s\n"),
-		      strerror( errno ));
-		assert( 0 );
+		      strerror(errno));
+		assert(0);
 	}
-	assert( newoff == argoff );
+	assert(newoff == argoff);
 
 	/* read the dirattr
 	 */
-	nread = read( dtp->dt_fd,
-		      ( void * )&dtp->dt_cached_dirattr,
-		      sizeof( dtp->dt_cached_dirattr ));
-	if ( ( size_t )nread != sizeof( dtp->dt_cached_dirattr )) {
-		mlog( MLOG_NORMAL, _(
+	nread = read(dtp->dt_fd,
+		      (void *)&dtp->dt_cached_dirattr,
+		      sizeof(dtp->dt_cached_dirattr));
+	if ((size_t)nread != sizeof(dtp->dt_cached_dirattr)) {
+		mlog(MLOG_NORMAL, _(
 		      "read of dirattr failed: %s\n"),
-		      strerror( errno ));
-		assert( 0 );
+		      strerror(errno));
+		assert(0);
 	}
 
 #ifdef DIRATTRCHK
-	assert( dtp->dt_cached_dirattr.d_unq == DIRATTRUNQ );
-	assert( dtp->dt_cached_dirattr.d_sum == sum );
+	assert(dtp->dt_cached_dirattr.d_unq == DIRATTRUNQ);
+	assert(dtp->dt_cached_dirattr.d_sum == sum);
 #endif /* DIRATTRCHK */
 
 	dtp->dt_at_endpr = BOOL_FALSE;
@@ -1031,7 +1031,7 @@ dirattr_get( dah_t dah )
 }
 
 static void
-dirattr_cacheflush( void )
+dirattr_cacheflush(void)
 {
 	dah_t dah;
 	dix_t dix;
@@ -1044,58 +1044,58 @@ dirattr_cacheflush( void )
 
 	/* sanity checks
 	 */
-	assert( dtp );
-	assert( dpp );
+	assert(dtp);
+	assert(dpp);
 
 	/* if nothing in the cache, ignore
 	 */
 	dah = dtp->dt_cachedh;
-	assert( dah != DAH_NULL );
-	if ( dah == DAH_NULL ) {
+	assert(dah != DAH_NULL);
+	if (dah == DAH_NULL) {
 		return;
 	}
 
 #ifdef DIRATTRCHK
-	sum = HDLGETSUM( dah );
-	dix = HDLGETDIX( dah );
+	sum = HDLGETSUM(dah);
+	dix = HDLGETDIX(dah);
 #else /* DIRATTRCHK */
-	dix = ( dix_t )dah;
+	dix = (dix_t)dah;
 #endif /* DIRATTRCHK */
 
 #ifdef DIRATTRCHK
-	assert( dtp->dt_cached_dirattr.d_unq == DIRATTRUNQ );
-	assert( dtp->dt_cached_dirattr.d_sum == sum );
+	assert(dtp->dt_cached_dirattr.d_unq == DIRATTRUNQ);
+	assert(dtp->dt_cached_dirattr.d_sum == sum);
 #endif /* DIRATTRCHK */
 
-	assert( dix >= 0 );
-	assert( dix <= DIX_MAX );
+	assert(dix >= 0);
+	assert(dix <= DIX_MAX);
 
-	argoff = DIX2OFF( dix );
-	assert( argoff >= 0 );
-	assert( argoff >= ( off64_t )DIRATTR_PERS_SZ );
-	assert( argoff <= dpp->dp_appendoff - ( off64_t )sizeof( dirattr_t ));
+	argoff = DIX2OFF(dix);
+	assert(argoff >= 0);
+	assert(argoff >= (off64_t)DIRATTR_PERS_SZ);
+	assert(argoff <= dpp->dp_appendoff - (off64_t)sizeof(dirattr_t));
 
 	/* seek to the dirattr
 	 */
-	newoff = lseek64( dtp->dt_fd, argoff, SEEK_SET );
-	if ( newoff == ( off64_t )-1 ) {
-		mlog( MLOG_NORMAL, _(
+	newoff = lseek64(dtp->dt_fd, argoff, SEEK_SET);
+	if (newoff == (off64_t)-1) {
+		mlog(MLOG_NORMAL, _(
 		      "lseek of dirattr failed: %s\n"),
-		      strerror( errno ));
-		assert( 0 );
+		      strerror(errno));
+		assert(0);
 	}
-	assert( newoff == argoff );
+	assert(newoff == argoff);
 
 	/* write the dirattr
 	 */
-	nwritten = write( dtp->dt_fd,
-			  ( void * )&dtp->dt_cached_dirattr,
-			  sizeof( dtp->dt_cached_dirattr ));
-	if ( ( size_t )nwritten != sizeof( dtp->dt_cached_dirattr )) {
-		mlog( MLOG_NORMAL, _(
+	nwritten = write(dtp->dt_fd,
+			  (void *)&dtp->dt_cached_dirattr,
+			  sizeof(dtp->dt_cached_dirattr));
+	if ((size_t)nwritten != sizeof(dtp->dt_cached_dirattr)) {
+		mlog(MLOG_NORMAL, _(
 		      "flush of dirattr failed: %s\n"),
-		      strerror( errno ));
-		assert( 0 );
+		      strerror(errno));
+		assert(0);
 	}
 
 	dtp->dt_at_endpr = BOOL_FALSE;
@@ -1104,21 +1104,21 @@ dirattr_cacheflush( void )
 #ifdef DIRATTRCHK
 
 static uint16_t
-calcdixcum( dix_t dix )
+calcdixcum(dix_t dix)
 {
 	uint16_t sum;
 	ix_t nibcnt;
 	ix_t nibix;
 
-	assert( ( sizeof( dah_t ) / HDLSUMCNT ) * HDLSUMCNT == sizeof( dah_t ));
+	assert((sizeof(dah_t) / HDLSUMCNT) * HDLSUMCNT == sizeof(dah_t));
 
-	nibcnt = ( sizeof( dah_t ) / HDLSUMCNT ) - 1;
+	nibcnt = (sizeof(dah_t) / HDLSUMCNT) - 1;
 	sum = 0;
-	for ( nibix = 0 ; nibix < nibcnt ; nibix++ ) {
-		sum += ( uint16_t )( dix & HDLSUMLOMASK );
+	for (nibix = 0 ; nibix < nibcnt ; nibix++) {
+		sum += (uint16_t)(dix & HDLSUMLOMASK);
 		dix >>= HDLSUMCNT;
 	}
-	sum = ( uint16_t )( ( ~sum + 1 ) & HDLSUMLOMASK );
+	sum = (uint16_t)((~sum + 1) & HDLSUMLOMASK);
 
 	return sum;
 }

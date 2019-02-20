@@ -32,15 +32,15 @@
 #include "mlog.h"
 
 char *
-open_pathalloc( char *dirname, char *basename, pid_t pid )
+open_pathalloc(char *dirname, char *basename, pid_t pid)
 {
 	size_t dirlen;
 	size_t pidlen;
 	size_t namelen;
 	char *namebuf;
 
-	if ( strcmp( dirname, "/" )) {
-		dirlen = strlen( dirname );
+	if (strcmp(dirname, "/")) {
+		dirlen = strlen(dirname);
 	} else {
 		dirlen = 0;
 		dirname = "";
@@ -54,111 +54,111 @@ open_pathalloc( char *dirname, char *basename, pid_t pid )
 	 * And if it ever became 64 bits,
 	 * 64 bits => trunc(log10(2^64))+1 = 20
          */
-  	if ( pid ) {
+  	if (pid) {
 		pidlen = 1 + 20;
   	} else {
   		pidlen = 0;
   	}
-	namelen = dirlen + 1 + strlen( basename ) + pidlen + 1;
-	namebuf = ( char * )calloc( 1, namelen );
-  	assert( namebuf );
+	namelen = dirlen + 1 + strlen(basename) + pidlen + 1;
+	namebuf = (char *)calloc(1, namelen);
+  	assert(namebuf);
 
-  	if ( pid ) {
-		( void )snprintf( namebuf, namelen, "%s/%s.%d", dirname, basename, pid );
+  	if (pid) {
+		(void )snprintf(namebuf, namelen, "%s/%s.%d", dirname, basename, pid);
   	} else {
-		( void )snprintf( namebuf, namelen, "%s/%s", dirname, basename );
+		(void )snprintf(namebuf, namelen, "%s/%s", dirname, basename);
   	}
 
   	return namebuf;
 }
 
 int
-open_trwp( char *pathname )
+open_trwp(char *pathname)
 {
 	int fd;
 
-	fd = open( pathname, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR );
-	if ( fd < 0 ) {
-		mlog( MLOG_NORMAL,
+	fd = open(pathname, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
+	if (fd < 0) {
+		mlog(MLOG_NORMAL,
 		      _("could not create %s: %s\n"),
 		      pathname,
-		      strerror( errno ));
+		      strerror(errno));
 	}
 
 	return fd;
 }
 
 int
-open_erwp( char *pathname )
+open_erwp(char *pathname)
 {
 	int fd;
 
-	fd = open( pathname, O_EXCL | O_CREAT | O_RDWR, S_IRUSR | S_IWUSR );
-	if ( fd < 0 ) {
-		mlog( MLOG_NORMAL,
+	fd = open(pathname, O_EXCL | O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	if (fd < 0) {
+		mlog(MLOG_NORMAL,
 		      _("could not create %s: %s\n"),
 		      pathname,
-		      strerror( errno ));
+		      strerror(errno));
 	}
 
 	return fd;
 }
 
 int
-open_rwp( char *pathname )
+open_rwp(char *pathname)
 {
 	int fd;
 
-	fd = open( pathname, O_RDWR );
+	fd = open(pathname, O_RDWR);
 
 	return fd;
 }
 
 int
-mkdir_tp( char *pathname )
+mkdir_tp(char *pathname)
 {
 	int rval;
 
-	rval = mkdir( pathname, S_IRWXU );
+	rval = mkdir(pathname, S_IRWXU);
 
 	return rval;
 }
 
 int
-open_trwdb( char *dirname, char *basename, pid_t pid )
+open_trwdb(char *dirname, char *basename, pid_t pid)
 {
 	char *pathname;
 	int fd;
 
-	pathname = open_pathalloc( dirname, basename, pid );
-	fd = open_trwp( pathname );
-	free( ( void * )pathname );
+	pathname = open_pathalloc(dirname, basename, pid);
+	fd = open_trwp(pathname);
+	free((void *)pathname);
 
 	return fd;
 }
 
 int
-open_erwdb( char *dirname, char *basename, pid_t pid )
+open_erwdb(char *dirname, char *basename, pid_t pid)
 {
 	char *pathname;
 	int fd;
 
-	pathname = open_pathalloc( dirname, basename, pid );
-	fd = open_erwp( pathname );
-	free( ( void * )pathname );
+	pathname = open_pathalloc(dirname, basename, pid);
+	fd = open_erwp(pathname);
+	free((void *)pathname);
 
 	return fd;
 }
 
 int
-open_rwdb( char *dirname, char *basename, pid_t pid )
+open_rwdb(char *dirname, char *basename, pid_t pid)
 {
 	char *pathname;
 	int fd;
 
-	pathname = open_pathalloc( dirname, basename, pid );
-	fd = open_rwp( pathname );
-	free( ( void * )pathname );
+	pathname = open_pathalloc(dirname, basename, pid);
+	fd = open_rwp(pathname);
+	free((void *)pathname);
 
 	return fd;
 }

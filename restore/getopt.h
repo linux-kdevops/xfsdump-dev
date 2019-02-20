@@ -49,7 +49,7 @@
 #define	GETOPT_SUBTREE		's'	/* subtree restore (content.c) */
 #define	GETOPT_TOC		't'	/* display contents only (content.c) */
 /*				'u' */
-#define	GETOPT_VERBOSITY	'v'	/* verbosity level (0 to 4 ) */
+#define	GETOPT_VERBOSITY	'v'	/* verbosity level (0 to 4) */
 #define	GETOPT_SMALLWINDOW	'w'	/* use a small window for dir entries */
 /*				'x' */
 /*				'y' */

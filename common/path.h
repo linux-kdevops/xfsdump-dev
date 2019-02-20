@@ -20,9 +20,9 @@
 
 /* various pathname helpers
  */
-extern char * path_reltoabs( char *dir, char *basedir );
-extern char *path_normalize( char *path );
-extern char * path_diff( char *path, char *base );
-extern int path_beginswith( char *path, char *base );
+extern char * path_reltoabs(char *dir, char *basedir);
+extern char *path_normalize(char *path);
+extern char * path_diff(char *path, char *base);
+extern int path_beginswith(char *path, char *base);
 
 #endif /* PATH_H */

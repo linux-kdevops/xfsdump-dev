@@ -28,35 +28,35 @@
  * representation of the pid will be appended to the pathname, beginning
  * with a '.'.
  */
-extern char *open_pathalloc( char *dirname, char *basename, pid_t pid );
+extern char *open_pathalloc(char *dirname, char *basename, pid_t pid);
 
 /* create the specified file, creating or truncating as necessary,
  * with read and write permissions, given a directory and base.
- * return the file descriptor, or -1 with errno set. uses mlog( MLOG_NORMAL...
+ * return the file descriptor, or -1 with errno set. uses mlog(MLOG_NORMAL...
  * if the creation fails.
  */
-extern int open_trwdb( char *dirname, char *basename, pid_t pid );
-extern int open_trwp( char *pathname );
+extern int open_trwdb(char *dirname, char *basename, pid_t pid);
+extern int open_trwp(char *pathname);
 
 
 /* open the specified file, with read and write permissions, given a
  * directory and base.* return the file descriptor, or -1 with errno set.
- * uses mlog( MLOG_NORMAL... if the open fails.
+ * uses mlog(MLOG_NORMAL... if the open fails.
  */
-extern int open_rwdb( char *dirname, char *basename, pid_t pid );
-extern int open_rwp( char *pathname );
+extern int open_rwdb(char *dirname, char *basename, pid_t pid);
+extern int open_rwp(char *pathname);
 
 
 /* create and open the specified file, failing if already exists
  */
-extern int open_erwp( char *pathname );
-extern int open_erwdb( char *dirname, char *basename, pid_t pid );
+extern int open_erwp(char *pathname);
+extern int open_erwdb(char *dirname, char *basename, pid_t pid);
 
 
 /* create the specified directory, guaranteed to be initially empty. returns
- * 0 on success, -1 if trouble. uses mlog( MLOG_NORMAL... if the creation fails.
+ * 0 on success, -1 if trouble. uses mlog(MLOG_NORMAL... if the creation fails.
  */
-extern int mkdir_tp( char *pathname );
+extern int mkdir_tp(char *pathname);
 
 
 #endif /* UTIL_H */

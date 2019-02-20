@@ -57,7 +57,7 @@
 
 /* declarations of externally defined global symbols *************************/
 
-extern bool_t preemptchk( int );
+extern bool_t preemptchk(int);
 extern size_t pgsz;
 extern hsm_fs_ctxt_t *hsm_fs_ctxtp;
 extern uint64_t maxdumpfilesize;
@@ -67,7 +67,7 @@ extern bool_t allowexcludefiles_pr;
 
 /* inomap construction callbacks
  */
-static int cb_context( bool_t last,
+static int cb_context(bool_t last,
 			    time32_t,
 			    bool_t,
 			    time32_t,
@@ -78,50 +78,50 @@ static int cb_context( bool_t last,
 			    int,
 			    bool_t,
 			    bool_t *);
-static void cb_context_free( void );
-static int cb_count_inogrp( void *, int, xfs_inogrp_t *);
-static int cb_add_inogrp( void *, int, xfs_inogrp_t * );
-static int cb_add( void *, jdm_fshandle_t *, int, xfs_bstat_t * );
-static bool_t cb_inoinresumerange( xfs_ino_t );
-static bool_t cb_inoresumed( xfs_ino_t );
-static void cb_accuminit_sz( void );
-static void cb_spinit( void );
-static int cb_startpt( void *,
+static void cb_context_free(void);
+static int cb_count_inogrp(void *, int, xfs_inogrp_t *);
+static int cb_add_inogrp(void *, int, xfs_inogrp_t *);
+static int cb_add(void *, jdm_fshandle_t *, int, xfs_bstat_t *);
+static bool_t cb_inoinresumerange(xfs_ino_t);
+static bool_t cb_inoresumed(xfs_ino_t);
+static void cb_accuminit_sz(void);
+static void cb_spinit(void);
+static int cb_startpt(void *,
 			    jdm_fshandle_t *,
 			    int,
-			    xfs_bstat_t * );
-static int supprt_prune( void *,
+			    xfs_bstat_t *);
+static int supprt_prune(void *,
 			      jdm_fshandle_t *,
 			      int,
 			      xfs_bstat_t *,
-			      char * );
-static off64_t quantity2offset( jdm_fshandle_t *, xfs_bstat_t *, off64_t );
-static off64_t estimate_dump_space( xfs_bstat_t * );
+			      char *);
+static off64_t quantity2offset(jdm_fshandle_t *, xfs_bstat_t *, off64_t);
+static off64_t estimate_dump_space(xfs_bstat_t *);
 
 /* inomap primitives
  */
-static int inomap_init( int igrpcnt );
-static void inomap_add( void *, xfs_ino_t ino, gen_t gen, int );
-static int inomap_set_state( void *, xfs_ino_t ino, int );
-static void inomap_set_gen(void *, xfs_ino_t, gen_t );
+static int inomap_init(int igrpcnt);
+static void inomap_add(void *, xfs_ino_t ino, gen_t gen, int);
+static int inomap_set_state(void *, xfs_ino_t ino, int);
+static void inomap_set_gen(void *, xfs_ino_t, gen_t);
 
 /* subtree abstraction
  */
-static int subtree_descend_cb( void *,
+static int subtree_descend_cb(void *,
 				    jdm_fshandle_t *,
 				    int fsfd,
 				    xfs_bstat_t *,
-				    char * );
-static int subtreelist_parse_cb( void *,
+				    char *);
+static int subtreelist_parse_cb(void *,
 				      jdm_fshandle_t *,
 				      int fsfd,
 				      xfs_bstat_t *,
-				      char * );
-static int subtreelist_parse( jdm_fshandle_t *,
+				      char *);
+static int subtreelist_parse(jdm_fshandle_t *,
 				   int,
 				   xfs_bstat_t *,
 				   char *[],
-				   ix_t );
+				   ix_t);
 
 /* definition of locally defined global variables ****************************/
 
@@ -142,7 +142,7 @@ static uint64_t inomap_exclude_skipattr = 0;
  */
 /* ARGSUSED */
 bool_t
-inomap_build( jdm_fshandle_t *fshandlep,
+inomap_build(jdm_fshandle_t *fshandlep,
 	      int fsfd,
 	      xfs_bstat_t *rootstatp,
 	      bool_t last,
@@ -159,7 +159,7 @@ inomap_build( jdm_fshandle_t *fshandlep,
 	      ix_t *statphasep,
 	      ix_t *statpassp,
 	      size64_t statcnt,
-	      size64_t *statdonep )
+	      size64_t *statdonep)
 {
 	xfs_bstat_t *bstatbufp;
 	size_t bstatbuflen;
@@ -185,24 +185,24 @@ inomap_build( jdm_fshandle_t *fshandlep,
 	/* allocate a bulkstat buf
 	 */
 	bstatbuflen = BSTATBUFLEN;
-	bstatbufp = ( xfs_bstat_t * )memalign( pgsz,
+	bstatbufp = (xfs_bstat_t *)memalign(pgsz,
 					       bstatbuflen
 					       *
-					       sizeof( xfs_bstat_t ));
-	assert( bstatbufp );
+					       sizeof(xfs_bstat_t));
+	assert(bstatbufp);
 
 	/* count the number of inode groups, which will serve as a
 	 * starting point for the size of the inomap.
 	 */
-	rval = inogrp_iter( fsfd, cb_count_inogrp, (void *)&igrpcnt, &stat );
-	if ( rval || stat ) {
-		free( ( void * )bstatbufp );
+	rval = inogrp_iter(fsfd, cb_count_inogrp, (void *)&igrpcnt, &stat);
+	if (rval || stat) {
+		free((void *)bstatbufp);
 		return BOOL_FALSE;
 	}
 
 	/* initialize the callback context
 	 */
-	rval = cb_context( last,
+	rval = cb_context(last,
 			   lasttime,
 			   resume,
 			   resumetime,
@@ -212,9 +212,9 @@ inomap_build( jdm_fshandle_t *fshandlep,
 			   startptcnt,
 			   igrpcnt,
 			   skip_unchanged_dirs,
-			   &pruneneeded );
- 	if ( rval ) {
- 		free( ( void * )bstatbufp );
+			   &pruneneeded);
+ 	if (rval) {
+ 		free((void *)bstatbufp);
  		return BOOL_FALSE;
  	}
 
@@ -225,10 +225,10 @@ inomap_build( jdm_fshandle_t *fshandlep,
 	 * in this filesystem. each inode will be marked unused until its
 	 * correct state is set in cb_add.
 	 */
-	rval = inogrp_iter( fsfd, cb_add_inogrp, NULL, &stat );
- 	if ( rval || stat ) {
+	rval = inogrp_iter(fsfd, cb_add_inogrp, NULL, &stat);
+ 	if (rval || stat) {
 		cb_context_free();
- 		free( ( void * )bstatbufp );
+ 		free((void *)bstatbufp);
  		return BOOL_FALSE;
  	}
 
@@ -244,26 +244,26 @@ inomap_build( jdm_fshandle_t *fshandlep,
 	 * set a flag if any ino not put in a dump state. This will be used
 	 * to decide if any pruning can be done.
 	 */
-	mlog( MLOG_VERBOSE | MLOG_INOMAP, _(
+	mlog(MLOG_VERBOSE | MLOG_INOMAP, _(
 	      "ino map phase 1: "
-	      "constructing initial dump list\n") );
+	      "constructing initial dump list\n"));
 
 	*inomap_statdonep = 0;
 	*inomap_statphasep = 1;
 	stat = 0;
-	cb_accuminit_sz( );
+	cb_accuminit_sz();
 
-	if ( subtreecnt ) {
-		rval = subtreelist_parse( fshandlep,
+	if (subtreecnt) {
+		rval = subtreelist_parse(fshandlep,
 					  fsfd,
 					  rootstatp,
 					  subtreebuf,
-					  subtreecnt );
+					  subtreecnt);
 	} else {
-		rval = bigstat_iter( fshandlep,
+		rval = bigstat_iter(fshandlep,
 				     fsfd,
 				     BIGSTAT_ITER_ALL,
-				     ( xfs_ino_t )0,
+				     (xfs_ino_t)0,
 				     cb_add,
 				     NULL,
 				     NULL,
@@ -271,80 +271,80 @@ inomap_build( jdm_fshandle_t *fshandlep,
 				     &stat,
 				     preemptchk,
 				     bstatbufp,
-				     bstatbuflen );
+				     bstatbuflen);
 	}
 	*inomap_statphasep = 0;
-	if ( rval || preemptchk( PREEMPT_FULL )) {
+	if (rval || preemptchk(PREEMPT_FULL)) {
 		cb_context_free();
-		free( ( void * )bstatbufp );
+		free((void *)bstatbufp);
 		return BOOL_FALSE;
 	}
 
-	if ( inomap_exclude_filesize > 0 ) {
-		mlog( MLOG_NOTE | MLOG_VERBOSE, _(
+	if (inomap_exclude_filesize > 0) {
+		mlog(MLOG_NOTE | MLOG_VERBOSE, _(
 		      "pruned %llu files: maximum size exceeded\n"),
-		      inomap_exclude_filesize );
+		      inomap_exclude_filesize);
 	}
-	if ( inomap_exclude_skipattr > 0 ) {
-		mlog( MLOG_NOTE | MLOG_VERBOSE, _(
+	if (inomap_exclude_skipattr > 0) {
+		mlog(MLOG_NOTE | MLOG_VERBOSE, _(
 		      "pruned %llu files: skip attribute set\n"),
-		      inomap_exclude_skipattr );
+		      inomap_exclude_skipattr);
 	}
 
 	/* prune directories unchanged since the last dump and containing
 	 * no children needing dumping.
 	 */
-	if ( pruneneeded ) {
+	if (pruneneeded) {
 		bool_t	rootdump = BOOL_FALSE;
 
-		mlog( MLOG_VERBOSE | MLOG_INOMAP, _(
+		mlog(MLOG_VERBOSE | MLOG_INOMAP, _(
 		      "ino map phase 2: "
-		      "pruning unneeded subtrees\n") );
+		      "pruning unneeded subtrees\n"));
 		*inomap_statdonep = 0;
 		*inomap_statpassp = 0;
 		*inomap_statphasep = 2;
 
-		(void) supprt_prune( &rootdump,
+		(void) supprt_prune(&rootdump,
 				     fshandlep,
 				     fsfd,
 				     rootstatp,
-				     NULL );
+				     NULL);
 		*inomap_statphasep = 0;
 
-		if ( preemptchk( PREEMPT_FULL )) {
+		if (preemptchk(PREEMPT_FULL)) {
 			cb_context_free();
-			free( ( void * )bstatbufp );
+			free((void *)bstatbufp);
 			return BOOL_FALSE;
 		}
 
 	} else {
-		mlog( MLOG_VERBOSE | MLOG_INOMAP, _(
+		mlog(MLOG_VERBOSE | MLOG_INOMAP, _(
 		      "ino map phase 2: "
-		      "skipping (no pruning necessary)\n") );
+		      "skipping (no pruning necessary)\n"));
 	}
 
 	/* initialize the callback context for startpoint calculation
 	 */
-	cb_spinit( );
+	cb_spinit();
 
 	/* identify dump stream startpoints
 	 */
-	if ( startptcnt > 1 ) {
-		mlog( MLOG_VERBOSE | MLOG_INOMAP, _(
+	if (startptcnt > 1) {
+		mlog(MLOG_VERBOSE | MLOG_INOMAP, _(
 		      "ino map phase 3: "
-		      "identifying stream starting points\n") );
+		      "identifying stream starting points\n"));
 	} else {
-		mlog( MLOG_VERBOSE | MLOG_INOMAP, _(
+		mlog(MLOG_VERBOSE | MLOG_INOMAP, _(
 		      "ino map phase 3: "
-		      "skipping (only one dump stream)\n") );
+		      "skipping (only one dump stream)\n"));
 	}
 	stat = 0;
 	*inomap_statdonep = 0;
 	*inomap_statphasep = 3;
-	rval = bigstat_iter( fshandlep,
+	rval = bigstat_iter(fshandlep,
 			     fsfd,
 			     BIGSTAT_ITER_NONDIR,
-			     ( xfs_ino_t )0,
+			     (xfs_ino_t)0,
 			     cb_startpt,
 			     NULL,
 			     inomap_next_nondir,
@@ -352,66 +352,66 @@ inomap_build( jdm_fshandle_t *fshandlep,
 			     &stat,
 			     preemptchk,
 			     bstatbufp,
-			     bstatbuflen );
+			     bstatbuflen);
 	*inomap_statphasep = 0;
 
-	if ( rval ) {
+	if (rval) {
 		cb_context_free();
-		free( ( void * )bstatbufp );
+		free((void *)bstatbufp);
 		return BOOL_FALSE;
 	}
 
-	if ( startptcnt > 1 ) {
+	if (startptcnt > 1) {
 		ix_t startptix;
-		for ( startptix = 0 ; startptix < startptcnt ; startptix++ ) {
+		for (startptix = 0 ; startptix < startptcnt ; startptix++) {
 			startpt_t *p;
 			startpt_t *ep;
 
-			p = &startptp[ startptix ];
-			if ( startptix == startptcnt - 1 ) {
+			p = &startptp[startptix];
+			if (startptix == startptcnt - 1) {
 				ep = 0;
 			} else {
-				ep = &startptp[ startptix + 1 ];
+				ep = &startptp[startptix + 1];
 			}
-			assert( ! p->sp_flags );
-			mlog( MLOG_VERBOSE | MLOG_INOMAP,
+			assert(! p->sp_flags);
+			mlog(MLOG_VERBOSE | MLOG_INOMAP,
 			      _("stream %u: ino %llu offset %lld to "),
 			      startptix,
 			      p->sp_ino,
-			      p->sp_offset );
-			if ( ! ep ) {
-				mlog( MLOG_VERBOSE | MLOG_BARE | MLOG_INOMAP,
-				      _("end\n") );
+			      p->sp_offset);
+			if (! ep) {
+				mlog(MLOG_VERBOSE | MLOG_BARE | MLOG_INOMAP,
+				      _("end\n"));
 			} else {
-				mlog( MLOG_VERBOSE |  MLOG_BARE | MLOG_INOMAP,
+				mlog(MLOG_VERBOSE |  MLOG_BARE | MLOG_INOMAP,
 				      _("ino %llu offset %lld\n"),
 				      ep->sp_ino,
-				      ep->sp_offset );
+				      ep->sp_offset);
 			}
 		}
 	}
 
 	cb_context_free();
-	free( ( void * )bstatbufp );
-	mlog( MLOG_VERBOSE | MLOG_INOMAP, _(
-	      "ino map construction complete\n") );
+	free((void *)bstatbufp);
+	mlog(MLOG_VERBOSE | MLOG_INOMAP, _(
+	      "ino map construction complete\n"));
 	return BOOL_TRUE;
 }
 
 void
-inomap_skip( xfs_ino_t ino )
+inomap_skip(xfs_ino_t ino)
 {
 	int oldstate;
 
-	oldstate = inomap_get_state( NULL, ino );
-	if ( oldstate == MAP_NDR_CHANGE) {
-		inomap_set_state( NULL, ino, MAP_NDR_NOCHNG );
+	oldstate = inomap_get_state(NULL, ino);
+	if (oldstate == MAP_NDR_CHANGE) {
+		inomap_set_state(NULL, ino, MAP_NDR_NOCHNG);
 	}
 
-	if ( oldstate == MAP_DIR_CHANGE
+	if (oldstate == MAP_DIR_CHANGE
 	     ||
-	     oldstate == MAP_DIR_SUPPRT ) {
-		inomap_set_state( NULL, ino, MAP_DIR_NOCHNG );
+	     oldstate == MAP_DIR_SUPPRT) {
+		inomap_set_state(NULL, ino, MAP_DIR_NOCHNG);
 	}
 }
 
@@ -445,7 +445,7 @@ static bool_t cb_skip_unchanged_dirs;	/* set by cb_context() */
  * phases of inomap_build().
  */
 static int
-cb_context( bool_t last,
+cb_context(bool_t last,
 	    time32_t lasttime,
 	    bool_t resume,
 	    time32_t resumetime,
@@ -455,7 +455,7 @@ cb_context( bool_t last,
 	    size_t startptcnt,
 	    int igrpcnt,
 	    bool_t skip_unchanged_dirs,
-	    bool_t *pruneneededp )
+	    bool_t *pruneneededp)
 {
 	cb_last = last;
 	cb_lasttime = lasttime;
@@ -471,7 +471,7 @@ cb_context( bool_t last,
 	cb_pruneneededp = pruneneededp;
 	cb_skip_unchanged_dirs = skip_unchanged_dirs;
 
-	if (inomap_init( igrpcnt ))
+	if (inomap_init(igrpcnt))
 		return -1;
 
 	cb_inomap_contextp = inomap_alloc_context();
@@ -482,13 +482,13 @@ cb_context( bool_t last,
 }
 
 static void
-cb_context_free( void )
+cb_context_free(void)
 {
-	inomap_free_context( cb_inomap_contextp );
+	inomap_free_context(cb_inomap_contextp);
 }
 
 static int
-cb_count_inogrp( void *arg1, int fsfd, xfs_inogrp_t *inogrp )
+cb_count_inogrp(void *arg1, int fsfd, xfs_inogrp_t *inogrp)
 {
 	int *count = (int *)arg1;
 	(*count)++;
@@ -502,25 +502,25 @@ cb_count_inogrp( void *arg1, int fsfd, xfs_inogrp_t *inogrp )
  */
 /* ARGSUSED */
 static int
-cb_add( void *arg1,
+cb_add(void *arg1,
 	jdm_fshandle_t *fshandlep,
 	int fsfd,
-	xfs_bstat_t *statp )
+	xfs_bstat_t *statp)
 {
 	register time32_t mtime = statp->bs_mtime.tv_sec;
 	register time32_t ctime = statp->bs_ctime.tv_sec;
-	register time32_t ltime = max( mtime, ctime );
+	register time32_t ltime = max(mtime, ctime);
 	register mode_t mode = statp->bs_mode & S_IFMT;
 	xfs_off_t estimated_size = 0;
 	xfs_ino_t ino = statp->bs_ino;
 	bool_t changed;
 	bool_t resumed;
 
-	( *inomap_statdonep )++;
+	(*inomap_statdonep)++;
 
 	/* skip if no links
 	 */
-	if ( statp->bs_nlink == 0 ) {
+	if (statp->bs_nlink == 0) {
 		return 0;
 	}
 
@@ -533,14 +533,14 @@ cb_add( void *arg1,
 	 * increment was based, dump it if it has changed since that
 	 * original base dump.
 	 */
-	if ( cb_resume && ! cb_inoinresumerange( ino )) {
-		if ( ltime >= cb_resumetime ) {
+	if (cb_resume && ! cb_inoinresumerange(ino)) {
+		if (ltime >= cb_resumetime) {
 			changed = BOOL_TRUE;
 		} else {
 			changed = BOOL_FALSE;
 		}
-	} else if ( cb_last ) {
-		if ( ltime >= cb_lasttime ) {
+	} else if (cb_last) {
+		if (ltime >= cb_lasttime) {
 			changed = BOOL_TRUE;
 		} else {
 			changed = BOOL_FALSE;
@@ -552,86 +552,86 @@ cb_add( void *arg1,
 	/* this is redundant: make sure any ino partially dumped
 	 * is completed.
 	 */
-	if ( cb_resume && cb_inoresumed( ino )) {
+	if (cb_resume && cb_inoresumed(ino)) {
 		resumed = BOOL_TRUE;
 	} else {
 		resumed = BOOL_FALSE;
 	}
 
-	if ( changed ) {
-		if ( mode == S_IFDIR ) {
-			inomap_add( cb_inomap_contextp,
+	if (changed) {
+		if (mode == S_IFDIR) {
+			inomap_add(cb_inomap_contextp,
 				    ino,
 				    (gen_t)statp->bs_gen,
-				    MAP_DIR_CHANGE );
+				    MAP_DIR_CHANGE);
 			cb_dircnt++;
 		} else {
-			estimated_size = estimate_dump_space( statp );
+			estimated_size = estimate_dump_space(statp);
 
 			/* skip if size is greater than prune size. quota
 			 * files are exempt from the check.
 			 */
-			if ( maxdumpfilesize > 0 &&
+			if (maxdumpfilesize > 0 &&
 			     estimated_size > maxdumpfilesize &&
-			     !is_quota_file(statp->bs_ino) ) {
-				mlog( MLOG_DEBUG | MLOG_EXCLFILES,
+			     !is_quota_file(statp->bs_ino)) {
+				mlog(MLOG_DEBUG | MLOG_EXCLFILES,
 				      "pruned ino %llu, owner %u, estimated size %llu: maximum size exceeded\n",
 				      statp->bs_ino,
 				      statp->bs_uid,
-				      estimated_size );
-				inomap_add( cb_inomap_contextp,
+				      estimated_size);
+				inomap_add(cb_inomap_contextp,
 					    ino,
 					    (gen_t)statp->bs_gen,
-					    MAP_NDR_NOCHNG );
+					    MAP_NDR_NOCHNG);
 				inomap_exclude_filesize++;
 				return 0;
 			}
 
 			if (allowexcludefiles_pr && statp->bs_xflags & XFS_XFLAG_NODUMP) {
-				mlog( MLOG_DEBUG | MLOG_EXCLFILES,
+				mlog(MLOG_DEBUG | MLOG_EXCLFILES,
 				      "pruned ino %llu, owner %u, estimated size %llu: skip flag set\n",
 				      statp->bs_ino,
 				      statp->bs_uid,
-				      estimated_size );
-				inomap_add( cb_inomap_contextp,
+				      estimated_size);
+				inomap_add(cb_inomap_contextp,
 					    ino,
 					    (gen_t)statp->bs_gen,
-					    MAP_NDR_NOCHNG );
+					    MAP_NDR_NOCHNG);
 				inomap_exclude_skipattr++;
 				return 0;
 			}
 
-			inomap_add( cb_inomap_contextp,
+			inomap_add(cb_inomap_contextp,
 				    ino,
 				    (gen_t)statp->bs_gen,
-				    MAP_NDR_CHANGE );
+				    MAP_NDR_CHANGE);
 			cb_nondircnt++;
 			cb_datasz += estimated_size;
-			cb_hdrsz += ( EXTENTHDR_SZ * (statp->bs_extents + 1) );
+			cb_hdrsz += (EXTENTHDR_SZ * (statp->bs_extents + 1));
 		}
-	} else if ( resumed ) {
-		assert( mode != S_IFDIR );
-		assert( changed );
+	} else if (resumed) {
+		assert(mode != S_IFDIR);
+		assert(changed);
 	} else {
-		if ( mode == S_IFDIR ) {
-			if ( cb_skip_unchanged_dirs ) {
-				inomap_add( cb_inomap_contextp,
+		if (mode == S_IFDIR) {
+			if (cb_skip_unchanged_dirs) {
+				inomap_add(cb_inomap_contextp,
 					    ino,
 					    (gen_t)statp->bs_gen,
-					    MAP_DIR_NOCHNG );
+					    MAP_DIR_NOCHNG);
 			} else {
 				*cb_pruneneededp = BOOL_TRUE;
-				inomap_add( cb_inomap_contextp,
+				inomap_add(cb_inomap_contextp,
 					    ino,
 					    (gen_t)statp->bs_gen,
-					    MAP_DIR_SUPPRT );
+					    MAP_DIR_SUPPRT);
 				cb_dircnt++;
 			}
 		} else {
-			inomap_add( cb_inomap_contextp,
+			inomap_add(cb_inomap_contextp,
 				    ino,
 				    (gen_t)statp->bs_gen,
-				    MAP_NDR_NOCHNG );
+				    MAP_NDR_NOCHNG);
 		}
 	}
 
@@ -639,23 +639,23 @@ cb_add( void *arg1,
 }
 
 static bool_t
-cb_inoinresumerange( xfs_ino_t ino )
+cb_inoinresumerange(xfs_ino_t ino)
 {
 	register size_t streamix;
 
-	for ( streamix = 0 ; streamix < cb_resumerangecnt ; streamix++ ) {
-		register drange_t *rp = &cb_resumerangep[ streamix ];
-		if ( ! ( rp->dr_begin.sp_flags & STARTPT_FLAGS_END )
+	for (streamix = 0 ; streamix < cb_resumerangecnt ; streamix++) {
+		register drange_t *rp = &cb_resumerangep[streamix];
+		if (! (rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
 		     &&
 		     ino >= rp->dr_begin.sp_ino
 		     &&
-		     ( ( rp->dr_end.sp_flags & STARTPT_FLAGS_END )
+		     ((rp->dr_end.sp_flags & STARTPT_FLAGS_END)
 		       ||
 		       ino < rp->dr_end.sp_ino
 		       ||
-		       ( ino == rp->dr_end.sp_ino
+		       (ino == rp->dr_end.sp_ino
 			 &&
-			 rp->dr_end.sp_offset != 0 ))) {
+			 rp->dr_end.sp_offset != 0))) {
 			return BOOL_TRUE;
 		}
 	}
@@ -664,17 +664,17 @@ cb_inoinresumerange( xfs_ino_t ino )
 }
 
 static bool_t
-cb_inoresumed( xfs_ino_t ino )
+cb_inoresumed(xfs_ino_t ino)
 {
 	size_t streamix;
 
-	for ( streamix = 0 ; streamix < cb_resumerangecnt ; streamix++ ) {
-		drange_t *rp = &cb_resumerangep[ streamix ];
-		if ( ! ( rp->dr_begin.sp_flags & STARTPT_FLAGS_END )
+	for (streamix = 0 ; streamix < cb_resumerangecnt ; streamix++) {
+		drange_t *rp = &cb_resumerangep[streamix];
+		if (! (rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
 		     &&
 		     ino == rp->dr_begin.sp_ino
 		     &&
-		     rp->dr_begin.sp_offset != 0 ) {
+		     rp->dr_begin.sp_offset != 0) {
 			return BOOL_TRUE;
 		}
 	}
@@ -688,20 +688,20 @@ cb_inoresumed( xfs_ino_t ino )
  */
 /* ARGSUSED */
 static bool_t			/* false, used as diriter callback */
-supprt_prune( void *arg1,	/* ancestors marked as changed? */
+supprt_prune(void *arg1,	/* ancestors marked as changed? */
 	      jdm_fshandle_t *fshandlep,
 	      int fsfd,
 	      xfs_bstat_t *statp,
-	      char *name )
+	      char *name)
 {
 	static bool_t cbrval = BOOL_FALSE;
 	int state;
 
-	if ( ( statp->bs_mode & S_IFMT ) == S_IFDIR ) {
+	if ((statp->bs_mode & S_IFMT) == S_IFDIR) {
 		bool_t changed_below = BOOL_FALSE;
 
-		state = inomap_get_state( cb_inomap_contextp, statp->bs_ino );
-		if ( state != MAP_DIR_CHANGE &&
+		state = inomap_get_state(cb_inomap_contextp, statp->bs_ino);
+		if (state != MAP_DIR_CHANGE &&
                      state != MAP_DIR_NOCHNG &&
 		     state != MAP_DIR_SUPPRT) {
 			/*
@@ -709,67 +709,67 @@ supprt_prune( void *arg1,	/* ancestors marked as changed? */
 			 * certainly changed.
 			 */
 			state = MAP_DIR_CHANGE;
-			inomap_set_state( cb_inomap_contextp,
+			inomap_set_state(cb_inomap_contextp,
 					  statp->bs_ino,
-					  state );
+					  state);
 		}
 
-		( void )diriter( fshandlep,
+		(void)diriter(fshandlep,
 				 fsfd,
 				 statp,
 				 supprt_prune,
 				 (void *)&changed_below,
 				 &cbrval,
 				 NULL,
-				 0 );
+				 0);
 
-		if ( state == MAP_DIR_SUPPRT ) {
-			if ( changed_below == BOOL_FALSE ) {
-				inomap_set_state( cb_inomap_contextp,
+		if (state == MAP_DIR_SUPPRT) {
+			if (changed_below == BOOL_FALSE) {
+				inomap_set_state(cb_inomap_contextp,
 						  statp->bs_ino,
-						  MAP_DIR_NOCHNG );
+						  MAP_DIR_NOCHNG);
 				cb_dircnt--;	/* dump size just changed! */
 			}
 			else {
 				/* Directory entries back up the hierarchy */
 				/* to be dumped - as either MAP_DIR_SUPPRT */
 				/* or as MAP_DIR_CHANGE in inode state map */
-				*( bool_t * )arg1 = BOOL_TRUE;
+				*(bool_t *)arg1 = BOOL_TRUE;
 			}
 		}
-		else if ( state == MAP_DIR_CHANGE ) {
+		else if (state == MAP_DIR_CHANGE) {
 			/* Directory entries back up the hierarchy must get */
 			/* dumped - as either MAP_DIR_SUPPRT/MAP_DIR_CHANGE */
-			*( bool_t * )arg1 = BOOL_TRUE;
+			*(bool_t *)arg1 = BOOL_TRUE;
 		}
 		return cbrval;
 	}
 
-	if ( *(bool_t *)arg1 == BOOL_TRUE ) {	/* shortcut, sibling changed */
+	if (*(bool_t *)arg1 == BOOL_TRUE) {	/* shortcut, sibling changed */
 		return cbrval;
 	}
 
-	state = inomap_get_state( cb_inomap_contextp, statp->bs_ino );
-	if ( state != MAP_NDR_CHANGE &&
-	     state != MAP_NDR_NOCHNG ) {
+	state = inomap_get_state(cb_inomap_contextp, statp->bs_ino);
+	if (state != MAP_NDR_CHANGE &&
+	     state != MAP_NDR_NOCHNG) {
 		/*
 		 * if dir is now a file then it has
 		 * certainly changed.
 		 */
 		state = MAP_NDR_CHANGE;
-		inomap_set_state( cb_inomap_contextp, statp->bs_ino, state );
+		inomap_set_state(cb_inomap_contextp, statp->bs_ino, state);
 	}
-	if ( state == MAP_NDR_CHANGE ) {
+	if (state == MAP_NDR_CHANGE) {
 		/* Directory entries back up the hierarchy must get */
 		/* dumped - as either MAP_DIR_SUPPRT/MAP_DIR_CHANGE */
-		*( bool_t * )arg1 = BOOL_TRUE;
+		*(bool_t *)arg1 = BOOL_TRUE;
 	}
 	return cbrval;
 }
 
 
 static void
-cb_accuminit_sz( void )
+cb_accuminit_sz(void)
 {
 	cb_datasz = 0;
 	cb_hdrsz = 0;
@@ -782,10 +782,10 @@ cb_accuminit_sz( void )
  * cb_accum accumulates the dump space.
  */
 static void
-cb_spinit( void )
+cb_spinit(void)
 {
 	cb_startptix = 0;
-	cb_incr = (cb_datasz + cb_hdrsz) / ( off64_t )cb_startptcnt;
+	cb_incr = (cb_datasz + cb_hdrsz) / (off64_t)cb_startptcnt;
 	cb_target = 0; /* so first ino will push us over the edge */
 	cb_accum = 0;
 }
@@ -809,10 +809,10 @@ typedef enum {
 
 /* ARGSUSED */
 static int
-cb_startpt( void *arg1,
+cb_startpt(void *arg1,
 	    jdm_fshandle_t *fshandlep,
 	    int fsfd,
-	    xfs_bstat_t *statp )
+	    xfs_bstat_t *statp)
 {
 	register int state;
 
@@ -821,31 +821,31 @@ cb_startpt( void *arg1,
 	off64_t qty;	/* amount of a SPLIT file to skip */
 	action_t action;
 
-	( *inomap_statdonep )++;
+	(*inomap_statdonep)++;
 
 	/* skip if no links
 	 */
-	if ( statp->bs_nlink == 0 ) {
+	if (statp->bs_nlink == 0) {
 		return 0;
 	}
 
 	/* skip if not in inomap or not a non-dir
 	 */
-	state = inomap_get_state( cb_inomap_contextp, statp->bs_ino );
-	if ( state != MAP_NDR_CHANGE ) {
+	state = inomap_get_state(cb_inomap_contextp, statp->bs_ino);
+	if (state != MAP_NDR_CHANGE) {
 		return 0;
 	}
 
-	assert( cb_startptix < cb_startptcnt );
+	assert(cb_startptix < cb_startptcnt);
 
-	estimate = estimate_dump_space( statp );
-	cb_accum += estimate + ( EXTENTHDR_SZ * (statp->bs_extents + 1) );
+	estimate = estimate_dump_space(statp);
+	cb_accum += estimate + (EXTENTHDR_SZ * (statp->bs_extents + 1));
 
 	/* loop until no new start points found. loop is necessary
 	 * to handle the pathological case of a huge file so big it
 	 * spans several streams.
 	 */
-	action = ( action_t )HOLD; /* irrelevant, but demanded by lint */
+	action = (action_t)HOLD; /* irrelevant, but demanded by lint */
 	do {
 		/* decide what to do: hold, bump, or split. there are
 		 * 8 valid cases to consider:
@@ -874,69 +874,69 @@ cb_startpt( void *arg1,
 		 *    accum incl. this file is would be way beyond the
 		 *    target: HOLD.
 		 */
-		if ( cb_target - old_accum >= TOO_SHY ) {
-			if ( cb_target - cb_accum >= TOO_SHY ) {
-				action = ( action_t )HOLD;
-			} else if ( cb_accum <= cb_target ) {
-				action = ( action_t )HOLD;
-			} else if ( cb_accum - cb_target < TOO_BOLD ) {
-				action = ( action_t )HOLD;
+		if (cb_target - old_accum >= TOO_SHY) {
+			if (cb_target - cb_accum >= TOO_SHY) {
+				action = (action_t)HOLD;
+			} else if (cb_accum <= cb_target) {
+				action = (action_t)HOLD;
+			} else if (cb_accum - cb_target < TOO_BOLD) {
+				action = (action_t)HOLD;
 			} else {
-				action = ( action_t )SPLIT;
+				action = (action_t)SPLIT;
 			}
 		} else {
-			if ( cb_target - cb_accum >= TOO_SHY ) {
-				action = ( action_t )YELL;
-			} else if ( cb_accum < cb_target ) {
-				action = ( action_t )HOLD;
-			} else if ( cb_accum - cb_target < TOO_BOLD ) {
-				if ( cb_accum - cb_target >=
-						      cb_target - old_accum ) {
-					action = ( action_t )BUMP;
+			if (cb_target - cb_accum >= TOO_SHY) {
+				action = (action_t)YELL;
+			} else if (cb_accum < cb_target) {
+				action = (action_t)HOLD;
+			} else if (cb_accum - cb_target < TOO_BOLD) {
+				if (cb_accum - cb_target >=
+						      cb_target - old_accum) {
+					action = (action_t)BUMP;
 				} else {
-					action = ( action_t )HOLD;
+					action = (action_t)HOLD;
 				}
 			} else {
-				action = ( action_t )BUMP;
+				action = (action_t)BUMP;
 			}
 		}
 
 		/* perform the action selected above
 		 */
-		switch ( action ) {
-		case ( action_t )HOLD:
+		switch (action) {
+		case (action_t)HOLD:
 			break;
-		case ( action_t )BUMP:
+		case (action_t)BUMP:
 			cb_startptp->sp_ino = statp->bs_ino;
 			cb_startptp->sp_offset = 0;
 			cb_startptix++;
 			cb_startptp++;
 			cb_target += cb_incr;
-			if ( cb_startptix == cb_startptcnt ) {
+			if (cb_startptix == cb_startptcnt) {
 				return 1; /* done; abort the iteration */
 			}
 			break;
-		case ( action_t )SPLIT:
+		case (action_t)SPLIT:
 			cb_startptp->sp_ino = statp->bs_ino;
-			qty = ( cb_target - old_accum )
+			qty = (cb_target - old_accum)
 			      &
-			      ~( off64_t )( BBSIZE - 1 );
+			      ~(off64_t)(BBSIZE - 1);
 			cb_startptp->sp_offset =
-					quantity2offset( fshandlep,
+					quantity2offset(fshandlep,
 							 statp,
-							 qty );
+							 qty);
 			cb_startptix++;
 			cb_startptp++;
 			cb_target += cb_incr;
-			if ( cb_startptix == cb_startptcnt ) {
+			if (cb_startptix == cb_startptcnt) {
 				return 1; /* done; abort the iteration */
 			}
 			break;
 		default:
-			assert( 0 );
+			assert(0);
 			return 1;
 		}
-	} while ( action == ( action_t )BUMP || action == ( action_t )SPLIT );
+	} while (action == (action_t)BUMP || action == (action_t)SPLIT);
 
 	return 0;
 }
@@ -948,7 +948,7 @@ cb_startpt( void *arg1,
  */
 struct i2gseg {
 	uint64_t s_valid;
-	gen_t s_gen[ INOPERSEG ];
+	gen_t s_gen[INOPERSEG];
 };
 typedef struct i2gseg i2gseg_t;
 
@@ -966,15 +966,15 @@ static struct inomap {
 } inomap;
 
 static inline void
-SEG_SET_BITS( seg_t *segp, xfs_ino_t ino, int state )
+SEG_SET_BITS(seg_t *segp, xfs_ino_t ino, int state)
 {
 	register xfs_ino_t relino;
 	register uint64_t mask;
 	register uint64_t clrmask;
 	relino = ino - segp->base;
-	mask = ( uint64_t )1 << relino;
+	mask = (uint64_t)1 << relino;
 	clrmask = ~mask;
-	switch( state ) {
+	switch(state) {
 	case 0:
 		segp->lobits &= clrmask;
 		segp->mebits &= clrmask;
@@ -1019,22 +1019,22 @@ SEG_SET_BITS( seg_t *segp, xfs_ino_t ino, int state )
 }
 
 static inline int
-SEG_GET_BITS( seg_t *segp, xfs_ino_t ino )
+SEG_GET_BITS(seg_t *segp, xfs_ino_t ino)
 {
 	int state;
 	register xfs_ino_t relino;
 	register uint64_t mask;
 	relino = ino - segp->base;
-	mask = ( uint64_t )1 << relino;
-	if ( segp->lobits & mask ) {
+	mask = (uint64_t)1 << relino;
+	if (segp->lobits & mask) {
 		state = 1;
 	} else {
 		state = 0;
 	}
-	if ( segp->mebits & mask ) {
+	if (segp->mebits & mask) {
 		state |= 2;
 	}
-	if ( segp->hibits & mask ) {
+	if (segp->hibits & mask) {
 		state |= 4;
 	}
 
@@ -1044,9 +1044,9 @@ SEG_GET_BITS( seg_t *segp, xfs_ino_t ino )
 /* context for inomap construction - initialized by map_init
  */
 static int
-inomap_init( int igrpcnt )
+inomap_init(int igrpcnt)
 {
-	assert( sizeof( hnk_t ) == HNKSZ );
+	assert(sizeof(hnk_t) == HNKSZ);
 
 	/* lastseg must be initialized with -1 offsets since
 	 * no segments have been added yet */
@@ -1055,58 +1055,58 @@ inomap_init( int igrpcnt )
 	inomap.hnkmaplen = (igrpcnt + SEGPERHNK - 1) / SEGPERHNK;
 	inomap.hnkmap = (hnk_t *)malloc(inomap.hnkmaplen * HNKSZ);
 	inomap.i2gmap = (i2gseg_t *)
-		calloc( inomap.hnkmaplen * SEGPERHNK, sizeof(i2gseg_t) );
+		calloc(inomap.hnkmaplen * SEGPERHNK, sizeof(i2gseg_t));
 	if (!inomap.hnkmap || !inomap.i2gmap)
 		return -1;
 	return 0;
 }
 
 uint64_t
-inomap_getsz( void )
+inomap_getsz(void)
 {
 	return (inomap.lastseg.hnkoff + 1) * HNKSZ;
 }
 
 static inline bool_t
-inomap_validaddr( seg_addr_t *addrp )
+inomap_validaddr(seg_addr_t *addrp)
 {
 	int maxseg;
 
-	if ( addrp->hnkoff < 0 || addrp->hnkoff > inomap.lastseg.hnkoff )
+	if (addrp->hnkoff < 0 || addrp->hnkoff > inomap.lastseg.hnkoff)
 		return BOOL_FALSE;
 
-	maxseg = ( addrp->hnkoff == inomap.lastseg.hnkoff ) ?
+	maxseg = (addrp->hnkoff == inomap.lastseg.hnkoff) ?
 			inomap.lastseg.segoff : SEGPERHNK - 1;
 
-	if ( addrp->segoff < 0 || addrp->segoff > maxseg )
+	if (addrp->segoff < 0 || addrp->segoff > maxseg)
 		return BOOL_FALSE;
 
 	return BOOL_TRUE;
 }
 
 static inline hnk_t *
-inomap_addr2hnk( seg_addr_t *addrp )
+inomap_addr2hnk(seg_addr_t *addrp)
 {
 	return &inomap.hnkmap[addrp->hnkoff];
 }
 
 static inline seg_t *
-inomap_addr2seg( seg_addr_t *addrp )
+inomap_addr2seg(seg_addr_t *addrp)
 {
-	hnk_t *hunkp = inomap_addr2hnk( addrp );
+	hnk_t *hunkp = inomap_addr2hnk(addrp);
 	return &hunkp->seg[addrp->segoff];
 }
 
 static inline int
-inomap_addr2segix( seg_addr_t *addrp )
+inomap_addr2segix(seg_addr_t *addrp)
 {
-	return ( addrp->hnkoff * SEGPERHNK ) + addrp->segoff;
+	return (addrp->hnkoff * SEGPERHNK) + addrp->segoff;
 }
 
 static inline int
-inomap_lastseg( int hnkoff )
+inomap_lastseg(int hnkoff)
 {
-	if ( hnkoff == inomap.lastseg.hnkoff )
+	if (hnkoff == inomap.lastseg.hnkoff)
 		return inomap.lastseg.segoff;
 	else
 		return SEGPERHNK - 1;
@@ -1116,7 +1116,7 @@ inomap_lastseg( int hnkoff )
  * order. adds a new segment to the inomap and ino-to-gen map.
  */
 static int
-cb_add_inogrp( void *arg1, int fsfd, xfs_inogrp_t *inogrp )
+cb_add_inogrp(void *arg1, int fsfd, xfs_inogrp_t *inogrp)
 {
 	hnk_t *hunk;
 	seg_t *segp;
@@ -1149,13 +1149,13 @@ cb_add_inogrp( void *arg1, int fsfd, xfs_inogrp_t *inogrp )
 			       SEGPERHNK * sizeof(i2gseg_t));
 		}
 
-		memset(inomap_addr2hnk( lastsegp ), 0, HNKSZ);
+		memset(inomap_addr2hnk(lastsegp), 0, HNKSZ);
 	}
 
-	hunk = inomap_addr2hnk( lastsegp );
+	hunk = inomap_addr2hnk(lastsegp);
 	hunk->maxino = inogrp->xi_startino + INOPERSEG - 1;
 
-	segp = inomap_addr2seg( lastsegp );
+	segp = inomap_addr2seg(lastsegp);
 	segp->base = inogrp->xi_startino;
 
 	return 0;
@@ -1164,41 +1164,41 @@ cb_add_inogrp( void *arg1, int fsfd, xfs_inogrp_t *inogrp )
 /* called for every ino to be added to the map.
  */
 static void
-inomap_add( void *contextp, xfs_ino_t ino, gen_t gen, int state )
+inomap_add(void *contextp, xfs_ino_t ino, gen_t gen, int state)
 {
-	inomap_set_state( contextp, ino, state );
-	inomap_set_gen( contextp, ino, gen );
+	inomap_set_state(contextp, ino, state);
+	inomap_set_gen(contextp, ino, gen);
 }
 
 void *
-inomap_alloc_context( void )
+inomap_alloc_context(void)
 {
-	void *addr = calloc( 1, sizeof(seg_addr_t) );
+	void *addr = calloc(1, sizeof(seg_addr_t));
 	if (!addr) {
-		mlog( MLOG_NORMAL | MLOG_ERROR,
+		mlog(MLOG_NORMAL | MLOG_ERROR,
 		      _("failed to allocate inomap context: %s\n"),
-		      strerror(errno) );
+		      strerror(errno));
 	}
 	return addr;
 }
 
 void
-inomap_reset_context( void *p )
+inomap_reset_context(void *p)
 {
-	memset( p, 0, sizeof(seg_addr_t) );
+	memset(p, 0, sizeof(seg_addr_t));
 }
 
 void
-inomap_free_context( void *p )
+inomap_free_context(void *p)
 {
-	free( p );
+	free(p);
 }
 
 /* use binary search to find the hunk containing the given inode.
  * use the supplied addr as the starting point for the search.
  */
 static bool_t
-inomap_find_hnk( seg_addr_t *addrp, xfs_ino_t ino )
+inomap_find_hnk(seg_addr_t *addrp, xfs_ino_t ino)
 {
 	hnk_t *hunkp;
 	int lower;
@@ -1206,12 +1206,12 @@ inomap_find_hnk( seg_addr_t *addrp, xfs_ino_t ino )
 
 	lower = 0;
 	upper = inomap.lastseg.hnkoff;
-	while ( upper >= lower ) {
-		hunkp = inomap_addr2hnk( addrp );
+	while (upper >= lower) {
+		hunkp = inomap_addr2hnk(addrp);
 
-		if ( hunkp->seg[0].base > ino ) {
+		if (hunkp->seg[0].base > ino) {
 			upper = addrp->hnkoff - 1;
-		} else if ( hunkp->maxino < ino ) {
+		} else if (hunkp->maxino < ino) {
 			lower = addrp->hnkoff + 1;
 		} else {
 			return BOOL_TRUE;
@@ -1230,29 +1230,29 @@ inomap_find_hnk( seg_addr_t *addrp, xfs_ino_t ino )
  * point for the search.
  */
 static bool_t
-inomap_find_seg( seg_addr_t *addrp, xfs_ino_t ino )
+inomap_find_seg(seg_addr_t *addrp, xfs_ino_t ino)
 {
 	seg_t *segp;
 	int lower;
 	int upper;
 
-	if ( !inomap_validaddr( addrp ) ) {
-		inomap_reset_context( addrp );
+	if (!inomap_validaddr(addrp)) {
+		inomap_reset_context(addrp);
 	}
 
-	if ( !inomap_find_hnk( addrp, ino ) )
+	if (!inomap_find_hnk(addrp, ino))
 		return BOOL_FALSE;
 
 	/* find the correct segment */
 	lower = 0;
 	upper = inomap_lastseg(addrp->hnkoff);
 
-	while ( upper >= lower ) {
-		segp = inomap_addr2seg( addrp );
+	while (upper >= lower) {
+		segp = inomap_addr2seg(addrp);
 
-		if ( segp->base > ino ) {
+		if (segp->base > ino) {
 			upper = addrp->segoff - 1;
-		} else if ( segp->base + INOPERSEG <= ino ) {
+		} else if (segp->base + INOPERSEG <= ino) {
 			lower = addrp->segoff + 1;
 		} else {
 			return BOOL_TRUE;
@@ -1265,28 +1265,28 @@ inomap_find_seg( seg_addr_t *addrp, xfs_ino_t ino )
 }
 
 static xfs_ino_t
-inomap_iter( void *contextp, int statemask )
+inomap_iter(void *contextp, int statemask)
 {
 	xfs_ino_t ino, endino;
 	seg_t *segp;
 	seg_addr_t *addrp = (seg_addr_t *)contextp;
 
-	for ( ;
+	for (;
 	      addrp->hnkoff <= inomap.lastseg.hnkoff;
-	      addrp->hnkoff++, addrp->segoff = 0, addrp->inooff = 0 ) {
+	      addrp->hnkoff++, addrp->segoff = 0, addrp->inooff = 0) {
 
-		for ( ;
+		for (;
 		      addrp->segoff <= inomap_lastseg(addrp->hnkoff);
-		      addrp->segoff++, addrp->inooff = 0 ) {
+		      addrp->segoff++, addrp->inooff = 0) {
 
-			segp = inomap_addr2seg( addrp );
+			segp = inomap_addr2seg(addrp);
 
 			ino = segp->base + addrp->inooff;
 			endino = segp->base + INOPERSEG;
-			for ( ; ino < endino ; ino++, addrp->inooff++ ) {
+			for (; ino < endino ; ino++, addrp->inooff++) {
 				int st;
-				st = SEG_GET_BITS( segp, ino );
-				if ( statemask & ( 1 << st )) {
+				st = SEG_GET_BITS(segp, ino);
+				if (statemask & (1 << st)) {
 					addrp->inooff++; /* for next call */
 					return ino;
 				}
@@ -1324,7 +1324,7 @@ inomap_next_dir(void *contextp, xfs_ino_t lastino)
 }
 
 static int
-inomap_set_state( void *contextp, xfs_ino_t ino, int state )
+inomap_set_state(void *contextp, xfs_ino_t ino, int state)
 {
 	int oldstate;
 	seg_addr_t *addrp;
@@ -1332,31 +1332,31 @@ inomap_set_state( void *contextp, xfs_ino_t ino, int state )
 	seg_t *segp;
 
 	addrp = contextp ? (seg_addr_t *)contextp : &addr;
-	if ( !inomap_find_seg( addrp, ino ) )
+	if (!inomap_find_seg(addrp, ino))
 		return MAP_INO_UNUSED;
 
-	segp = inomap_addr2seg( addrp );
+	segp = inomap_addr2seg(addrp);
 
-	oldstate = SEG_GET_BITS( segp, ino );
-	SEG_SET_BITS( segp, ino, state );
+	oldstate = SEG_GET_BITS(segp, ino);
+	SEG_SET_BITS(segp, ino, state);
 
 	return oldstate;
 }
 
 int
-inomap_get_state( void *contextp, xfs_ino_t ino )
+inomap_get_state(void *contextp, xfs_ino_t ino)
 {
 	seg_addr_t *addrp;
 	seg_addr_t addr;
 	seg_t *segp;
 
 	addrp = contextp ? (seg_addr_t *)contextp : &addr;
-	if ( !inomap_find_seg( addrp, ino ) )
+	if (!inomap_find_seg(addrp, ino))
 		return MAP_INO_UNUSED;
 
-	segp = inomap_addr2seg( addrp );
+	segp = inomap_addr2seg(addrp);
 
-	return SEG_GET_BITS( segp, ino );
+	return SEG_GET_BITS(segp, ino);
 }
 
 static void
@@ -1369,11 +1369,11 @@ inomap_set_gen(void *contextp, xfs_ino_t ino, gen_t gen)
 	xfs_ino_t relino;
 
 	addrp = contextp ? (seg_addr_t *)contextp : &addr;
-	if ( !inomap_find_seg( addrp, ino ) )
+	if (!inomap_find_seg(addrp, ino))
 		return;
 
-	segp = inomap_addr2seg( addrp );
-	i2gsegp = &inomap.i2gmap[inomap_addr2segix( addrp )];
+	segp = inomap_addr2seg(addrp);
+	i2gsegp = &inomap.i2gmap[inomap_addr2segix(addrp)];
 
 	relino = ino - segp->base;
 	i2gsegp->s_valid |= (uint64_t)1 << relino;
@@ -1381,7 +1381,7 @@ inomap_set_gen(void *contextp, xfs_ino_t ino, gen_t gen)
 }
 
 int
-inomap_get_gen( void *contextp, xfs_ino_t ino, gen_t *gen )
+inomap_get_gen(void *contextp, xfs_ino_t ino, gen_t *gen)
 {
 	seg_addr_t *addrp;
 	seg_addr_t addr;
@@ -1390,14 +1390,14 @@ inomap_get_gen( void *contextp, xfs_ino_t ino, gen_t *gen )
 	xfs_ino_t relino;
 
 	addrp = contextp ? (seg_addr_t *)contextp : &addr;
-	if ( !inomap_find_seg( addrp, ino ) )
+	if (!inomap_find_seg(addrp, ino))
 		return 1;
 
-	segp = inomap_addr2seg( addrp );
-	i2gsegp = &inomap.i2gmap[inomap_addr2segix( addrp )];
+	segp = inomap_addr2seg(addrp);
+	i2gsegp = &inomap.i2gmap[inomap_addr2segix(addrp)];
 
 	relino = ino - segp->base;
-	if ( ! (i2gsegp->s_valid & ((uint64_t)1 << relino)) )
+	if (! (i2gsegp->s_valid & ((uint64_t)1 << relino)))
 		return 1;
 
 	*gen = i2gsegp->s_gen[relino];
@@ -1405,21 +1405,21 @@ inomap_get_gen( void *contextp, xfs_ino_t ino, gen_t *gen )
 }
 
 void
-inomap_writehdr( content_inode_hdr_t *scwhdrp )
+inomap_writehdr(content_inode_hdr_t *scwhdrp)
 {
 	/* update the inomap info in the content header
 	 */
 	scwhdrp->cih_inomap_hnkcnt = inomap.lastseg.hnkoff + 1;
-	scwhdrp->cih_inomap_segcnt = inomap_addr2segix( &inomap.lastseg ) + 1;
-	scwhdrp->cih_inomap_dircnt = ( uint64_t )cb_dircnt;
-	scwhdrp->cih_inomap_nondircnt = ( uint64_t )cb_nondircnt;
-	scwhdrp->cih_inomap_firstino = inomap.hnkmap[0].seg[ 0 ].base;
+	scwhdrp->cih_inomap_segcnt = inomap_addr2segix(&inomap.lastseg) + 1;
+	scwhdrp->cih_inomap_dircnt = (uint64_t)cb_dircnt;
+	scwhdrp->cih_inomap_nondircnt = (uint64_t)cb_nondircnt;
+	scwhdrp->cih_inomap_firstino = inomap.hnkmap[0].seg[0].base;
 	scwhdrp->cih_inomap_lastino = inomap.hnkmap[inomap.lastseg.hnkoff].maxino;
-	scwhdrp->cih_inomap_datasz = ( uint64_t )cb_datasz;
+	scwhdrp->cih_inomap_datasz = (uint64_t)cb_datasz;
 }
 
 rv_t
-inomap_dump( drive_t *drivep )
+inomap_dump(drive_t *drivep)
 {
 	seg_addr_t addr;
 	hnk_t *hnkp;
@@ -1427,22 +1427,22 @@ inomap_dump( drive_t *drivep )
 
 	/* use write_buf to dump the hunks
 	 */
-	for ( addr.hnkoff = 0 ;
+	for (addr.hnkoff = 0 ;
 	      addr.hnkoff <= inomap.lastseg.hnkoff ;
-	      addr.hnkoff++ ) {
+	      addr.hnkoff++) {
 		int rval;
 		rv_t rv;
 		drive_ops_t *dop = drivep->d_opsp;
 
-		hnkp = inomap_addr2hnk( &addr );
+		hnkp = inomap_addr2hnk(&addr);
 
 		xlate_hnk(hnkp, &tmphnkp, 1);
-		rval = write_buf( ( char * )&tmphnkp,
-				  sizeof( tmphnkp ),
-				  ( void * )drivep,
-				  ( gwbfp_t )dop->do_get_write_buf,
-				  ( wfp_t )dop->do_write );
-		switch ( rval ) {
+		rval = write_buf((char *)&tmphnkp,
+				  sizeof(tmphnkp),
+				  (void *)drivep,
+				  (gwbfp_t)dop->do_get_write_buf,
+				  (wfp_t)dop->do_write);
+		switch (rval) {
 		case 0:
 			rv = RV_OK;
 			break;
@@ -1461,7 +1461,7 @@ inomap_dump( drive_t *drivep )
 			rv = RV_CORE;
 			break;
 		}
-		if ( rv != RV_OK ) {
+		if (rv != RV_OK) {
 			return rv;
 		}
 	}
@@ -1470,38 +1470,38 @@ inomap_dump( drive_t *drivep )
 }
 
 static int
-subtreelist_parse( jdm_fshandle_t *fshandlep,
+subtreelist_parse(jdm_fshandle_t *fshandlep,
 		   int fsfd,
 		   xfs_bstat_t *rootstatp,
 		   char *subtreebuf[],
-		   ix_t subtreecnt )
+		   ix_t subtreecnt)
 {
 	ix_t subtreeix;
 
 	/* add the root ino to the dump
 	 */
-	cb_add( NULL, fshandlep, fsfd, rootstatp );
+	cb_add(NULL, fshandlep, fsfd, rootstatp);
 
 	/* do a recursive descent for each subtree specified
 	 */
-	for ( subtreeix = 0 ; subtreeix < subtreecnt ; subtreeix++ ) {
+	for (subtreeix = 0 ; subtreeix < subtreecnt ; subtreeix++) {
 		int cbrval = 0;
-		char *currentpath = subtreebuf[ subtreeix ];
-		assert( *currentpath != '/' );
-		( void )diriter( fshandlep,
+		char *currentpath = subtreebuf[subtreeix];
+		assert(*currentpath != '/');
+		(void)diriter(fshandlep,
 				 fsfd,
 				 rootstatp,
 				 subtreelist_parse_cb,
-				 ( void * )currentpath,
+				 (void *)currentpath,
 				 &cbrval,
 				 NULL,
-				 0 );
-		if ( cbrval != 1 ) {
-			mlog( MLOG_NORMAL | MLOG_ERROR | MLOG_INOMAP,
+				 0);
+		if (cbrval != 1) {
+			mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_INOMAP,
 			      "%s: %s\n",
 			      cbrval == 0 ? _("subtree not present")
 					  : _("invalid subtree specified"),
-			      currentpath );
+			      currentpath);
 			return -1;
 		}
 	}
@@ -1510,30 +1510,30 @@ subtreelist_parse( jdm_fshandle_t *fshandlep,
 }
 
 static int
-subtreelist_parse_cb( void *arg1,
+subtreelist_parse_cb(void *arg1,
 		      jdm_fshandle_t *fshandlep,
 		      int fsfd,
 		      xfs_bstat_t *statp,
-		      char *name  )
+		      char *name)
 {
 	int cbrval = 0;
 
 	/* arg1 is used to carry the tail of the subtree path
 	 */
-	char *subpath = ( char * )arg1;
+	char *subpath = (char *)arg1;
 
 	/* temporarily terminate the subpath at the next slash
 	 */
-	char *nextslash = strchr( subpath, '/' );
-	if ( nextslash ) {
+	char *nextslash = strchr(subpath, '/');
+	if (nextslash) {
 		*nextslash = 0;
 	}
 
 	/* if the first element of the subpath doesn't match this
 	 * directory entry, try the next entry.
 	 */
-	if ( strcmp( subpath, name )) {
-		if ( nextslash ) {
+	if (strcmp(subpath, name)) {
+		if (nextslash) {
 			*nextslash = '/';
 		}
 		return 0;
@@ -1541,15 +1541,15 @@ subtreelist_parse_cb( void *arg1,
 
 	/* it matches, so add ino to list and continue down the path
 	 */
-	cb_add( NULL, fshandlep, fsfd, statp );
+	cb_add(NULL, fshandlep, fsfd, statp);
 
-	if ( nextslash ) {
+	if (nextslash) {
 
 		/* if we're not at the end of the path, yet the current
 		 * path element is not a directory, complain and abort the
 		 * iteration in a way which terminates the application
 		 */
-		if ( ( statp->bs_mode & S_IFMT ) != S_IFDIR ) {
+		if ((statp->bs_mode & S_IFMT) != S_IFDIR) {
 			*nextslash = '/';
 			return 2;
 		}
@@ -1560,14 +1560,14 @@ subtreelist_parse_cb( void *arg1,
 
 		/* peel the first element of the subpath and recurse
 		*/
-		( void )diriter( fshandlep,
+		(void)diriter(fshandlep,
 				 fsfd,
 				 statp,
 				 subtreelist_parse_cb,
-				 ( void * )( nextslash + 1 ),
+				 (void *)(nextslash + 1),
 				 &cbrval,
 				 NULL,
-				 0 );
+				 0);
 		return cbrval;
 
 	} else {
@@ -1576,43 +1576,43 @@ subtreelist_parse_cb( void *arg1,
 		 * to the inomap.
 		 */
 
-		if ( ( statp->bs_mode & S_IFMT ) != S_IFDIR ) {
+		if ((statp->bs_mode & S_IFMT) != S_IFDIR) {
 			return 1;
 		}
 
-		( void )diriter( fshandlep,
+		(void)diriter(fshandlep,
 				 fsfd,
 				 statp,
 				 subtree_descend_cb,
 				 NULL,
 				 &cbrval,
 				 0,
-				 0 );
+				 0);
 		return 1;
 	}
 }
 
 static int
-subtree_descend_cb( void *arg1,
+subtree_descend_cb(void *arg1,
 		    jdm_fshandle_t *fshandlep,
 		    int fsfd,
 		    xfs_bstat_t *statp,
-		    char *name  )
+		    char *name)
 {
 	int cbrval = 0;
 
-	cb_add( NULL, fshandlep, fsfd, statp );
+	cb_add(NULL, fshandlep, fsfd, statp);
 
-	if ( ( statp->bs_mode & S_IFMT ) == S_IFDIR ) {
+	if ((statp->bs_mode & S_IFMT) == S_IFDIR) {
 
-		( void )diriter( fshandlep,
+		(void)diriter(fshandlep,
 				 fsfd,
 				 statp,
 				 subtree_descend_cb,
 				 NULL,
 				 &cbrval,
 				 NULL,
-				 0 );
+				 0);
 	}
 
 	return cbrval;
@@ -1624,10 +1624,10 @@ subtree_descend_cb( void *arg1,
 #define BMAP_LEN	512
 
 static off64_t
-quantity2offset( jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty )
+quantity2offset(jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty)
 {
 	int fd;
-	getbmapx_t bmap[ BMAP_LEN ];
+	getbmapx_t bmap[BMAP_LEN];
 	off64_t offset;
 	off64_t offset_next;
 	off64_t qty_accum;
@@ -1644,51 +1644,51 @@ quantity2offset( jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty )
 	offset = 0;
 	offset_next = 0;
 	qty_accum = 0;
-	bmap[ 0 ].bmv_offset = 0;
-	bmap[ 0 ].bmv_length = -1;
-	bmap[ 0 ].bmv_count = BMAP_LEN;
-	bmap[ 0 ].bmv_iflags = BMV_IF_NO_DMAPI_READ;
-	bmap[ 0 ].bmv_entries = -1;
-	fd = jdm_open( fshandlep, statp, O_RDONLY );
-	if ( fd < 0 ) {
-		mlog( MLOG_NORMAL | MLOG_WARNING | MLOG_INOMAP, _(
+	bmap[0].bmv_offset = 0;
+	bmap[0].bmv_length = -1;
+	bmap[0].bmv_count = BMAP_LEN;
+	bmap[0].bmv_iflags = BMV_IF_NO_DMAPI_READ;
+	bmap[0].bmv_entries = -1;
+	fd = jdm_open(fshandlep, statp, O_RDONLY);
+	if (fd < 0) {
+		mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_INOMAP, _(
 		      "could not open ino %llu to read extent map: %s\n"),
 		      statp->bs_ino,
-		      strerror( errno ));
+		      strerror(errno));
 		return 0;
 	}
 
-	for ( ; ; ) {
+	for (; ;) {
 		int eix;
 		int rval;
 
-		rval = ioctl( fd, XFS_IOC_GETBMAPX, bmap );
-		if ( rval ) {
-			mlog( MLOG_NORMAL | MLOG_WARNING | MLOG_INOMAP, _(
+		rval = ioctl(fd, XFS_IOC_GETBMAPX, bmap);
+		if (rval) {
+			mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_INOMAP, _(
 			      "could not read extent map for ino %llu: %s\n"),
 			      statp->bs_ino,
-			      strerror( errno ));
-			( void )close( fd );
+			      strerror(errno));
+			(void)close(fd);
 			return 0;
 		}
 
-		if ( bmap[ 0 ].bmv_entries <= 0 ) {
-			assert( bmap[ 0 ].bmv_entries == 0 );
-			( void )close( fd );
+		if (bmap[0].bmv_entries <= 0) {
+			assert(bmap[0].bmv_entries == 0);
+			(void)close(fd);
 			return offset_next;
 		}
 
-		for ( eix = 1 ; eix <= bmap[ 0 ].bmv_entries ; eix++ ) {
-			getbmapx_t *bmapp = &bmap[ eix ];
+		for (eix = 1 ; eix <= bmap[0].bmv_entries ; eix++) {
+			getbmapx_t *bmapp = &bmap[eix];
 			off64_t qty_new;
-			if ( bmapp->bmv_block == -1 ) {
+			if (bmapp->bmv_block == -1) {
 				continue; /* hole */
 			}
 			offset = bmapp->bmv_offset * BBSIZE;
 			qty_new = qty_accum + bmapp->bmv_length * BBSIZE;
-			if ( qty_new >= qty ) {
-				( void )close( fd );
-				return offset + ( qty - qty_accum );
+			if (qty_new >= qty) {
+				(void)close(fd);
+				return offset + (qty - qty_accum);
 			}
 			offset_next = offset + bmapp->bmv_length * BBSIZE;
 			qty_accum = qty_new;
@@ -1699,9 +1699,9 @@ quantity2offset( jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty )
 
 
 static off64_t
-estimate_dump_space( xfs_bstat_t *statp )
+estimate_dump_space(xfs_bstat_t *statp)
 {
-	switch ( statp->bs_mode & S_IFMT ) {
+	switch (statp->bs_mode & S_IFMT) {
 	case S_IFREG:
 		/* very rough: must improve this.  If GETOPT_DUMPASOFFLINE was
 		 * specified and the HSM provided an estimate, then use it.
@@ -1719,7 +1719,7 @@ estimate_dump_space( xfs_bstat_t *statp )
 			if (HsmEstimateFileSpace(hsm_fs_ctxtp, NULL, statp, &bytes, accurate))
 				return bytes;
 		}
-		return statp->bs_blocks * ( off64_t )statp->bs_blksize;
+		return statp->bs_blocks * (off64_t)statp->bs_blksize;
 	case S_IFIFO:
 	case S_IFCHR:
 	case S_IFDIR:
@@ -1734,11 +1734,11 @@ estimate_dump_space( xfs_bstat_t *statp )
 	*/
 		return 0;
 	default:
-		mlog( MLOG_NORMAL | MLOG_WARNING | MLOG_INOMAP, _(
+		mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_INOMAP, _(
 		      "unknown inode type: ino=%llu, mode=0x%04x 0%06o\n"),
 		      statp->bs_ino,
 		      statp->bs_mode,
-		      statp->bs_mode );
+		      statp->bs_mode);
 		return 0;
 	}
 }

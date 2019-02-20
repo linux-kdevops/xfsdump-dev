@@ -47,7 +47,7 @@ int invidx_numfiles;
 extern stobj_fileinfo_t *stobj_file;
 extern int stobj_numfiles;
 
-static void stobj_makefname_len( char *fname, int fname_len );
+static void stobj_makefname_len(char *fname, int fname_len);
 
 menu_ops_t invidx_ops = {
     NULL,
@@ -94,7 +94,7 @@ invidx_commit(WINDOW *win, node_t *current, node_t *list)
 	}
 	mark_all_children_commited(current);
 
-	if ( invidx_file[fidx].counter->ic_curnum > 1 ) {
+	if (invidx_file[fidx].counter->ic_curnum > 1) {
 	    memmove(&inv_entry[idx],
 		    &inv_entry[idx + 1],
 		    (sizeof(invt_entry_t) * (invidx_file[fidx].counter->ic_curnum - idx - 1)));
@@ -547,7 +547,7 @@ insert_stobj_into_stobjfile(int invidx_fileidx, char *filename, int fd,
     }
 
     /* stobj file not full, just insert the entry */
-    hdr->sh_sess_off = STOBJ_OFFSET( sescnt.ic_maxnum, pos);
+    hdr->sh_sess_off = STOBJ_OFFSET(sescnt.ic_maxnum, pos);
     hdr->sh_streams_off = sescnt.ic_eof;
 
     /* for seshdr: malloc buffer, copy new entry into buffer, read file entries into buffer, write the lot out */
@@ -584,31 +584,31 @@ insert_stobj_into_stobjfile(int invidx_fileidx, char *filename, int fd,
 }
 
 static void
-stobj_makefname_len( char *fname, int fname_len )
+stobj_makefname_len(char *fname, int fname_len)
 {
     /* come up with a new unique name */
     uuid_t	fn;
     char	str[UUID_STR_LEN + 1];
 
-    uuid_generate( fn );
-    uuid_unparse( fn, str );
+    uuid_generate(fn);
+    uuid_unparse(fn, str);
 
     snprintf(fname, fname_len, "%s/%s.StObj", inventory_path, str);
 }
 
 int
-stobj_create( char *fname )
+stobj_create(char *fname)
 {
     int fd;
     invt_sescounter_t sescnt;
 
     /* create the new storage object */
-    if (( fd = open( fname, O_RDWR | O_EXCL | O_CREAT, S_IRUSR|S_IWUSR )) < 0 ) {
+    if ((fd = open(fname, O_RDWR | O_EXCL | O_CREAT, S_IRUSR|S_IWUSR)) < 0) {
 	return -1;
     }
 
-    INVLOCK( fd, LOCK_EX );
-    fchmod( fd, INV_PERMS );
+    INVLOCK(fd, LOCK_EX);
+    fchmod(fd, INV_PERMS);
 
     memset(&sescnt, 0, sizeof(sescnt));
     sescnt.ic_vernum = INV_VERSION;
@@ -617,51 +617,51 @@ stobj_create( char *fname )
     sescnt.ic_eof = SC_EOF_INITIAL_POS;
 
     lseek(fd, 0, SEEK_SET);
-    write_n_bytes ( fd, (char *)&sescnt, sizeof(sescnt), "new stobj file" );
+    write_n_bytes (fd, (char *)&sescnt, sizeof(sescnt), "new stobj file");
 
-    INVLOCK( fd, LOCK_UN );
+    INVLOCK(fd, LOCK_UN);
     return fd;
 }
 
 int
-stobj_put_streams( int fd, invt_seshdr_t *hdr, invt_session_t *ses,
+stobj_put_streams(int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 		   invt_stream_t *strms,
-		   invt_mediafile_t *mfiles )
+		   invt_mediafile_t *mfiles)
 {
     uint	nstm	= ses->s_cur_nstreams;
     off64_t	off	= hdr->sh_streams_off;
-    off64_t	mfileoff= off + (off64_t)( nstm * sizeof( invt_stream_t ) );
+    off64_t	mfileoff= off + (off64_t)(nstm * sizeof(invt_stream_t));
     uint	nmfiles = 0;
     uint	i,j;
 
     /* fix the offsets in streams */
-     for ( i = 0; i < nstm; i++ ) {
-	strms[i].st_firstmfile = mfileoff + (off64_t) ((size_t) nmfiles * sizeof( invt_mediafile_t ) );
+     for (i = 0; i < nstm; i++) {
+	strms[i].st_firstmfile = mfileoff + (off64_t) ((size_t) nmfiles * sizeof(invt_mediafile_t));
 	/* now fix the offsets in mediafiles */
-	for ( j = 0; j < strms[i].st_nmediafiles; j++ ) {
+	for (j = 0; j < strms[i].st_nmediafiles; j++) {
 
 	    /* no need to fix the last element's next ptr */
-	    if ( j < strms[i].st_nmediafiles - 1 )
-		mfiles[ nmfiles + j ].mf_nextmf =  strms[i].st_firstmfile + (off64_t) ((j+1) * sizeof( invt_mediafile_t ));
+	    if (j < strms[i].st_nmediafiles - 1)
+		mfiles[nmfiles + j].mf_nextmf =  strms[i].st_firstmfile + (off64_t) ((j+1) * sizeof(invt_mediafile_t));
 
 	    /* no need to fix the first element's prev ptr */
-	    if ( j )
-		mfiles[ nmfiles + j ].mf_prevmf = strms[i].st_firstmfile + (off64_t) ((j-1) * sizeof( invt_mediafile_t ));
+	    if (j)
+		mfiles[nmfiles + j].mf_prevmf = strms[i].st_firstmfile + (off64_t) ((j-1) * sizeof(invt_mediafile_t));
 	}
 
 	/* adjust the offsets of the first and the last elements
 	   in the mediafile chain */
-	mfiles[ nmfiles ].mf_prevmf = 0;
+	mfiles[nmfiles].mf_prevmf = 0;
 	nmfiles += strms[i].st_nmediafiles;
-	mfiles[ nmfiles - 1 ].mf_nextmf = 0;
+	mfiles[nmfiles - 1].mf_nextmf = 0;
     }
 
     /* first put the streams. hdr already points at the right place */
     lseek(fd, off, SEEK_SET);
-    write_n_bytes( fd, strms, nstm * sizeof( invt_stream_t ), "stobj file" );
+    write_n_bytes(fd, strms, nstm * sizeof(invt_stream_t ), "stobj file");
 
     lseek(fd, mfileoff, SEEK_SET);
-    write_n_bytes( fd, mfiles, nmfiles * sizeof( invt_mediafile_t ), "stobj file" );
+    write_n_bytes(fd, mfiles, nmfiles * sizeof(invt_mediafile_t ), "stobj file");
 
     return 1;
 }
@@ -834,7 +834,7 @@ find_invidx_insert_pos(int fidx, invt_entry_t *inv_entry)
 	next_entry = invidx_file[fidx].data[i+1];
 
 	if(inv_entry->ie_timeperiod.tp_start > entry->ie_timeperiod.tp_end
-	   && inv_entry->ie_timeperiod.tp_end < next_entry->ie_timeperiod.tp_start ) {
+	   && inv_entry->ie_timeperiod.tp_end < next_entry->ie_timeperiod.tp_start) {
 	    return i;
 	}
     }
@@ -916,7 +916,7 @@ generate_invidx_menu(char * inv_path, node_t *startnode, int level, char *idxFil
 	return startnode;
     }
 
-    invidx_entry = (invt_entry_t *)( invidx_file[idx].mapaddr + sizeof(invt_counter_t));
+    invidx_entry = (invt_entry_t *)(invidx_file[idx].mapaddr + sizeof(invt_counter_t));
 
     n = startnode;
     for (i=0; i < invidx_file[idx].counter->ic_curnum; i++) {
@@ -947,7 +947,7 @@ generate_invidx_menu(char * inv_path, node_t *startnode, int level, char *idxFil
 
 	add_invidx_data(idx, &(invidx_entry[i]));
 	stobjname = GetNameOfStobj(inv_path, invidx_entry[i].ie_filename);
-	n = generate_stobj_menu( n, level + 1, stobjname );
+	n = generate_stobj_menu(n, level + 1, stobjname);
 	free(stobjname);
     }
 
@@ -1001,7 +1001,7 @@ remmap_invidx(int fidx, int num)
 
     nEntries = invidx_file[fidx].counter->ic_curnum;
 
-    munmap( invidx_file[fidx].mapaddr,
+    munmap(invidx_file[fidx].mapaddr,
 	    (nEntries * sizeof(invt_entry_t)) + sizeof(invt_counter_t));
 
     /* need to lseek on the file to grow it to the right size - no autogrow on linux */
@@ -1042,7 +1042,7 @@ open_invidx(char *idxFileName)
     invt_counter_t header;
 
     errno=0;
-    fd = open_and_lock( idxFileName, FILE_WRITE, wait_for_locks );
+    fd = open_and_lock(idxFileName, FILE_WRITE, wait_for_locks);
     if (fd < 0) {
         return fd;
     }
@@ -1053,7 +1053,7 @@ open_invidx(char *idxFileName)
 	exit(1);
     }
 
-    read_n_bytes( fd, &header, sizeof(invt_counter_t), idxFileName);
+    read_n_bytes(fd, &header, sizeof(invt_counter_t), idxFileName);
 
     nEntries = header.ic_curnum;
 
@@ -1075,21 +1075,21 @@ close_invidx(int idx)
 	return 0;
 
     nEntries = invidx_file[idx].counter->ic_curnum;
-    munmap( invidx_file[idx].mapaddr,
-	    (invidx_file[idx].nEntries*sizeof(invt_entry_t)) + sizeof(invt_counter_t) );
+    munmap(invidx_file[idx].mapaddr,
+	    (invidx_file[idx].nEntries*sizeof(invt_entry_t)) + sizeof(invt_counter_t));
 
     if(nEntries != 0 && nEntries != invidx_file[idx].nEntries) {
 	ftruncate(invidx_file[idx].fd,
-		  sizeof(invt_counter_t) + (nEntries * sizeof(invt_entry_t)) );
+		  sizeof(invt_counter_t) + (nEntries * sizeof(invt_entry_t)));
     }
 
-    close( invidx_file[idx].fd );
+    close(invidx_file[idx].fd);
 
     if(nEntries == 0) {
 	unlink(invidx_file[idx].name);
     }
-    free( invidx_file[idx].name );
-    free( invidx_file[idx].data );
+    free(invidx_file[idx].name);
+    free(invidx_file[idx].data);
 
     invidx_file[idx].fd = -1;
     invidx_file[idx].name = NULL;

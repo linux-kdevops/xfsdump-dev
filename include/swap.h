@@ -51,11 +51,11 @@
 
 #define INT_SET(ref,arch,valueref) \
 	(__builtin_constant_p(valueref) ? \
-	(void)( (ref) = ( ((arch) != ARCH_NOCONVERT) ? \
-	  		   (INT_SWAP((ref),(valueref))) : (valueref)) ) : \
-	(void)( ((ref) = (valueref)), \
-			( ((arch) != ARCH_NOCONVERT) ? \
-			   (ref) = INT_SWAP((ref),(ref)) : 0 ) ))
+	(void)((ref) = (((arch) != ARCH_NOCONVERT) ? \
+	  		   (INT_SWAP((ref),(valueref))) : (valueref))) : \
+	(void)(((ref) = (valueref)), \
+			(((arch) != ARCH_NOCONVERT) ? \
+			   (ref) = INT_SWAP((ref),(ref)) : 0)))
 
 #define INT_XLATE(buf,p,dir,arch) \
 	((dir > 0) ? ((p) = INT_GET((buf),(arch))) : INT_SET((buf),(arch),(p)))

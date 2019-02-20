@@ -28,33 +28,33 @@
 #include "bag.h"
 
 bag_t *
-bag_alloc( void )
+bag_alloc(void)
 {
 	bag_t *bagp;
 
-	bagp = ( bag_t * )calloc( 1, sizeof( bag_t ));
-	assert( bagp );
+	bagp = (bag_t *)calloc(1, sizeof(bag_t));
+	assert(bagp);
 	return bagp;
 }
 
 void
-bag_insert( bag_t *bagp,
+bag_insert(bag_t *bagp,
 	    bagelem_t *newp,
 	    size64_t key,
-	    void *payloadp )
+	    void *payloadp)
 {
 	register bagelem_t *nextp;
 	register bagelem_t *prevp;
 
-	assert( ! newp->be_loaded );
+	assert(! newp->be_loaded);
 	newp->be_loaded = BOOL_TRUE;
-	assert( ! newp->be_bagp );
+	assert(! newp->be_bagp);
 	newp->be_bagp = bagp;
 
 	newp->be_key = key;
 	newp->be_payloadp = payloadp;
 
-	if ( bagp->b_headp ) {
+	if (bagp->b_headp) {
 		nextp = bagp->b_headp;
 		prevp = bagp->b_headp->be_prevp;
 	} else {
@@ -71,16 +71,16 @@ bag_insert( bag_t *bagp,
 }
 
 void
-bag_remove( bag_t *bagp,
+bag_remove(bag_t *bagp,
 	    bagelem_t *oldp,
 	    size64_t *keyp,
-	    void **payloadpp )
+	    void **payloadpp)
 {
 	register bagelem_t *nextp;
 	register bagelem_t *prevp;
 
-	assert( oldp->be_loaded );
-	assert( oldp->be_bagp == bagp );
+	assert(oldp->be_loaded);
+	assert(oldp->be_bagp == bagp);
 
 	nextp = oldp->be_nextp;
 	prevp = oldp->be_prevp;
@@ -88,9 +88,9 @@ bag_remove( bag_t *bagp,
 	nextp->be_prevp = prevp;
 	prevp->be_nextp = nextp;
 
-	if ( bagp->b_headp == oldp ) {
-		if ( nextp == oldp ) {
-			assert( prevp == oldp );
+	if (bagp->b_headp == oldp) {
+		if (nextp == oldp) {
+			assert(prevp == oldp);
 			bagp->b_headp = 0;
 		} else {
 			bagp->b_headp = nextp;
@@ -100,29 +100,29 @@ bag_remove( bag_t *bagp,
 	*keyp = oldp->be_key;
 	*payloadpp = oldp->be_payloadp;
 
-	memset( ( void * )oldp, 0, sizeof( bagelem_t ));
+	memset((void *)oldp, 0, sizeof(bagelem_t));
 }
 
 bagelem_t *
-bag_find( bag_t *bagp,
+bag_find(bag_t *bagp,
 	 size64_t key,
-	 void **payloadpp )
+	 void **payloadpp)
 {
 	register bagelem_t *p;
 
-	for ( p = bagp->b_headp
+	for (p = bagp->b_headp
 	      ;
 	      p && p->be_nextp != bagp->b_headp && p->be_key != key
 	      ;
-	      p = p->be_nextp )
+	      p = p->be_nextp)
 		;
 
-	if ( ! p || p->be_key != key ) {
+	if (! p || p->be_key != key) {
 		*payloadpp = 0;
 		return 0;
 	} else {
-		assert( p->be_loaded );
-		assert( p->be_bagp == bagp );
+		assert(p->be_loaded);
+		assert(p->be_bagp == bagp);
 		*payloadpp = p->be_payloadp;
 		return p;
 	}
@@ -130,10 +130,10 @@ bag_find( bag_t *bagp,
 
 
 void
-bagiter_init( bag_t *bagp, bagiter_t *iterp )
+bagiter_init(bag_t *bagp, bagiter_t *iterp)
 {
 	iterp->bi_bagp = bagp;
-	if ( ! bagp->b_headp ) {
+	if (! bagp->b_headp) {
 		iterp->bi_nextp = 0;
 		return;
 	}
@@ -142,13 +142,13 @@ bagiter_init( bag_t *bagp, bagiter_t *iterp )
 }
 
 bagelem_t *
-bagiter_next( bagiter_t *iterp, void **payloadpp )
+bagiter_next(bagiter_t *iterp, void **payloadpp)
 {
 	bagelem_t *returnp;
 
 	/* termination condition
 	 */
-	if ( ! iterp->bi_nextp ) {
+	if (! iterp->bi_nextp) {
 		*payloadpp = 0;
 		return 0;
 	}
@@ -159,7 +159,7 @@ bagiter_next( bagiter_t *iterp, void **payloadpp )
 
 	/* calculate next. if returning last, set next to NULL
 	 */
-	if ( iterp->bi_nextp == iterp->bi_lastp ) {
+	if (iterp->bi_nextp == iterp->bi_lastp) {
 		iterp->bi_nextp = 0;
 	} else {
 		iterp->bi_nextp = iterp->bi_nextp->be_nextp;
@@ -170,21 +170,21 @@ bagiter_next( bagiter_t *iterp, void **payloadpp )
 }
 
 void
-bag_free( bag_t *bagp )
+bag_free(bag_t *bagp)
 {
 	register bagelem_t *p;
 
 	p = bagp->b_headp;
-	while ( p ) {
+	while (p) {
 		register bagelem_t *nextp = p->be_nextp;
-		memset( ( void * )p, 0, sizeof( bagelem_t ));
+		memset((void *)p, 0, sizeof(bagelem_t));
 		p = nextp;
-		if ( p == bagp->b_headp ) {
+		if (p == bagp->b_headp) {
 			break;
 		}
-		assert( p );
+		assert(p);
 	}
 
-	memset( ( void * )bagp, 0, sizeof( bag_t ));
-	free( ( void * )bagp );
+	memset((void *)bagp, 0, sizeof(bag_t));
+	free((void *)bagp);
 }

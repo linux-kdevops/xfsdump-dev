@@ -48,14 +48,14 @@ typedef void *qlockh_t;
 	/* opaque handle
 	 */
 
-extern qlockh_t qlock_alloc( ix_t ord );
+extern qlockh_t qlock_alloc(ix_t ord);
 	/* allocates a qlock with the specified ordinal. returns
 	 * NULL if lock can't be allocated.
 	 */
-extern void qlock_lock( qlockh_t qlockh );
+extern void qlock_lock(qlockh_t qlockh);
 	/* acquires the specified lock.
 	 */
-extern void qlock_unlock( qlockh_t qlockh );
+extern void qlock_unlock(qlockh_t qlockh);
 	/* releases the specified lock.
 	 */
 
@@ -64,23 +64,23 @@ typedef void *qsemh_t;
 	/* opaque handle
 	 */
 
-extern qsemh_t qsem_alloc( size_t cnt );
+extern qsemh_t qsem_alloc(size_t cnt);
 	/* allocates a counting semaphore initialized to the specified
 	 * count. returns a qsem handle
 	 */
-extern void qsem_free( qsemh_t qsemh );
+extern void qsem_free(qsemh_t qsemh);
 	/* frees the counting semaphore
 	 */
-extern void qsemP( qsemh_t qsemh );
+extern void qsemP(qsemh_t qsemh);
 	/* "P" (decrement) op
 	 */
-extern void qsemV( qsemh_t qsemh );
+extern void qsemV(qsemh_t qsemh);
 	/* "V" (increment) op
 	 */
-extern bool_t qsemPwouldblock( qsemh_t qsemh );
+extern bool_t qsemPwouldblock(qsemh_t qsemh);
 	/* returns true if a qsemP op would block
 	 */
-extern size_t qsemPavail( qsemh_t qsemh );
+extern size_t qsemPavail(qsemh_t qsemh);
 	/* number of resources available
 	 */
 

@@ -45,32 +45,32 @@ typedef struct bag bag_t;
 
 /* creates a new bag
  */
-extern bag_t *bag_alloc( void );
+extern bag_t *bag_alloc(void);
 
 /* insert the item into the bag. the caller supplies a search key
  * and arbitrary payload.
  */
-extern void bag_insert( bag_t *bagp,
+extern void bag_insert(bag_t *bagp,
 			bagelem_t *bagelemp,
 			size64_t key,
-			void *payloadp );
+			void *payloadp);
 
 /* remove the item from the bag. the key and payload originally supplied
  * to the insert operator are returned by reference.
  */
-extern void bag_remove( bag_t *bagp,
+extern void bag_remove(bag_t *bagp,
 			bagelem_t *bagelemp,
 			size64_t *keyp,
-			void **payloadpp );
+			void **payloadpp);
 
 /* search by key for an element in the bag.
  * returns the element pointer if a matching item is found, as well as
  * the payload (by reference). if the item is not in the bag, returns
  * a null pointer and (by reference) payload.
  */
-extern bagelem_t *bag_find( bag_t *bagp,
+extern bagelem_t *bag_find(bag_t *bagp,
 			    size64_t key,
-			    void **payloadpp );
+			    void **payloadpp);
 
 /* private bag iterator
  */
@@ -84,15 +84,15 @@ typedef struct bagiter bagiter_t;
 
 /* initializes a bag iterator
  */
-extern void bagiter_init( bag_t *bagp, bagiter_t *iterp );
+extern void bagiter_init(bag_t *bagp, bagiter_t *iterp);
 
 /* returns the next element in the bag. caller may remove the element
  * prior to the next call.
  */
-extern bagelem_t * bagiter_next( bagiter_t *iterp, void **payloadpp );
+extern bagelem_t * bagiter_next(bagiter_t *iterp, void **payloadpp);
 
 /* destroys the bag.
  */
-extern void bag_free( bag_t *bagp );
+extern void bag_free(bag_t *bagp);
 
 #endif /* BAG_H */

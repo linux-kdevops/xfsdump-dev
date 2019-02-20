@@ -52,28 +52,28 @@ static char *dev_str[] = { "/dev/usr/lib", "/dev/usr", "/dev/u/sw/courses",
 
 typedef enum { BULL = -1, WRI, REC, QUE, DEL, MP, QUE2 } hi;
 
-void usage( void );
+void usage(void);
 char *progname;
 char *sesfile;
 
 
 void
-CREAT_mfiles( inv_stmtoken_t tok, uuid_t *moid, ino_t f, ino_t n )
+CREAT_mfiles(inv_stmtoken_t tok, uuid_t *moid, ino_t f, ino_t n)
 {
 	uuid_t labelid;
 	char label[128], strbuf[20];
 	char *str;
 	unsigned int stat;
 
-	uuid_create( &labelid, &stat );
-	uuid_to_string( &labelid, &str, &stat );
-	strncpy( strbuf, str, 8 );
+	uuid_create(&labelid, &stat);
+	uuid_to_string(&labelid, &str, &stat);
+	strncpy(strbuf, str, 8);
 	free (str);
 	strbuf[8] = '\0';
-	sprintf(label,"%s_%s (%d-%d)\0","MEDIA_FILE", strbuf, (int)f, (int)n );
+	sprintf(label,"%s_%s (%d-%d)\0","MEDIA_FILE", strbuf, (int)f, (int)n);
 
-	inv_put_mediafile( tok, moid, label, 12, f, 0, n, 0, 0xffff,
-			  BOOL_TRUE, BOOL_FALSE );
+	inv_put_mediafile(tok, moid, label, 12, f, 0, n, 0, 0xffff,
+			  BOOL_TRUE, BOOL_FALSE);
 
 }
 
@@ -86,33 +86,33 @@ typedef struct ses{
 #define SESLIM  240
 
 int
-recons_test( int howmany )
+recons_test(int howmany)
 {
 	int fd, i, rval = 1;
 	off64_t off = 0;
 
-	ses sarr[ SESLIM];
+	ses sarr[SESLIM];
 
-	fd = open( sesfile, O_RDONLY );
+	fd = open(sesfile, O_RDONLY);
 
-	for ( i=0; i<howmany && i < SESLIM; i++ ){
-		rval = get_invtrecord( fd, &sarr[i],
-				       sizeof( uuid_t ) + sizeof( size_t ), off,
-				       BOOL_FALSE );
-		assert( rval > 0 );
-		assert( sarr[i].sz > 0 );
-		sarr[i].buf = calloc( 1,  sarr[i].sz );
+	for (i=0; i<howmany && i < SESLIM; i++){
+		rval = get_invtrecord(fd, &sarr[i],
+				       sizeof(uuid_t) + sizeof(size_t), off,
+				       BOOL_FALSE);
+		assert(rval > 0);
+		assert(sarr[i].sz > 0);
+		sarr[i].buf = calloc(1,  sarr[i].sz);
 		off += (off64_t)(sizeof(uuid_t) + sizeof(size_t));
-		rval = get_invtrecord( fd, sarr[i].buf,  sarr[i].sz, off,
-				       BOOL_FALSE );
-		assert( rval > 0 );
+		rval = get_invtrecord(fd, sarr[i].buf,  sarr[i].sz, off,
+				       BOOL_FALSE);
+		assert(rval > 0);
 		off += sarr[i].sz;
 	}
 
 
 
-	for ( i=0; i<howmany && i < SESLIM; i++ ){
-		if ( inv_put_sessioninfo( sarr[i].buf, sarr[i].sz ) < 0)
+	for (i=0; i<howmany && i < SESLIM; i++){
+		if (inv_put_sessioninfo(sarr[i].buf, sarr[i].sz) < 0)
 			printf("$ insert failed.\n");
 	}
 
@@ -125,21 +125,21 @@ recons_test( int howmany )
 
 
 int
-delete_test( int n )
+delete_test(int n)
 {
 	int fd, i;
 	uuid_t moid;
 	char *str = 0;
 	unsigned int stat;
 
-	fd = open( "moids", O_RDONLY );
-	if ( fd < 0 ) return -1;
+	fd = open("moids", O_RDONLY);
+	if (fd < 0) return -1;
 
-	get_invtrecord( fd, &moid, sizeof(uuid_t), (n-1)* sizeof( uuid_t), 0 );
-	uuid_to_string( &moid, &str, &stat );
-	printf("Searching for Moid = %s\n", str );
-	free( str );
-	if (! inv_delete_mediaobj( &moid ) ) return -1;
+	get_invtrecord(fd, &moid, sizeof(uuid_t), (n-1)* sizeof(uuid_t), 0);
+	uuid_to_string(&moid, &str, &stat);
+	printf("Searching for Moid = %s\n", str);
+	free(str);
+	if (! inv_delete_mediaobj(&moid)) return -1;
 
 	return 1;
 
@@ -193,7 +193,7 @@ sess_queries_bylabel(char *lab)
 
 
 int
-query_test( int level )
+query_test(int level)
 {
 	int i;
 	inv_idbtoken_t tok;
@@ -203,40 +203,40 @@ query_test( int level )
 
 	if (level == -2) {
 		printf("mount pt %s\n",sesfile);
-		tok = inv_open( INV_BY_MOUNTPT, INV_SEARCH_ONLY, sesfile );
-		if (! tok ) return -1;
+		tok = inv_open(INV_BY_MOUNTPT, INV_SEARCH_ONLY, sesfile);
+		if (! tok) return -1;
 		idx_DEBUG_print (tok->d_invindex_fd);
 		return 1;
 	}
 
 	for (i = 7; i<8; i++) {
 		printf("\n\n\n----------------------------------\n"
-		       "$ Searching fs %s\n", mnt_str[7-i] );
-		tok = inv_open( INV_BY_MOUNTPT, INV_SEARCH_ONLY, mnt_str[7-i] );
-		if (! tok ) return -1;
+		       "$ Searching fs %s\n", mnt_str[7-i]);
+		tok = inv_open(INV_BY_MOUNTPT, INV_SEARCH_ONLY, mnt_str[7-i]);
+		if (! tok) return -1;
 
 		prctx.index = i;
-		if (level == -1 )
-			invmgr_inv_print( tok->d_invindex_fd, &prctx );
+		if (level == -1)
+			invmgr_inv_print(tok->d_invindex_fd, &prctx);
 		else {
-		if (inv_lasttime_level_lessthan( tok, level, &tm ) && tm) {
-			printf("\n\nTIME %s %ld\n", ctime(tm), (long) *tm );
+		if (inv_lasttime_level_lessthan(tok, level, &tm) && tm) {
+			printf("\n\nTIME %s %ld\n", ctime(tm), (long) *tm);
 			free (tm);
 		}
-		if (inv_lastsession_level_lessthan( tok, level, &ses ) && ses) {
-			DEBUG_sessionprint( ses, 99, &prctx);
-			free ( ses->s_streams );
-			free ( ses );
+		if (inv_lastsession_level_lessthan(tok, level, &ses) && ses) {
+			DEBUG_sessionprint(ses, 99, &prctx);
+			free (ses->s_streams);
+			free (ses);
 		}
 
-		if (inv_lastsession_level_equalto( tok, level, &ses ) && ses) {
+		if (inv_lastsession_level_equalto(tok, level, &ses) && ses) {
 			printf("Gotcha\n");
-			DEBUG_sessionprint( ses, 99, &prctx );
-			free ( ses->s_streams );
-			free ( ses );
+			DEBUG_sessionprint(ses, 99, &prctx);
+			free (ses->s_streams);
+			free (ses);
 		}
 	        }
-		inv_close( tok );
+		inv_close(tok);
 	}
 	return 1;
 }
@@ -249,7 +249,7 @@ query_test( int level )
 /*----------------------------------------------------------------------*/
 
 int
-write_test( int nsess, int nstreams, int nmedia, int dumplevel )
+write_test(int nsess, int nstreams, int nmedia, int dumplevel)
 {
 	int i,j,k,m,fd;
 	unsigned int stat;
@@ -274,23 +274,23 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 #ifdef FIRSTTIME
 	printf("first time!\n");
 	for (i=0; i<8; i++) {
-		uuid_create( &fsidarr[i], &stat );
-		assert ( stat == uuid_s_ok );
-		uuid_create( &sesidarr[i], &stat );
-		assert ( stat == uuid_s_ok );
+		uuid_create(&fsidarr[i], &stat);
+		assert (stat == uuid_s_ok);
+		uuid_create(&sesidarr[i], &stat);
+		assert (stat == uuid_s_ok);
 	}
-	fd = open( "uuids", O_RDWR | O_CREAT );
-	PUT_REC(fd, (void *)fsidarr, sizeof (uuid_t) * 8, 0L );
-	PUT_REC(fd, (void *)sesidarr, sizeof (uuid_t) * 8, sizeof (uuid_t) * 8 );
+	fd = open("uuids", O_RDWR | O_CREAT);
+	PUT_REC(fd, (void *)fsidarr, sizeof (uuid_t) * 8, 0L);
+	PUT_REC(fd, (void *)sesidarr, sizeof (uuid_t) * 8, sizeof (uuid_t) * 8);
 	close(fd);
 #endif
-	fd = open("uuids", O_RDONLY );
-	GET_REC( fd, fsidarr, sizeof (uuid_t) * 8, 0L );
-	GET_REC( fd, sesidarr, sizeof (uuid_t) * 8, sizeof (uuid_t) * 8 );
+	fd = open("uuids", O_RDONLY);
+	GET_REC(fd, fsidarr, sizeof (uuid_t) * 8, 0L);
+	GET_REC(fd, sesidarr, sizeof (uuid_t) * 8, sizeof (uuid_t) * 8);
 	close(fd);
 #ifdef RECONS
-	rfd = open( sesfile, O_RDWR | O_CREAT );
-	fchmod( rfd, INV_PERMS );
+	rfd = open(sesfile, O_RDWR | O_CREAT);
+	fchmod(rfd, INV_PERMS);
 	if (fstat64(fd, &statbuf) < 0) {
 		perror("fstat64 session file");
 		return -1;
@@ -298,22 +298,22 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 	off = (off64_t)statbuf.st_size;
 #endif
 
-	for ( i = 0; i < nsess; i++ ) {
+	for (i = 0; i < nsess; i++) {
 		j = i % 8;
 		/*mnt = mnt_str[j];
 		dev = dev_str[7-j];*/
 		mnt = mnt_str[0];
 		dev = dev_str[7];
 		fsidp = &fsidarr[0]; /* j */
-		tok1 = inv_open( INV_BY_UUID, INV_SEARCH_N_MOD, fsidp );
-		assert (tok1 != INV_TOKEN_NULL );
+		tok1 = inv_open(INV_BY_UUID, INV_SEARCH_N_MOD, fsidp);
+		assert (tok1 != INV_TOKEN_NULL);
 
-		uuid_create( &labelid, &stat );
-		uuid_to_string( &labelid, &str, &stat );
-		strncpy( strbuf, str, 8 );
+		uuid_create(&labelid, &stat);
+		uuid_to_string(&labelid, &str, &stat);
+		strncpy(strbuf, str, 8);
 		free (str);
 		strbuf[8] = '\0';
-		sprintf(label,"%s_%s (%d)\0","SESSION_LABEL", strbuf, i );
+		sprintf(label,"%s_%s (%d)\0","SESSION_LABEL", strbuf, i);
 
 		tok2 = inv_writesession_open(tok1, fsidp,
 					     &labelid,
@@ -322,47 +322,47 @@ write_test( int nsess, int nstreams, int nmedia, int dumplevel )
 					     (bool_t)i%2,
 					     dumplevel, nstreams,
 					     time(NULL),
-					     mnt, dev );
-		assert (tok2 != INV_TOKEN_NULL );
+					     mnt, dev);
+		assert (tok2 != INV_TOKEN_NULL);
 		for (m = 0; m<nstreams; m++) {
-			tok3 = inv_stream_open( tok2,"/dev/rmt");
-			assert (tok3 != INV_TOKEN_NULL );
+			tok3 = inv_stream_open(tok2,"/dev/rmt");
+			assert (tok3 != INV_TOKEN_NULL);
 
-			for (k = 0; k<nmedia; k++ )
-				CREAT_mfiles( tok3, &labelid, k*100,
-					      k*100 + 99 );
-			inv_stream_close( tok3, BOOL_TRUE );
+			for (k = 0; k<nmedia; k++)
+				CREAT_mfiles(tok3, &labelid, k*100,
+					      k*100 + 99);
+			inv_stream_close(tok3, BOOL_TRUE);
 		}
 
 #ifdef RECONS
-		if (inv_get_sessioninfo( tok2, &bufp, &sz ) == BOOL_TRUE ) {
-			put_invtrecord( rfd, fsidp, sizeof( uuid_t ), off,
-					BOOL_FALSE );
+		if (inv_get_sessioninfo(tok2, &bufp, &sz) == BOOL_TRUE) {
+			put_invtrecord(rfd, fsidp, sizeof(uuid_t), off,
+					BOOL_FALSE);
 			off += (off64_t)sizeof(uuid_t);
-			put_invtrecord( rfd, &sz, sizeof( size_t ), off,
+			put_invtrecord(rfd, &sz, sizeof(size_t), off,
 					BOOL_FALSE);
 			off += (off64_t)sizeof(size_t);
-			put_invtrecord( rfd, bufp, sz, off, BOOL_FALSE );
+			put_invtrecord(rfd, bufp, sz, off, BOOL_FALSE);
 		}
 #endif
 #ifdef NOTDEF
-		if (inv_get_sessioninfo( tok2, &bufp, &sz ) == BOOL_TRUE )
-			inv_put_sessioninfo(  fsidp, bufp, sz );
+		if (inv_get_sessioninfo(tok2, &bufp, &sz) == BOOL_TRUE)
+			inv_put_sessioninfo(fsidp, bufp, sz);
 #endif
-		inv_writesession_close( tok2 );
-		inv_close( tok1 );
+		inv_writesession_close(tok2);
+		inv_close(tok1);
 	}
 #ifdef RECONS
-	close( rfd );
+	close(rfd);
 #endif
 	return 1;
 }
 
 
-void usage( void )
+void usage(void)
 {
 	printf("( %s ./inv w|r|q -v <verbosity> -s <nsess>"
-	       "-t <strms> -m <nmediafiles> \n", optarg );
+	       "-t <strms> -m <nmediafiles> \n", optarg);
 }
 
 
@@ -370,8 +370,8 @@ int
 mp_test(int nstreams)
 {
 #if 0
-	tok1 = inv_open( INV_BY_UUID, fsidp );
-	assert (tok1 != INV_TOKEN_NULL );
+	tok1 = inv_open(INV_BY_UUID, fsidp);
+	assert (tok1 != INV_TOKEN_NULL);
 
 	tok2 = inv_writesession_open(tok1, fsidp,
 				     &labelid,
@@ -380,17 +380,17 @@ mp_test(int nstreams)
 				     (bool_t)i%2,
 				     dumplevel, nstreams,
 				     time(NULL),
-				     mnt, dev );
-	assert (tok2 != INV_TOKEN_NULL );
+				     mnt, dev);
+	assert (tok2 != INV_TOKEN_NULL);
 
 	for (m = 0; m<nstreams; m++) {
-			tok3 = inv_stream_open( tok2,"/dev/rmt");
-			assert (tok3 != INV_TOKEN_NULL );
+			tok3 = inv_stream_open(tok2,"/dev/rmt");
+			assert (tok3 != INV_TOKEN_NULL);
 
-			for (k = 0; k<nmedia; k++ )
-				CREAT_mfiles( tok3, &labelid, k*100,
-					      k*100 + 99 );
-			inv_stream_close( tok3, BOOL_TRUE );
+			for (k = 0; k<nmedia; k++)
+				CREAT_mfiles(tok3, &labelid, k*100,
+					      k*100 + 99);
+			inv_stream_close(tok3, BOOL_TRUE);
 		}
 #endif
 }
@@ -417,9 +417,9 @@ main(int argc, char *argv[])
 
 	progname = argv[0];
 	sesfile = "sessions";
-	assert( argc > 1 );
+	assert(argc > 1);
 
-	mlog_init( argc, argv );
+	mlog_init(argc, argv);
 
 	if (! inv_DEBUG_print(argc, argv))
 		return 0;
@@ -427,8 +427,8 @@ main(int argc, char *argv[])
 	optind = 1;
 	optarg = 0;
 
-	while( ( cc = getopt( argc, argv, GETOPT_CMDSTRING)) != EOF ) {
-		switch ( cc ) {
+	while((cc = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
+		switch (cc) {
 		      case 'w':
 			op = WRI;
 			break;
@@ -473,7 +473,7 @@ main(int argc, char *argv[])
 			break;
 
 		      case 'm':
-			nmedia = atoi( optarg );
+			nmedia = atoi(optarg);
 			break;
 		      case 'v':
 			break;
@@ -489,17 +489,17 @@ main(int argc, char *argv[])
 	}
 
 
-	if ( op == WRI )
-		rval = write_test( nsess, nstreams, nmedia, level );
-	else if ( op == QUE )
-		rval = query_test( level );
-	else if ( op == REC )
-		rval = recons_test( nsess );
-	else if ( op == DEL )
-		rval = delete_test( nsess );
-	else if ( op == MP )
+	if (op == WRI)
+		rval = write_test(nsess, nstreams, nmedia, level);
+	else if (op == QUE)
+		rval = query_test(level);
+	else if (op == REC)
+		rval = recons_test(nsess);
+	else if (op == DEL)
+		rval = delete_test(nsess);
+	else if (op == MP)
 		rval = mp_test (nstreams);
-	else if ( op == QUE2 ) {
+	else if (op == QUE2) {
 		if (uuid)
 			rval = sess_queries_byuuid(uuid);
 		else if (label)
@@ -508,10 +508,10 @@ main(int argc, char *argv[])
 	else
 		usage();
 
-	if (rval < 0 )
-		printf( "aborted\n");
+	if (rval < 0)
+		printf("aborted\n");
 	else
-		printf( "done\n" );
+		printf("done\n");
 
 
 }

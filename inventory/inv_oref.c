@@ -269,7 +269,7 @@ _oref_free(
 	 */
 	OREF_UNLOCK(obj);
 
-	if (OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ) ){
+	if (OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ)){
 		if (OREF_ISRESOLVED(obj, INVT_RES_COUNTERS))
 			free((oref)->cu_sescnt);
 		if (OREF_ISRESOLVED(obj, INVT_RES_HDRS))
@@ -311,8 +311,8 @@ oref_resolve(
 	inv_predicate_t bywhat,
 	void 		*pred)
 {
-	char 		fname[ INV_STRLEN ];
-	char 		uuname[ INV_STRLEN ];
+	char 		fname[INV_STRLEN];
+	char 		uuname[INV_STRLEN];
 	int 		fd;
 	invt_oref_t	*stobj;
 	int		index;
@@ -358,13 +358,13 @@ oref_resolve(
 		return INV_ERR;
 	}
 
-	/* create another storage object ( and, an inv_index entry for it
-	   too ) if we've filled this one up */
+	/* create another storage object (and, an inv_index entry for it
+	   too) if we've filled this one up */
 	if (OREF_CNT_CURNUM(stobj) >= OREF_CNT_MAXNUM(stobj)) {
 		int 	rval;
 #ifdef INVT_DEBUG
-		mlog( MLOG_DEBUG | MLOG_INV, "$ INV: creating a new storage obj & "
-		      "index entry. \n" );
+		mlog(MLOG_DEBUG | MLOG_INV, "$ INV: creating a new storage obj & "
+		      "index entry. \n");
 #endif
 		/* Close(), Destroy() and mark unresolved */
 		OREF_UNRESOLVE_CHILD(invidx);
@@ -405,12 +405,12 @@ oref_resolve_child(
 
 	/* at this point we know that there should be at least one invindex
 	   entry present */
-	assert ( ent != NULL );
-	assert ( ent->ie_filename );
+	assert (ent != NULL);
+	assert (ent->ie_filename);
 
-	fd = open( ent->ie_filename, O_RDWR );
-	if ( fd < 0 ) {
-		INV_PERROR( ent->ie_filename );
+	fd = open(ent->ie_filename, O_RDWR);
+	if (fd < 0) {
+		INV_PERROR(ent->ie_filename);
 		return INV_ERR;
 	}
 
@@ -432,8 +432,8 @@ oref_resolve_new_invidx(
 	int stobjfd, fd;
 	inv_idbtoken_t tok;
 
-	if ((fd = open ( fname , O_RDWR | O_CREAT, S_IRUSR|S_IWUSR ) ) < 0 ) {
-		INV_PERROR ( fname );
+	if ((fd = open (fname , O_RDWR | O_CREAT, S_IRUSR|S_IWUSR)) < 0) {
+		INV_PERROR (fname);
 		return INV_ERR;
 	}
 	invidx->fd = fd;
@@ -441,7 +441,7 @@ oref_resolve_new_invidx(
 	fchmod(fd, INV_PERMS);
 
 #ifdef INVT_DEBUG
-	mlog( MLOG_NITTY | MLOG_INV, "creating InvIndex %s\n", fname);
+	mlog(MLOG_NITTY | MLOG_INV, "creating InvIndex %s\n", fname);
 #endif
 	/* create the new stobj as its first entry */
 	rval = oref_resolve_new_stobj(invidx, IS_EMPTY);
@@ -467,15 +467,15 @@ oref_resolve_new_stobj(
 
 	assert(OREF_ISLOCKED(invidx));
 
-	memset ( &ent, 0, sizeof( ent ) );
+	memset (&ent, 0, sizeof(ent));
 	stobj = calloc(1, sizeof(invt_oref_t));
 	OREF_SET_CHILD(invidx, stobj);
 
 	/* initialize the start and end times to be the same */
 	ent.ie_timeperiod.tp_start = ent.ie_timeperiod.tp_end = (time32_t)0;
-	stobj_makefname( ent.ie_filename );
+	stobj_makefname(ent.ie_filename);
 
-	if ( firstentry ) {
+	if (firstentry) {
 		invt_counter_t *cnt;
 		cnt = malloc(sizeof(invt_counter_t));
 
@@ -483,8 +483,8 @@ oref_resolve_new_stobj(
 		cnt->ic_curnum = 1;
 		cnt->ic_vernum = INV_VERSION;
 
-		fd = stobj_create( ent.ie_filename );
-		if ( fd < 0 ) {
+		fd = stobj_create(ent.ie_filename);
+		if (fd < 0) {
 			free(cnt);
 			return INV_ERR;
 		}
@@ -501,8 +501,8 @@ oref_resolve_new_stobj(
 			return INV_ERR;
 
 		/* create the new storage object */
-		fd = stobj_create( ent.ie_filename );
-		if ( fd < 0 ) {
+		fd = stobj_create(ent.ie_filename);
+		if (fd < 0) {
 			return -1;
 		}
 
@@ -516,7 +516,7 @@ oref_resolve_new_stobj(
 			return INV_ERR;
 
 	}
-	tok = get_token( invfd, fd );
+	tok = get_token(invfd, fd);
 	tok->d_invindex_off = IDX_HDR_OFFSET(OREF_CNT_CURNUM(invidx) - 1);
 	tok->d_update_flag |= NEW_INVINDEX;
 

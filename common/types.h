@@ -43,8 +43,8 @@
  * for now we will
  */
 #define PGSZLOG2	12
-#define PGSZ		( 1 << PGSZLOG2 )
-#define PGMASK		( PGSZ - 1 )
+#define PGSZ		(1 << PGSZLOG2)
+#define PGMASK		(PGSZ - 1)
 
 /* integers
  */
@@ -68,37 +68,37 @@ typedef uint64_t xfs_ino_t;
 #define NBBY		8
 #endif
 
-#define	MKMAX( t, s )	( ( t )						\
-			  ( ( ( 1ull					\
+#define	MKMAX(t, s)	((t)						\
+			  (((1ull					\
 			        <<					\
-			        ( ( unsigned long long )sizeof( t )	\
+			        ((unsigned long long)sizeof(t)	\
 				  *					\
-				  ( unsigned long long )NBBY		\
+				  (unsigned long long)NBBY		\
 			          -					\
-			          ( s + 1ull )))			\
+			          (s + 1ull)))			\
 			      -						\
-			      1ull )					\
+			      1ull)					\
 			    *						\
 			    2ull					\
 			    +						\
-			    1ull ))
-#define MKSMAX( t )	MKMAX( t, 1ull )
-#define MKUMAX( t )	MKMAX( t, 0ull )
-#define INT32MAX	MKSMAX( int32_t )
-#define UINT32MAX	MKUMAX( uint32_t )
-#define SIZE32MAX	MKUMAX( size32_t )
-#define INT64MAX	MKSMAX( int64_t )
-#define UINT64MAX	MKUMAX( uint64_t )
-#define SIZE64MAX	MKUMAX( size64_t )
-#define INO64MAX	MKUMAX( xfs_ino_t )
-#define OFF64MAX	MKSMAX( off64_t )
-#define INTGENMAX	MKSMAX( int )
-#define UINTGENMAX	MKUMAX( uint )
-#define OFFMAX		MKSMAX( off_t )
-#define SIZEMAX		MKUMAX( size_t )
-#define IXMAX		MKUMAX( size_t )
-#define INOMAX		MKUMAX( ino_t )
-#define TIMEMAX		MKSMAX( time32_t )
+			    1ull))
+#define MKSMAX(t)	MKMAX(t, 1ull)
+#define MKUMAX(t)	MKMAX(t, 0ull)
+#define INT32MAX	MKSMAX(int32_t)
+#define UINT32MAX	MKUMAX(uint32_t)
+#define SIZE32MAX	MKUMAX(size32_t)
+#define INT64MAX	MKSMAX(int64_t)
+#define UINT64MAX	MKUMAX(uint64_t)
+#define SIZE64MAX	MKUMAX(size64_t)
+#define INO64MAX	MKUMAX(xfs_ino_t)
+#define OFF64MAX	MKSMAX(off64_t)
+#define INTGENMAX	MKSMAX(int)
+#define UINTGENMAX	MKUMAX(uint)
+#define OFFMAX		MKSMAX(off_t)
+#define SIZEMAX		MKUMAX(size_t)
+#define IXMAX		MKUMAX(size_t)
+#define INOMAX		MKUMAX(ino_t)
+#define TIMEMAX		MKSMAX(time32_t)
 #define INT16MAX	0x7fff
 #define UINT16MAX	0xffff
 
@@ -107,8 +107,8 @@ typedef uint64_t xfs_ino_t;
 typedef int bool_t;
 #define BOOL_TRUE	1
 #define BOOL_FALSE	0
-#define BOOL_UNKNOWN	( -1 )
-#define BOOL_ERROR	( -2 )
+#define BOOL_UNKNOWN	(-1)
+#define BOOL_ERROR	(-2)
 
 /* useful return code scheme
  * NOTE: that there are macros and error messages in common/types.h that should
@@ -122,7 +122,7 @@ typedef enum { RV_OK,		/* mission accomplished */
 	       RV_EOM,		/* hit end of media object */
 	       RV_ERROR,	/* operator error or resource exhaustion */
 	       RV_DONE,		/* return early because someone else did work */
-	       RV_INTR,		/* cldmgr_stop_requested( ) */
+	       RV_INTR,		/* cldmgr_stop_requested() */
 	       RV_CORRUPT,	/* stopped because corrupt data encountered */
 	       RV_QUIT,		/* stop using resource */
 	       RV_DRIVE,	/* drive quit working */

@@ -42,7 +42,7 @@ static char *promptstr = " -> ";
 
 static sigset_t dlog_registered_sigs;
 
-static bool_t promptinput( char *buf,
+static bool_t promptinput(char *buf,
 			   size_t bufsz,
 			   ix_t *exceptionixp,
 			   time32_t timeout,
@@ -50,17 +50,17 @@ static bool_t promptinput( char *buf,
 			   ix_t sigintix,
 			   ix_t sighupix,
 			   ix_t sigquitix,
-			   char *fmt, ... );
-static void dlog_string_query_print( void *ctxp, char *fmt, ... );
+			   char *fmt, ...);
+static void dlog_string_query_print(void *ctxp, char *fmt, ...);
 
 bool_t
-dlog_init( int argc, char *argv[ ] )
+dlog_init(int argc, char *argv[])
 {
 	int c;
 
 	/* can only call once
 	 */
-	assert( dlog_ttyfd == -1 );
+	assert(dlog_ttyfd == -1);
 
 	/* initially allow dialog, use stdin fd
 	 */
@@ -68,15 +68,15 @@ dlog_init( int argc, char *argv[ ] )
 	dlog_allowed_flag = BOOL_TRUE;
 	dlog_timeouts_flag = BOOL_TRUE;
 
-	sigemptyset( &dlog_registered_sigs );
+	sigemptyset(&dlog_registered_sigs);
 
 	/* look for command line option claiming the operator knows
 	 * what's up.
 	 */
 	optind = 1;
 	opterr = 0;
-	while ( ( c = getopt( argc, argv, GETOPT_CMDSTRING )) != EOF ) {
-		switch ( c ) {
+	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
+		switch (c) {
 		case GETOPT_FORCE:
 			dlog_ttyfd = -1;
 			dlog_allowed_flag = BOOL_FALSE;
@@ -90,9 +90,9 @@ dlog_init( int argc, char *argv[ ] )
 	/* look to see if restore source coming in on
 	 * stdin. If so , try to open /dev/tty for dialogs.
 	 */
-	if ( optind < argc && ! strcmp( argv[ optind ], "-" )) {
-		dlog_ttyfd = open( "/dev/tty", O_RDWR );
-		if ( dlog_ttyfd < 0 ) {
+	if (optind < argc && ! strcmp(argv[optind ], "-")) {
+		dlog_ttyfd = open("/dev/tty", O_RDWR);
+		if (dlog_ttyfd < 0) {
 			perror("/dev/tty");
 			dlog_ttyfd = -1;
 			dlog_allowed_flag = BOOL_FALSE;
@@ -103,22 +103,22 @@ dlog_init( int argc, char *argv[ ] )
 #ifdef CHKSTDIN
 	/* if stdin is not a tty, don't allow dialogs
 	 */
-	if ( dlog_allowed_flag ) {
+	if (dlog_allowed_flag) {
 		struct stat statbuf;
 		int rval;
 
-		assert( dlog_ttyfd >= 0 );
-		rval = fstat( dlog_ttyfd, &statbuf );
-		if ( rval ) {
-			mlog( MLOG_VERBOSE | MLOG_WARNING,
+		assert(dlog_ttyfd >= 0);
+		rval = fstat(dlog_ttyfd, &statbuf);
+		if (rval) {
+			mlog(MLOG_VERBOSE | MLOG_WARNING,
 			      _("could not fstat stdin (fd %d): %s (%d)\n"),
 			      dlog_ttyfd,
-			      strerror( errno ),
-			      errno );
+			      strerror(errno),
+			      errno);
 		} else {
-			mlog( MLOG_DEBUG,
+			mlog(MLOG_DEBUG,
 			      "stdin mode 0x%x\n",
-			      statbuf.st_mode );
+			      statbuf.st_mode);
 		}
 	}
 #endif /* CHKSTDIN */
@@ -127,51 +127,51 @@ dlog_init( int argc, char *argv[ ] )
 }
 
 bool_t
-dlog_allowed( void )
+dlog_allowed(void)
 {
 	return dlog_allowed_flag;
 }
 
 void
-dlog_desist( void )
+dlog_desist(void)
 {
 	dlog_allowed_flag = BOOL_FALSE;
 }
 
 int
-dlog_fd( void )
+dlog_fd(void)
 {
 	return dlog_ttyfd;
 }
 
 void
-dlog_begin( char *preamblestr[ ], size_t preamblecnt )
+dlog_begin(char *preamblestr[], size_t preamblecnt)
 {
 	size_t ix;
 
-	mlog_lock( );
-	for ( ix = 0 ; ix < preamblecnt ; ix++ ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-		      preamblestr[ ix ] );
+	mlog_lock();
+	for (ix = 0 ; ix < preamblecnt ; ix++) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      preamblestr[ix]);
 	}
 }
 
 void
-dlog_end( char *postamblestr[ ], size_t postamblecnt )
+dlog_end(char *postamblestr[], size_t postamblecnt)
 {
 	size_t ix;
 
-	for ( ix = 0 ; ix < postamblecnt ; ix++ ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-		      postamblestr[ ix ] );
+	for (ix = 0 ; ix < postamblecnt ; ix++) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      postamblestr[ix]);
 	}
-	mlog_unlock( );
+	mlog_unlock();
 }
 
 ix_t
-dlog_multi_query( char *querystr[ ],
+dlog_multi_query(char *querystr[],
 		  size_t querycnt,
-		  char *choicestr[ ],
+		  char *choicestr[],
 		  size_t choicecnt,
 		  char *hilitestr,
 		  size_t hiliteix,
@@ -181,64 +181,64 @@ dlog_multi_query( char *querystr[ ],
 		  ix_t timeoutix,
 		  ix_t sigintix,
 		  ix_t sighupix,
-		  ix_t sigquitix )
+		  ix_t sigquitix)
 {
 	size_t ix;
-	char buf[ 100 ];
+	char buf[100];
 	char *prepromptstr;
 
 	/* sanity
 	 */
-	assert( dlog_allowed_flag );
+	assert(dlog_allowed_flag);
 
 	/* display query description strings
 	 */
-	for ( ix = 0 ; ix < querycnt ; ix++ ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-		      querystr[ ix ] );
+	for (ix = 0 ; ix < querycnt ; ix++) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      querystr[ix]);
 	}
 
 	/* display the choices: NOTE: display is 1-based, code intfs 0-based!
 	 */
-	for ( ix = 0 ; ix < choicecnt ; ix++ ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+	for (ix = 0 ; ix < choicecnt ; ix++) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      "%u: %s",
 		      ix + 1,
-		      choicestr[ ix ] );
-		if ( ix == hiliteix ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      choicestr[ix]);
+		if (ix == hiliteix) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 			      "%s",
-			      hilitestr ?  hilitestr : " *" );
+			      hilitestr ?  hilitestr : " *");
 		}
-		if ( ix == defaultix ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		if (ix == defaultix) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 			      "%s",
-			      defaultstr ?  defaultstr : _(" (default)") );
+			      defaultstr ?  defaultstr : _(" (default)"));
 		}
-		if ( dlog_timeouts_flag
+		if (dlog_timeouts_flag
 		     &&
 		     timeoutix != IXMAX
 		     &&
-		     ix == timeoutix ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		     ix == timeoutix) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 			      _(" (timeout in %u sec)"),
-			      timeout );
+			      timeout);
 		}
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-		      "\n" );
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      "\n");
 	}
 
 	/* read the tty until we get a proper answer or are interrupted
 	 */
 	prepromptstr = "";
-	for ( ; ; ) {
+	for (; ;) {
 		ix_t exceptionix;
 		bool_t ok;
 
 		/* prompt and accept input
 		 */
-		ok = promptinput( buf,
-				  sizeof( buf ),
+		ok = promptinput(buf,
+				  sizeof(buf),
 				  &exceptionix,
 				  timeout,
 				  timeoutix,
@@ -246,17 +246,17 @@ dlog_multi_query( char *querystr[ ],
 				  sighupix,
 				  sigquitix,
 				  prepromptstr,
-				  choicecnt );
-		if ( ok ) {
+				  choicecnt);
+		if (ok) {
 			long int val;
 			char *end = buf;
 
-			if ( ! strlen( buf )) {
+			if (! strlen(buf)) {
 				return defaultix;
 			}
 
-			val = strtol( buf, &end, 10 );
-			if ( *end != '\0' || val < 1 || val > choicecnt ) {
+			val = strtol(buf, &end, 10);
+			if (*end != '\0' || val < 1 || val > choicecnt) {
 				prepromptstr = _(
 				      "please enter a value "
 				      "between 1 and %d inclusive ");
@@ -271,18 +271,18 @@ dlog_multi_query( char *querystr[ ],
 }
 
 void
-dlog_multi_ack( char *ackstr[ ], size_t ackcnt )
+dlog_multi_ack(char *ackstr[], size_t ackcnt)
 {
 	size_t ix;
 
-	for ( ix = 0 ; ix < ackcnt ; ix++ ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-		      ackstr[ ix ] );
+	for (ix = 0 ; ix < ackcnt ; ix++) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      ackstr[ix]);
 	}
 }
 
 ix_t
-dlog_string_query( dlog_ucbp_t ucb, /* user's print func */
+dlog_string_query(dlog_ucbp_t ucb, /* user's print func */
 		   void *uctxp,	  /* user's context for above */
 		   char *bufp,	  /* typed string returned in */
 		   size_t bufsz,	  /* buffer size */
@@ -291,35 +291,35 @@ dlog_string_query( dlog_ucbp_t ucb, /* user's print func */
 		   ix_t sigintix,
 		   ix_t sighupix,
 		   ix_t sigquitix,
-		   ix_t okix )
+		   ix_t okix)
 {
 	ix_t exceptionix;
 	bool_t ok;
 
 	/* sanity
 	 */
-	assert( dlog_allowed_flag );
+	assert(dlog_allowed_flag);
 
 	/* call the caller's callback with his context, print context, and
 	 * print operator
 	 */
-	( * ucb )( uctxp, dlog_string_query_print, 0 );
+	(* ucb)(uctxp, dlog_string_query_print, 0);
 
 	/* if called for, print the timeout and a newline.
 	 * if not, print just a newline
 	 */
-	if ( dlog_timeouts_flag && timeoutix != IXMAX ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+	if (dlog_timeouts_flag && timeoutix != IXMAX) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      _(" (timeout in %u sec)\n"),
-		      timeout );
+		      timeout);
 	} else {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-		      "\n" );
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+		      "\n");
 	}
 
 	/* prompt and accept input
 	 */
-	ok = promptinput( bufp,
+	ok = promptinput(bufp,
 			  bufsz,
 			  &exceptionix,
 			  timeout,
@@ -327,8 +327,8 @@ dlog_string_query( dlog_ucbp_t ucb, /* user's print func */
 			  sigintix,
 			  sighupix,
 			  sigquitix,
-			  "" );
-	if ( ok ) {
+			  "");
+	if (ok) {
 		return okix;
 	} else {
 		return exceptionix;
@@ -336,9 +336,9 @@ dlog_string_query( dlog_ucbp_t ucb, /* user's print func */
 }
 
 void
-dlog_string_ack( char *ackstr[ ], size_t ackcnt )
+dlog_string_ack(char *ackstr[], size_t ackcnt)
 {
-	dlog_multi_ack( ackstr, ackcnt );
+	dlog_multi_ack(ackstr, ackcnt);
 }
 
 /* ok that this is a static, since used under mutual exclusion lock
@@ -346,31 +346,31 @@ dlog_string_ack( char *ackstr[ ], size_t ackcnt )
 static volatile int dlog_signo_received;
 
 bool_t
-dlog_sighandler( int signo )
+dlog_sighandler(int signo)
 {
-	if ( sigismember( &dlog_registered_sigs, signo ) < 1 )
+	if (sigismember(&dlog_registered_sigs, signo) < 1)
 		return BOOL_FALSE;
 	// only process the first signal
-	sigemptyset( &dlog_registered_sigs );
+	sigemptyset(&dlog_registered_sigs);
 	dlog_signo_received = signo;
 	return BOOL_TRUE;
 }
 
 /* ARGSUSED */
 static void
-dlog_string_query_print( void *ctxp, char *fmt, ... )
+dlog_string_query_print(void *ctxp, char *fmt, ...)
 {
 	va_list args;
 
-	assert( ! ctxp );
+	assert(! ctxp);
 
-	va_start( args, fmt );
-	mlog_va( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, fmt, args );
-	va_end( args );
+	va_start(args, fmt);
+	mlog_va(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, fmt, args);
+	va_end(args);
 }
 
 static bool_t
-promptinput( char *buf,
+promptinput(char *buf,
 	     size_t bufsz,
 	     ix_t *exceptionixp,
 	     time32_t timeout,
@@ -379,34 +379,34 @@ promptinput( char *buf,
 	     ix_t sighupix,
 	     ix_t sigquitix,
 	     char *fmt,
-	     ... )
+	     ...)
 {
 	va_list args;
-	time32_t now = time( NULL );
+	time32_t now = time(NULL);
 	int nread = -1;
 	sigset_t orig_set;
 	char *bufp = buf;
 
 	/* display the pre-prompt
 	 */
-	va_start( args, fmt );
-	mlog_va( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, fmt, args );
-	va_end( args );
+	va_start(args, fmt);
+	mlog_va(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, fmt, args);
+	va_end(args);
 
 	/* display standard prompt
 	 */
 #ifdef NOTYET
-	if ( dlog_timeouts_flag && timeoutix != IXMAX ) {
-		mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+	if (dlog_timeouts_flag && timeoutix != IXMAX) {
+		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      _("(timeout in %d sec)"),
-		      timeout );
+		      timeout);
 	}
 #endif /* NOTYET */
-	mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, promptstr );
+	mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, promptstr);
 
 	/* set up timeout
 	 */
-	if ( dlog_timeouts_flag && timeoutix != IXMAX ) {
+	if (dlog_timeouts_flag && timeoutix != IXMAX) {
 		timeout += now;
 	} else {
 		timeout = TIMEMAX;
@@ -421,19 +421,19 @@ promptinput( char *buf,
 	 * signals.
 	 */
 	dlog_signo_received = -1;
-	sigemptyset( &dlog_registered_sigs );
-	if ( sigintix != IXMAX ) {
-		sigaddset( &dlog_registered_sigs, SIGINT );
+	sigemptyset(&dlog_registered_sigs);
+	if (sigintix != IXMAX) {
+		sigaddset(&dlog_registered_sigs, SIGINT);
 	}
-	if ( sighupix != IXMAX ) {
-		sigaddset( &dlog_registered_sigs, SIGHUP );
-		sigaddset( &dlog_registered_sigs, SIGTERM );
+	if (sighupix != IXMAX) {
+		sigaddset(&dlog_registered_sigs, SIGHUP);
+		sigaddset(&dlog_registered_sigs, SIGTERM);
 	}
-	if ( sigquitix != IXMAX ) {
-		sigaddset( &dlog_registered_sigs, SIGQUIT );
+	if (sigquitix != IXMAX) {
+		sigaddset(&dlog_registered_sigs, SIGQUIT);
 	}
 
-	pthread_sigmask( SIG_UNBLOCK, &dlog_registered_sigs, &orig_set );
+	pthread_sigmask(SIG_UNBLOCK, &dlog_registered_sigs, &orig_set);
 
 	/* wait for input, timeout, or interrupt.
 	 * note we come out of the select() frequently in order to
@@ -441,28 +441,28 @@ promptinput( char *buf,
 	 * the main thread, so we can't rely on the signal waking us
 	 * up from the select().
 	 */
-	while ( now < timeout && dlog_signo_received == -1 && dlog_allowed_flag ) {
+	while (now < timeout && dlog_signo_received == -1 && dlog_allowed_flag) {
 		int rc;
 		fd_set rfds;
 		struct timeval tv = { 0, 100000 }; // 100 ms
 
-		FD_ZERO( &rfds );
-		FD_SET( dlog_ttyfd, &rfds );
+		FD_ZERO(&rfds);
+		FD_SET(dlog_ttyfd, &rfds);
 
-		rc = select( dlog_ttyfd + 1, &rfds, NULL, NULL, &tv );
-		if ( rc > 0 && FD_ISSET( dlog_ttyfd, &rfds ) ) {
-			nread = read( dlog_ttyfd, bufp, bufsz );
-			if ( nread < 0 ) {
+		rc = select(dlog_ttyfd + 1, &rfds, NULL, NULL, &tv);
+		if (rc > 0 && FD_ISSET(dlog_ttyfd, &rfds)) {
+			nread = read(dlog_ttyfd, bufp, bufsz);
+			if (nread < 0) {
 				break; // error handled below
-			} else if ( nread == 0 && buf == bufp ) {
-				mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, "\n" );
+			} else if (nread == 0 && buf == bufp) {
+				mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, "\n");
 				*bufp = 0;
 				break; // no input, return an empty string
-			} else if ( nread > 0 && bufp[nread-1] == '\n' ) {
+			} else if (nread > 0 && bufp[nread-1] == '\n') {
 				// received a full line, chomp the newline
 				bufp[nread-1] = 0;
 				break;
-			} else if ( nread == bufsz ) {
+			} else if (nread == bufsz) {
 				// no more room, truncate and return
 				bufp[nread-1] = 0;
 				break;
@@ -473,47 +473,47 @@ promptinput( char *buf,
 			bufsz -= nread;
 			nread = -1;
 		}
-		now = time( NULL );
+		now = time(NULL);
 	}
 
 	/* restore signal handling
 	 */
-	pthread_sigmask( SIG_SETMASK, &orig_set, NULL );
-	sigemptyset( &dlog_registered_sigs );
+	pthread_sigmask(SIG_SETMASK, &orig_set, NULL);
+	sigemptyset(&dlog_registered_sigs);
 
 	/* check for timeout or interrupt
 	 */
-	if ( nread < 0 ) {
-		if ( now >= timeout ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-			      _("timeout\n") );
+	if (nread < 0) {
+		if (now >= timeout) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+			      _("timeout\n"));
 			*exceptionixp = timeoutix;
-		} else if ( dlog_signo_received == SIGINT ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-			      _("keyboard interrupt\n") );
+		} else if (dlog_signo_received == SIGINT) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+			      _("keyboard interrupt\n"));
 			mlog_exit_hint(RV_KBD_INTR);
 			*exceptionixp = sigintix;
-		} else if ( dlog_signo_received == SIGHUP ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-			      _("hangup\n") );
+		} else if (dlog_signo_received == SIGHUP) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+			      _("hangup\n"));
 			*exceptionixp = sighupix;
-		} else if ( dlog_signo_received == SIGTERM ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-			      _("terminate\n") );
+		} else if (dlog_signo_received == SIGTERM) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+			      _("terminate\n"));
 			*exceptionixp = sighupix;
-		} else if ( dlog_signo_received == SIGQUIT ) {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
-			      _("keyboard quit\n") );
+		} else if (dlog_signo_received == SIGQUIT) {
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+			      _("keyboard quit\n"));
 			mlog_exit_hint(RV_KBD_INTR);
 			*exceptionixp = sigquitix;
 		} else {
-			mlog( MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
+			mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 			      _("abnormal dialog termination\n"));
 			*exceptionixp = sigquitix;
 		}
 		return BOOL_FALSE;
 	} else {
-		assert( dlog_signo_received == -1 );
+		assert(dlog_signo_received == -1);
 		*exceptionixp = 0;
 		return BOOL_TRUE;
 	}

@@ -32,7 +32,7 @@
 #define	GETOPT_DUMPDEST		'f'	/* dump dest. file (drive.c) */
 #define	GETOPT_LEVEL		'l'	/* dump level (content_inode.c) */
 #define	GETOPT_SUBTREE		's'	/* subtree dump (content_inode.c) */
-#define	GETOPT_VERBOSITY	'v'	/* verbosity level (0 to 4 ) */
+#define	GETOPT_VERBOSITY	'v'	/* verbosity level (0 to 4) */
 #define	GETOPT_DUMPLABEL	'L'	/* dump session label (global.c) */
 #define	GETOPT_MEDIALABEL	'M'	/* media object label (content.c) */
 #define	GETOPT_RESUME		'R'	/* resume intr dump (content_inode.c) */

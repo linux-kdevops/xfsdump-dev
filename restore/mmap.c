@@ -41,5 +41,5 @@ mmap_autogrow(size_t len, int fd, off_t offset)
 	(void)write(fd, nul_buffer, 1);
     }
 
-    return mmap( 0, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offset );
+    return mmap(0, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offset);
 }

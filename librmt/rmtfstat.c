@@ -54,10 +54,10 @@ struct stat *buf;
 static int
 _rmt_fstat(int fildes, char *arg)
 {
-	char buffer[ BUFMAGIC ];
+	char buffer[BUFMAGIC];
 	int rc, cnt, adj_rc;
 
-	sprintf( buffer, "Z%d\n", fildes );
+	sprintf(buffer, "Z%d\n", fildes);
 
 	/*
 	 *	grab the status and read it directly into the structure
@@ -83,7 +83,7 @@ _rmt_fstat(int fildes, char *arg)
 		{
 abortit:
 			_rmt_abort(fildes);
-			setoserror( EIO );
+			setoserror(EIO);
 			return(-1);
 		}
 	}

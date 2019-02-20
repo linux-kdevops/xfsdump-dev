@@ -144,12 +144,12 @@ typedef struct invt_strdesc_entry	*inv_stmtoken_t;
 extern inv_idbtoken_t
 inv_open(
 	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */
-	 void 		 *pred );/* uuid_t *,char * mntpt, or char *dev */
+	 void 		 *pred);/* uuid_t *,char * mntpt, or char *dev */
 
 
 extern bool_t
 inv_close(
-	inv_idbtoken_t tok );
+	inv_idbtoken_t tok);
 
 
 extern inv_sestoken_t
@@ -162,20 +162,20 @@ inv_writesession_open(
 	uint		nstreams,
 	time32_t	time,
 	char		*mntpt,
-	char		*devpath );
+	char		*devpath);
 
 extern bool_t
 inv_writesession_close(
-	inv_sestoken_t  tok );
+	inv_sestoken_t  tok);
 
 extern inv_stmtoken_t
 inv_stream_open(
-	inv_sestoken_t 	tok );
+	inv_sestoken_t 	tok);
 
 extern bool_t
 inv_stream_close(
 	inv_stmtoken_t	tok,
-	bool_t 		wasinterrupted );
+	bool_t 		wasinterrupted);
 
 extern bool_t
 inv_put_mediafile(
@@ -185,7 +185,7 @@ inv_put_mediafile(
 	xfs_ino_t	startino,
 	off64_t		startino_offset,
 	xfs_ino_t	endino,
-	off64_t		endino_offset );
+	off64_t		endino_offset);
 
 /* lasttime_level_lessthan - finds the time of the last dump of the
  * specified file system at a level less than the specified level.
@@ -196,58 +196,58 @@ extern bool_t
 inv_lasttime_level_lessthan(
 	inv_idbtoken_t 		tok,
 	u_char  		level,
-	time32_t		**time );/* out */
+	time32_t		**time);/* out */
 
 extern bool_t
 inv_lastsession_level_lessthan(
 	inv_idbtoken_t 		tok,
 	u_char  		level,
-	inv_session_t		**ses );/* out */
+	inv_session_t		**ses);/* out */
 
 extern bool_t
 inv_lastsession_level_equalto(
 	inv_idbtoken_t 		tok,
 	u_char  		level,
-	inv_session_t		**ses );/* out */
+	inv_session_t		**ses);/* out */
 
 extern bool_t
 inv_get_inolist(
-	inv_inolist_t 		**inolist );
+	inv_inolist_t 		**inolist);
 
 /* For dumping the inventory once a dump is done. */
 extern bool_t
 inv_get_session(
 	inv_sestoken_t		tok,
 	void		      **bufpp,		/* out */
-	size_t		       *bufszp );	/* out */
+	size_t		       *bufszp);	/* out */
 
 /* To reconstruct a compelete inventory from dumped inventories */
 extern bool_t
 inv_put_session(
 	inv_idbtoken_t		tok,
 	void		       *bufp,
-	size_t		        bufsz );
+	size_t		        bufsz);
 
 #ifdef DEBUG
 
 bool_t
 inv_DEBUG_printallsessions(
 	inv_idbtoken_t 	tok,
-	inv_session_t	**ses );
+	inv_session_t	**ses);
 
 #endif /* ifdef DEBUG */
 
 extern int
-inv_setup_base( void );
+inv_setup_base(void);
 
 extern char *
-inv_dirpath( void );
+inv_dirpath(void);
 
 extern char *
-inv_fstab( void );
+inv_fstab(void);
 
 extern char *
-inv_lockfile( void );
+inv_lockfile(void);
 
 
 #endif /* INVENTORY_H */

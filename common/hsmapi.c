@@ -74,12 +74,12 @@ typedef	struct {
 	u_char	regcnt[2];	/* number of regions in MSB form */
 } XFSattrvalue1_t;
 
-#define	MIN_FORMAT1_ATTR_LEN	( sizeof(XFSattrvalue1_t) + \
-				  sizeof(XFSattrregion_t) )
+#define	MIN_FORMAT1_ATTR_LEN	(sizeof(XFSattrvalue1_t) + \
+				  sizeof(XFSattrregion_t))
 
 /* supported fsys values */
 
-/* XFS DMAPI (w/o MMR ) */
+/* XFS DMAPI (w/o MMR) */
 #define	FSYS_TYPE_XFS		1
 
 /* supported version values */
@@ -111,13 +111,13 @@ typedef	struct {
  /* Interesting bit combinations within the bs_dmevmask field of xfs_bstat_t:
  * OFL, UNM, and PAR files have exactly these bits set.
  * DUL and MIG files have all but the DM_EVENT_READ bit set */
-#define DMF_EV_BITS	( (1<<DM_EVENT_DESTROY) | \
+#define DMF_EV_BITS	((1<<DM_EVENT_DESTROY) | \
 			  (1<<DM_EVENT_READ)    | \
 			  (1<<DM_EVENT_WRITE)   | \
-			  (1<<DM_EVENT_TRUNCATE) )
+			  (1<<DM_EVENT_TRUNCATE))
 
 /* OFL file's managed region event flags */
-#define DMF_MR_FLAGS	( 0x1 | 0x2 | 0x4 )
+#define DMF_MR_FLAGS	(0x1 | 0x2 | 0x4)
 
 /* The following definitions provide the internal format of the hsm_fs_ctxt_t
    and hsm_f_ctxt_t structures, respectively.
@@ -476,7 +476,7 @@ const	xfs_bstat_t	*statp)
 	if ((statp->bs_xflags & XFS_XFLAG_HASATTR) == 0) {
 		return 0;	/* no DMF attribute exists */
 	}
-	if ((statp->bs_dmevmask & DMF_EV_BITS) == 0 ) {
+	if ((statp->bs_dmevmask & DMF_EV_BITS) == 0) {
 		return 0;	/* no interesting DMAPI bits set */
 	}
 
@@ -735,8 +735,8 @@ HsmAddNewAttribute(
 	if (dmfattr1p->version == DMF_ATTR_FORMAT_1 &&
 	    msb_load(dmfattr1p->sitetag, sizeof(dmfattr1p->sitetag)) != 0) {
 		XFSattrregion_t *reg;
-		reg = (XFSattrregion_t *)( dmf_f_ctxtp->attrval +
-				           sizeof(XFSattrvalue1_t) );
+		reg = (XFSattrregion_t *)(dmf_f_ctxtp->attrval +
+				           sizeof(XFSattrvalue1_t));
 		dmf_f_ctxtp->attrlen = MIN_FORMAT1_ATTR_LEN;
 
 		/* make one offline region the size of the whole file */
@@ -794,7 +794,7 @@ HsmBeginRestoreFile(
 	 * remove the attribute when the file is completed.
 	 */
 	*hsm_flagp = 0;
-	if ( bstatp->bs_dmevmask && bstatp->bs_xflags & XFS_XFLAG_HASATTR ) {
+	if (bstatp->bs_dmevmask && bstatp->bs_xflags & XFS_XFLAG_HASATTR) {
 		memset(&dmattr, 0, sizeof(XFSattrvalue0_t));
 		dmattr.fsys = FSYS_TYPE_XFS;
 		msb_store(dmattr.state, DMF_ST_NOMIGR, sizeof(dmattr.state));
@@ -871,7 +871,7 @@ HsmEndRestoreFile(
 	 */
 	if (*hsm_flagp) {
 		int rv;
-		rv = attr_removef( fd, DMF_ATTR_NAME , ATTR_ROOT );
+		rv = attr_removef(fd, DMF_ATTR_NAME , ATTR_ROOT);
 		if (rv) {
 			mlog(MLOG_NORMAL | MLOG_WARNING,
 			     _("error removing temp DMF attr on %s: %s\n"),

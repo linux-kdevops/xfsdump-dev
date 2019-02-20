@@ -464,7 +464,7 @@ xlate_direnthdr(direnthdr_t *dh1, direnthdr_t *dh2, int dir)
 	     ptr1->dh_gen,
 	     ptr1->dh_checksum,
 	     ptr1->dh_sz,
-	     ptr1->dh_name );
+	     ptr1->dh_name);
 
 	mlog(MLOG_NITTY, "xlate_direnthdr: post-xlate\n"
 	     "\tdh_ino %llu\n"
@@ -476,7 +476,7 @@ xlate_direnthdr(direnthdr_t *dh1, direnthdr_t *dh2, int dir)
 	     ptr2->dh_gen,
 	     ptr2->dh_checksum,
 	     ptr2->dh_sz,
-	     ptr2->dh_name );
+	     ptr2->dh_name);
 }
 
 /*
@@ -510,7 +510,7 @@ xlate_direnthdr_v1(direnthdr_v1_t *dh1, direnthdr_v1_t *dh2, int dir)
 	     ptr1->dh_gen,
 	     ptr1->dh_sz,
 	     ptr1->dh_checksum,
-	     ptr1->dh_name );
+	     ptr1->dh_name);
 
 	mlog(MLOG_NITTY, "xlate_direnthdr_v1: post-xlate\n"
 	     "\tdh_ino %llu\n"
@@ -522,7 +522,7 @@ xlate_direnthdr_v1(direnthdr_v1_t *dh1, direnthdr_v1_t *dh2, int dir)
 	     ptr2->dh_gen,
 	     ptr2->dh_sz,
 	     ptr2->dh_checksum,
-	     ptr2->dh_name );
+	     ptr2->dh_name);
 }
 
 /*

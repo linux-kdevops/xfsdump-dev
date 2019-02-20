@@ -34,7 +34,7 @@ struct startpt {
 
 typedef struct startpt startpt_t;
 
-#define STARTPT_FLAGS_END		( 1 << 0 )
+#define STARTPT_FLAGS_END		(1 << 0)
 		/* this startpt indicates that all extents of all files in
 		 * the stream were completely dumped. the other fields
 		 * are meaningless. this will appear only once per dump
@@ -43,7 +43,7 @@ typedef struct startpt startpt_t;
 		 * also used in the strategy-specific portion of the
 		 * content header to qualify the ending point.
 		 */
-#define STARTPT_FLAGS_NULL		( 1 << 1 )
+#define STARTPT_FLAGS_NULL		(1 << 1)
 		/* used to detect if the null file header makes it onto
 		 * media. only necessary after the last file in the stream,
 		 * to allow the end-of-stream flag in the null header to
@@ -63,7 +63,7 @@ typedef struct drange drange_t;
 
 /* inode-style specific media file header section
  */
-#define CONTENT_INODE_HDR_SZ  sizeofmember( content_hdr_t, ch_specific )
+#define CONTENT_INODE_HDR_SZ  sizeofmember(content_hdr_t, ch_specific)
 
 struct content_inode_hdr {
 	int32_t cih_mediafiletype;			/*   4   4 */
@@ -72,7 +72,7 @@ struct content_inode_hdr {
 		/* dump attributes: see #defines below */
 	int32_t cih_level;				/*   4   c */
 		/* dump level */
-	char pad1[ 4 ];					/*   4  10 */
+	char pad1[4];					/*   4  10 */
 		/* alignment */
 	time32_t cih_last_time;				/*   4  14 */
 		/* if an incremental,time of previous dump at a lesser level */
@@ -102,7 +102,7 @@ struct content_inode_hdr {
 
 	uint64_t cih_inomap_datasz;			/*   8  a8 */
 		/* bytes of non-metadata dumped */
-	char cih_pad2[ CONTENT_INODE_HDR_SZ - 0xa8 ];	/*  18  c0 */
+	char cih_pad2[CONTENT_INODE_HDR_SZ - 0xa8];	/*  18  c0 */
 		/* padding */
 };
 
@@ -116,21 +116,21 @@ typedef struct content_inode_hdr content_inode_hdr_t;
 
 /* dump attributes
  */
-#define	CIH_DUMPATTR_SUBTREE			( 1 <<  0 )
-#define	CIH_DUMPATTR_INDEX			( 1 <<  1 )
-#define CIH_DUMPATTR_INVENTORY			( 1 <<  2 )
-#define CIH_DUMPATTR_INCREMENTAL		( 1 <<  3 )
-#define CIH_DUMPATTR_RETRY			( 1 <<  4 )
-#define CIH_DUMPATTR_RESUME			( 1 <<  5 )
-#define CIH_DUMPATTR_INOMAP			( 1 <<  6 )
-#define CIH_DUMPATTR_DIRDUMP			( 1 <<  7 )
-#define CIH_DUMPATTR_FILEHDR_CHECKSUM		( 1 <<  8 )
-#define CIH_DUMPATTR_EXTENTHDR_CHECKSUM		( 1 <<  9 )
-#define CIH_DUMPATTR_DIRENTHDR_CHECKSUM		( 1 << 10 )
-#define CIH_DUMPATTR_DIRENTHDR_GEN		( 1 << 11 )
-#define CIH_DUMPATTR_EXTATTR			( 1 << 12 )
-#define CIH_DUMPATTR_EXTATTRHDR_CHECKSUM	( 1 << 13 )
-#define CIH_DUMPATTR_NOTSELFCONTAINED		( 1 << 14 )
+#define	CIH_DUMPATTR_SUBTREE			(1 <<  0)
+#define	CIH_DUMPATTR_INDEX			(1 <<  1)
+#define CIH_DUMPATTR_INVENTORY			(1 <<  2)
+#define CIH_DUMPATTR_INCREMENTAL		(1 <<  3)
+#define CIH_DUMPATTR_RETRY			(1 <<  4)
+#define CIH_DUMPATTR_RESUME			(1 <<  5)
+#define CIH_DUMPATTR_INOMAP			(1 <<  6)
+#define CIH_DUMPATTR_DIRDUMP			(1 <<  7)
+#define CIH_DUMPATTR_FILEHDR_CHECKSUM		(1 <<  8)
+#define CIH_DUMPATTR_EXTENTHDR_CHECKSUM		(1 <<  9)
+#define CIH_DUMPATTR_DIRENTHDR_CHECKSUM		(1 << 10)
+#define CIH_DUMPATTR_DIRENTHDR_GEN		(1 << 11)
+#define CIH_DUMPATTR_EXTATTR			(1 << 12)
+#define CIH_DUMPATTR_EXTATTRHDR_CHECKSUM	(1 << 13)
+#define CIH_DUMPATTR_NOTSELFCONTAINED		(1 << 14)
 
 
 /* timestruct_t - time structure
@@ -176,10 +176,10 @@ struct bstat {				/*		     bytes accum */
 	uint16_t	bs_projid_lo;	/* low 16 of project id	 2    5a */
 	uint16_t	bs_forkoff;	/* inode fork offset	 2    5c */
 	uint16_t	bs_projid_hi;	/* hi 16 of project id	 2    5e */
-	char		bs_pad[ 10 ];	/* for expansion	 e    68 */
+	char		bs_pad[10];	/* for expansion	 e    68 */
 	uint32_t	bs_dmevmask;	/* DMI event mask        4    6c */
 	uint16_t	bs_dmstate;	/* DMI state info        2    6e */
-	char		bs_pad1[ 18 ];	/* for expansion        12    80 */
+	char		bs_pad1[18];	/* for expansion        12    80 */
 					/* NOTE: old dumps didn't always
 					 * zero first 2 bytes of bs_pad1 */
 };
@@ -201,9 +201,9 @@ bstat_projid(struct bstat *bs)
 /* extended inode flags that can only be set after all data
  * has been restored to a file.
  */
-#define	POST_DATA_XFLAGS	( XFS_XFLAG_IMMUTABLE |		\
+#define	POST_DATA_XFLAGS	(XFS_XFLAG_IMMUTABLE |		\
 				  XFS_XFLAG_APPEND |		\
-				  XFS_XFLAG_SYNC )
+				  XFS_XFLAG_SYNC)
 
 /* filehdr_t - header placed at the beginning of every dumped file.
  *
@@ -218,28 +218,28 @@ struct filehdr {
 	int32_t fh_flags;
 	uint32_t fh_checksum;
 	bstat_t fh_stat;
-	char fh_pad2[ FILEHDR_SZ
-		      - sizeof( int64_t )
-		      - sizeof( int32_t )
-		      - sizeof( uint32_t )
-		      - sizeof( bstat_t ) ];
+	char fh_pad2[FILEHDR_SZ
+		      - sizeof(int64_t)
+		      - sizeof(int32_t)
+		      - sizeof(uint32_t)
+		      - sizeof(bstat_t)];
 };
 
 typedef struct filehdr filehdr_t;
 
-#define FILEHDR_FLAGS_NULL	( 1 << 0 )
+#define FILEHDR_FLAGS_NULL	(1 << 0)
 		/* identifies a dummy file header. every media file
 		 * is terminated with a dummy file header, unless
 		 * terminated by end of media.
 		 */
-#define FILEHDR_FLAGS_CHECKSUM	( 1 << 1 )
+#define FILEHDR_FLAGS_CHECKSUM	(1 << 1)
 		/* indicates the header checksum is valid
 		 */
-#define FILEHDR_FLAGS_END	( 1 << 2 )
+#define FILEHDR_FLAGS_END	(1 << 2)
 		/* the last media file in the stream is always terminated by
 		 * a dummy file header, with this flag set.
 		 */
-#define FILEHDR_FLAGS_EXTATTR	( 1 << 3 )
+#define FILEHDR_FLAGS_EXTATTR	(1 << 3)
 		/* special file header followed by one file's (dir or nondir)
 		 * extended attributes.
 		 */
@@ -261,7 +261,7 @@ struct extenthdr {
 	int32_t eh_type;
 	int32_t eh_flags;
 	uint32_t eh_checksum;
-	char eh_pad[ 4 ];
+	char eh_pad[4];
 };
 
 typedef struct extenthdr extenthdr_t;
@@ -285,7 +285,7 @@ typedef struct extenthdr extenthdr_t;
 		 * hole extent length.
 		 */
 
-#define EXTENTHDR_FLAGS_CHECKSUM	( 1 << 0 )
+#define EXTENTHDR_FLAGS_CHECKSUM	(1 << 0)
 
 
 /* direnthdr_t - placed at the beginning of every dumped directory entry.
@@ -309,7 +309,7 @@ struct direnthdr {
 	gen_t dh_gen;
 	uint32_t dh_checksum;
 	uint16_t dh_sz; /* overall size of record */
-	char dh_name[ 6 ];
+	char dh_name[6];
 };
 
 typedef struct direnthdr direnthdr_t;
@@ -323,7 +323,7 @@ struct direnthdr_v1 {
 	uint16_t dh_gen; /* generation count & DENTGENMASK of ref'ed inode */
 	uint16_t dh_sz; /* overall size of record */
 	uint32_t dh_checksum;
-	char dh_name[ 8 ];
+	char dh_name[8];
 };
 
 typedef struct direnthdr_v1 direnthdr_v1_t;
@@ -331,8 +331,8 @@ typedef struct direnthdr_v1 direnthdr_v1_t;
 /* truncated generation count
  */
 #define DENTGENSZ		12	/* leave 4 bits for future flags */
-#define DENTGENMASK		(( 1 << DENTGENSZ ) - 1 )
-#define BIGGEN2GEN( bg )	( ( gen_t )( bg & DENTGENMASK ))
+#define DENTGENMASK		((1 << DENTGENSZ) - 1)
+#define BIGGEN2GEN(bg)	((gen_t)(bg & DENTGENMASK))
 
 
 
@@ -362,21 +362,21 @@ struct extattrhdr {
 
 typedef struct extattrhdr extattrhdr_t;
 
-#define EXTATTRHDR_FLAGS_ROOT		( 1 << 0 )
+#define EXTATTRHDR_FLAGS_ROOT		(1 << 0)
 	/* a "root" mode attribute
 	 */
-#define EXTATTRHDR_FLAGS_NULL		( 1 << 1 )
+#define EXTATTRHDR_FLAGS_NULL		(1 << 1)
 	/* marks the end of the attributes associated with the leading filehdr_t
 	 */
-#define EXTATTRHDR_FLAGS_OLD_CHECKSUM	( 1 << 2 )
+#define EXTATTRHDR_FLAGS_OLD_CHECKSUM	(1 << 2)
 	/* old xfsdumps used this flag to indicate a checksum is present,
 	 * but the checksum was not calculated properly. the presence of
 	 * this flag now indicates a checksum that cannot be verified.
 	 */
-#define EXTATTRHDR_FLAGS_SECURE		( 1 << 3 )
+#define EXTATTRHDR_FLAGS_SECURE		(1 << 3)
 	/* a linux "secure" mode attribute
 	 */
-#define EXTATTRHDR_FLAGS_CHECKSUM	( 1 << 4 )
+#define EXTATTRHDR_FLAGS_CHECKSUM	(1 << 4)
 	/* checksum is present.
 	 */
 

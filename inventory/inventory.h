@@ -189,12 +189,12 @@ extern inv_idbtoken_t
 inv_open(
 	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */
 	 inv_oflag_t      forwhat,/* SEARCH_ONLY, SEARCH_N_MOD */
-	 void 		 *pred );/* uuid_t *,char * mntpt, or char *dev */
+	 void 		 *pred);/* uuid_t *,char * mntpt, or char *dev */
 
 
 extern bool_t
 inv_close(
-	inv_idbtoken_t	tok );
+	inv_idbtoken_t	tok);
 
 
 extern inv_sestoken_t
@@ -209,21 +209,21 @@ inv_writesession_open(
 	uint		nstreams,
 	time32_t	time,
 	char		*mntpt,
-	char		*devpath );
+	char		*devpath);
 
 extern bool_t
 inv_writesession_close(
-	inv_sestoken_t  tok );
+	inv_sestoken_t  tok);
 
 extern inv_stmtoken_t
 inv_stream_open(
 	inv_sestoken_t 	tok,
-	char		*cmdarg );
+	char		*cmdarg);
 
 extern bool_t
 inv_stream_close(
 	inv_stmtoken_t	tok,
-	bool_t 		wasinterrupted );
+	bool_t 		wasinterrupted);
 
 extern bool_t
 inv_put_mediafile(
@@ -291,29 +291,29 @@ extern bool_t
 inv_get_sessioninfo(
 	inv_sestoken_t		tok,
 	void		      **bufpp,		/* out */
-	size_t		       *bufszp );	/* out */
+	size_t		       *bufszp);	/* out */
 
 
 extern bool_t
-inv_delete_mediaobj( uuid_t *moid );
+inv_delete_mediaobj(uuid_t *moid);
 
 extern bool_t
-inv_DEBUG_print( int argc, char **argv );
+inv_DEBUG_print(int argc, char **argv);
 
 extern int
-inv_setup_base( void );
+inv_setup_base(void);
 
 extern char *
-inv_dirpath( void );
+inv_dirpath(void);
 
 extern char *
-inv_fstab( void );
+inv_fstab(void);
 
 extern char *
-inv_lockfile( void );
+inv_lockfile(void);
 
 extern char *
-inv_basepath( void );
+inv_basepath(void);
 
 
 #endif /* INVENTORY_H */

@@ -42,7 +42,7 @@
 
 /* declarations of externally defined global symbols *************************/
 
-extern void usage( void );
+extern void usage(void);
 
 /* declare all media strategies here
  */
@@ -52,7 +52,7 @@ extern media_strategy_t media_strategy_rmvtape;
 
 /* forward declarations of locally defined static functions ******************/
 
-static media_t *media_alloc( drive_t *, char * );
+static media_t *media_alloc(drive_t *, char *);
 
 
 /* definition of locally defined global variables ****************************/
@@ -74,7 +74,7 @@ static media_strategy_t *strategyp[] = {
  * and create and initialize media managers for each stream.
  */
 media_strategy_t *
-media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
+media_create(int argc, char *argv[], drive_strategy_t *dsp)
 {
 	int c;
 	size_t mediaix;
@@ -82,42 +82,42 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 	media_t **mediapp;
 	char *medialabel;
 	media_strategy_t **spp = strategyp;
-	media_strategy_t **epp = strategyp + sizeof( strategyp )
+	media_strategy_t **epp = strategyp + sizeof(strategyp)
 					     /
-					     sizeof( strategyp[ 0 ] );
+					     sizeof(strategyp[0]);
 	media_strategy_t *chosen_sp;
 	int id;
 	bool_t ok;
 
 	/* sanity check asserts
 	 */
-	assert( sizeof( media_hdr_t ) == MEDIA_HDR_SZ );
-	assert( MEDIA_MARKLOG_SZ == sizeof( media_marklog_t ));
+	assert(sizeof(media_hdr_t) == MEDIA_HDR_SZ);
+	assert(MEDIA_MARKLOG_SZ == sizeof(media_marklog_t));
 
 	/* scan the command line for a media label
 	 */
 	medialabel = 0;
 	optind = 1;
 	opterr = 0;
-	while ( ( c = getopt( argc, argv, GETOPT_CMDSTRING )) != EOF ) {
-		switch ( c ) {
+	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
+		switch (c) {
 #ifdef DUMP
 		case GETOPT_MEDIALABEL:
-			if ( medialabel ) {
-				mlog( MLOG_NORMAL,
+			if (medialabel) {
+				mlog(MLOG_NORMAL,
 				      _("too many -%c arguments: "
 				      "\"-%c %s\" already given\n"),
 				      c,
 				      c,
-				      medialabel );
-				usage( );
+				      medialabel);
+				usage();
 				return 0;
 			}
-			if ( ! optarg || optarg[ 0 ] == '-' ) {
-				mlog( MLOG_NORMAL,
+			if (! optarg || optarg[0] == '-') {
+				mlog(MLOG_NORMAL,
 				      _("-%c argument missing\n"),
-				      c );
-				usage( );
+				      c);
+				usage();
 				return 0;
 			}
 			medialabel = optarg;
@@ -128,10 +128,10 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 
 	/* if no media label specified, synthesize one
 	 */
-	if ( ! medialabel ) {
+	if (! medialabel) {
 		/* not useful
-		mlog( MLOG_VERBOSE,
-		      _("WARNING: no media label specified\n") );
+		mlog(MLOG_VERBOSE,
+		      _("WARNING: no media label specified\n"));
 		*/
 		medialabel = "";
 	}
@@ -142,11 +142,11 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 	 * match phase, and given to the winning strategy.
 	 */
 	mediacnt = dsp->ds_drivecnt;
-	mediapp = ( media_t ** )calloc( mediacnt, sizeof( media_t * ));
-	assert( mediapp );
-	for ( mediaix = 0 ; mediaix < mediacnt ; mediaix++ ) {
-		mediapp[ mediaix ] = media_alloc( dsp->ds_drivep[ mediaix ],
-					 	  medialabel );
+	mediapp = (media_t **)calloc(mediacnt, sizeof(media_t *));
+	assert(mediapp);
+	for (mediaix = 0 ; mediaix < mediacnt ; mediaix++) {
+		mediapp[mediaix] = media_alloc(dsp->ds_drivep[mediaix],
+					 	  medialabel);
 	}
 
 	/* choose the first strategy which claims appropriateness.
@@ -156,26 +156,26 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 	 * media_strategy_t as well as the write headers.
 	 */
 	chosen_sp = 0;
-	for ( id = 0 ; spp < epp ; spp++, id++ ) {
+	for (id = 0 ; spp < epp ; spp++, id++) {
 		(*spp)->ms_id = id;
-		if ( ! chosen_sp ) {
+		if (! chosen_sp) {
 			/* lend the media_t array to the strategy
 			 */
 			(*spp)->ms_mediap = mediapp;
 			(*spp)->ms_dsp = dsp;
 			(*spp)->ms_mediacnt = mediacnt;
-			for ( mediaix = 0 ; mediaix < mediacnt ; mediaix++ ) {
-				media_t *mediap = mediapp[ mediaix ];
+			for (mediaix = 0 ; mediaix < mediacnt ; mediaix++) {
+				media_t *mediap = mediapp[mediaix];
 				mediap->m_strategyp = *spp;
 				mediap->m_writehdrp->mh_strategyid = id;
 			}
-			if ( ( * (*spp)->ms_match )( argc, argv, dsp )) {
+			if ((* (*spp)->ms_match)(argc, argv, dsp)) {
 				chosen_sp = *spp;
 			}
 		}
 	}
-	if ( ! chosen_sp ) {
-		mlog( MLOG_NORMAL,
+	if (! chosen_sp) {
+		mlog(MLOG_NORMAL,
 #ifdef DUMP
 		      _("no media strategy available for selected "
 		      "dump destination(s)\n")
@@ -185,14 +185,14 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 		      "restore source(s)\n")
 #endif /* RESTORE */
 			);
-		usage( );
+		usage();
 		return 0;
 	}
 
 	/* give the media_t array to the chosen strategy
 	 */
-	for ( mediaix = 0 ; mediaix < mediacnt ; mediaix++ ) {
-		media_t *mediap = mediapp[ mediaix ];
+	for (mediaix = 0 ; mediaix < mediacnt ; mediaix++) {
+		media_t *mediap = mediapp[mediaix];
 		mediap->m_strategyp = chosen_sp;
 		mediap->m_writehdrp->mh_strategyid = chosen_sp->ms_id;
 	}
@@ -200,8 +200,8 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 	/* initialize the strategy. this will cause each of the managers
 	 * to be initialized as well. if error, return 0.
 	 */
-	ok = ( * chosen_sp->ms_create )( chosen_sp, argc, argv );
-	if ( ! ok ) {
+	ok = (* chosen_sp->ms_create)(chosen_sp, argc, argv);
+	if (! ok) {
 		return 0;
 	}
 
@@ -211,40 +211,40 @@ media_create( int argc, char *argv[ ], drive_strategy_t *dsp )
 }
 
 bool_t
-media_init( media_strategy_t *msp, int argc, char *argv[] )
+media_init(media_strategy_t *msp, int argc, char *argv[])
 {
 	bool_t ok;
 
-	ok = ( * msp->ms_init )( msp, argc, argv );
+	ok = (* msp->ms_init)(msp, argc, argv);
 
 	return ok;
 }
 
 void
-media_complete( media_strategy_t *msp )
+media_complete(media_strategy_t *msp)
 {
-	( * msp->ms_complete )( msp );
+	(* msp->ms_complete)(msp);
 }
 
 /* media_get_upper_hdrs - supply pointers to portion of media file headers
  * set aside for upper software layers, as well as to the global hdrs
  */
 void
-media_get_upper_hdrs( media_t *mediap,
+media_get_upper_hdrs(media_t *mediap,
 		      global_hdr_t **grhdrpp,
 		      char **rhdrpp,
 		      size_t *rhdrszp,
 		      global_hdr_t **gwhdrpp,
 		      char **whdrpp,
-		      size_t *whdrszp )
+		      size_t *whdrszp)
 {
 	*grhdrpp = mediap->m_greadhdrp;
 	*rhdrpp = mediap->m_readhdrp->mh_upper;
-	*rhdrszp = sizeof( mediap->m_readhdrp->mh_upper );
+	*rhdrszp = sizeof(mediap->m_readhdrp->mh_upper);
 
 	*gwhdrpp = mediap->m_gwritehdrp;
 	*whdrpp = mediap->m_writehdrp->mh_upper;
-	*whdrszp = sizeof( mediap->m_writehdrp->mh_upper );
+	*whdrszp = sizeof(mediap->m_writehdrp->mh_upper);
 }
 
 
@@ -254,8 +254,8 @@ media_get_upper_hdrs( media_t *mediap,
  * descriptor and read and write media headers
  */
 static media_t *
-media_alloc( drive_t *drivep,
-	     char *medialabel )
+media_alloc(drive_t *drivep,
+	     char *medialabel)
 {
 	media_t *mediap;
 	global_hdr_t *grhdrp;
@@ -265,26 +265,26 @@ media_alloc( drive_t *drivep,
 	size_t mrhdrsz;
 	size_t mwhdrsz;
 
-	mediap = ( media_t * )calloc( 1, sizeof( media_t ));
-	assert( mediap );
+	mediap = (media_t *)calloc(1, sizeof(media_t));
+	assert(mediap);
 
 	grhdrp = 0;
 	gwhdrp = 0;
 	mrhdrp = 0;
 	mwhdrp = 0;
-	drive_get_upper_hdrs( drivep,
+	drive_get_upper_hdrs(drivep,
 			      &grhdrp,
-			      ( char ** )&mrhdrp,
+			      (char **)&mrhdrp,
 			      &mrhdrsz,
 			      &gwhdrp,
-			      ( char ** )&mwhdrp,
-			      &mwhdrsz );
-	assert( grhdrp );
-	assert( gwhdrp );
-	assert( mrhdrp );
-	assert( mwhdrp );
-	assert( mrhdrsz == MEDIA_HDR_SZ );
-	assert( mwhdrsz == MEDIA_HDR_SZ );
+			      (char **)&mwhdrp,
+			      &mwhdrsz);
+	assert(grhdrp);
+	assert(gwhdrp);
+	assert(mrhdrp);
+	assert(mwhdrp);
+	assert(mrhdrsz == MEDIA_HDR_SZ);
+	assert(mwhdrsz == MEDIA_HDR_SZ);
 
 	mediap->m_greadhdrp = grhdrp;
 	mediap->m_gwritehdrp = gwhdrp;
@@ -292,14 +292,14 @@ media_alloc( drive_t *drivep,
 	mediap->m_writehdrp = mwhdrp;
 	mediap->m_drivep = drivep;
 
-	strncpyterm( mwhdrp->mh_medialabel,
+	strncpyterm(mwhdrp->mh_medialabel,
 		     medialabel,
-		     sizeof( mwhdrp->mh_medialabel ));
+		     sizeof(mwhdrp->mh_medialabel));
 
 #ifdef DUMP
-	uuid_create( mwhdrp->mh_mediaid );
+	uuid_create(mwhdrp->mh_mediaid);
 #else /* DUMP */
-	uuid_clear( mwhdrp->mh_mediaid );
+	uuid_clear(mwhdrp->mh_mediaid);
 #endif /* DUMP */
 
 	return mediap;

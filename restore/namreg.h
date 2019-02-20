@@ -34,26 +34,26 @@ typedef size64_t nrh_t;
  * registry should already exist, and we are resynchronizing.
  * if NOT resync, inocnt hints at how many names will be held
  */
-extern bool_t namreg_init( char *housekeepingdir,
+extern bool_t namreg_init(char *housekeepingdir,
 			   bool_t resync,
-			   uint64_t inocnt );
+			   uint64_t inocnt);
 
 
 /* namreg_add - registers a name. name does not need to be null-terminated.
  * returns handle for use with namreg_get().
  */
-extern nrh_t namreg_add( char *name, size_t namelen );
+extern nrh_t namreg_add(char *name, size_t namelen);
 
 
 /* namreg_del - remove a name from the registry
  */
-extern void namreg_del( nrh_t nrh );
+extern void namreg_del(nrh_t nrh);
 
 /* namreg_map - mmap the name registry, allowing for much
  * faster namreg_get() lookups. once called, additional
  * entries cannot be added.
  */
-extern rv_t namreg_map( void );
+extern rv_t namreg_map(void);
 
 /* namreg_get - retrieves the name identified by the index.
  * fills the buffer with the null-terminated name from the registry.
@@ -61,6 +61,6 @@ extern rv_t namreg_map( void );
  * small to fit the null-terminated name. return -2 if the name
  * not in the registry. return -3 if a system call fails.
  */
-extern int namreg_get( nrh_t nrh, char *bufp, size_t bufsz );
+extern int namreg_get(nrh_t nrh, char *bufp, size_t bufsz);
 
 #endif /* NAMREG_H */

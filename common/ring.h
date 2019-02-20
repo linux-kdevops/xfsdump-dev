@@ -144,8 +144,8 @@ struct ring {
 	qsemh_t r_active_qsemh;
 	size_t r_client_cnt;
 	size_t r_slave_cnt;
-	int ( *r_readfunc )( void *contextp, char *bufp );
-	int ( *r_writefunc )( void *contextp, char *bufp );
+	int (*r_readfunc)(void *contextp, char *bufp);
+	int (*r_writefunc)(void *contextp, char *bufp);
 	void *r_clientctxp;
 };
 
@@ -164,34 +164,34 @@ typedef struct ring ring_t;
  * E2BIG - insufficient physical memory available for pinning;
  * EPERM - exceeds allowed amount of pinned down memory.
  */
-extern ring_t *ring_create( size_t ringlen,
+extern ring_t *ring_create(size_t ringlen,
 			    size_t bufsz,
 			    bool_t pinpr,
 			    ix_t drive_index,
-			    int ( * readfunc )( void *clientctxp, char *bufp ),
-			    int ( * writefunc )( void *clientctxp, char *bufp ),
+			    int (* readfunc)(void *clientctxp, char *bufp),
+			    int (* writefunc)(void *clientctxp, char *bufp),
 			    void *clientctxp,
-			    int *rvalp );
+			    int *rvalp);
 
 
 /* ring_get - get a message off the ready queue
  */
-extern ring_msg_t *ring_get( ring_t *ringp );
+extern ring_msg_t *ring_get(ring_t *ringp);
 
 
 /* ring_put - put a message on the active queue
  */
-extern void ring_put( ring_t *ringp, ring_msg_t *msgp );
+extern void ring_put(ring_t *ringp, ring_msg_t *msgp);
 
 
 /* ring_reset - re-initialize the ring, after the current I/O completes.
  * msgp must be NULL if the client is not currently holding a ring message.
  * otherwise it must point to that message.
  */
-extern void ring_reset( ring_t *ringp, ring_msg_t *msgp );
+extern void ring_reset(ring_t *ringp, ring_msg_t *msgp);
 
 /* ring_destroy - de-allocates ring
  */
-extern void ring_destroy( ring_t *ringp );
+extern void ring_destroy(ring_t *ringp);
 
 #endif /* RING_H */

@@ -51,7 +51,7 @@ struct rec_hdr {
 	int32_t capability;			/*   4  18 */
 		/* tape drive capabilities (from drive.h)
 		 */
-	char pad1[ 8 ];				/*   8  20 */
+	char pad1[8];				/*   8  20 */
 		/* padding
 		 */
 	off64_t file_offset;			/*   8  28 */
@@ -73,7 +73,7 @@ struct rec_hdr {
 
 	uuid_t dump_uuid;			/*  10  4c */
 
-	char pad2[ 0x1b4 ];			/* 1b4 200 */
+	char pad2[0x1b4];			/* 1b4 200 */
 };		/* pad to sizeof drive_hdr_t dh_specific */
 
 typedef struct rec_hdr rec_hdr_t;

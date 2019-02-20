@@ -56,7 +56,7 @@ char *buf;
 
 	_rmt_abort(fildes);
 
-	setoserror( EIO );
+	setoserror(EIO);
 	return(-1);
 }
 

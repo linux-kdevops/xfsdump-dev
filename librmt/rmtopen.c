@@ -120,7 +120,7 @@ static int _rmt_open (char *path, int oflag, int mode)
 
 	if (i == MAXUNIT)
 	{
-		setoserror( EMFILE );
+		setoserror(EMFILE);
 		return(-1);
 	}
 
@@ -144,7 +144,7 @@ static int _rmt_open (char *path, int oflag, int mode)
 	}
 	else
 	{
-		for ( user = login; (*sys = *user); user++, sys++ )
+		for (user = login; (*sys = *user); user++, sys++)
 			;
 		user = login;
 	}

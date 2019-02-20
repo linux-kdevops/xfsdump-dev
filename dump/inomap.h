@@ -47,7 +47,7 @@ struct xfs_bstat;
  * fall at file boundaries. returns BOOL_FALSE if error encountered (should
  * abort the dump; else returns BOOL_TRUE.
  */
-extern bool_t inomap_build( void *fshandlep,
+extern bool_t inomap_build(void *fshandlep,
 			    int fsfd,
 			    struct xfs_bstat *rootstatp,
 			    bool_t last,
@@ -64,26 +64,26 @@ extern bool_t inomap_build( void *fshandlep,
 			    ix_t *statphasep,
 			    ix_t *statpassp,
 			    size64_t statcnt,
-			    size64_t *statdonep );
+			    size64_t *statdonep);
 
-extern uint64_t inomap_getsz( void );
+extern uint64_t inomap_getsz(void);
 
 /* inomap_skip - tell inomap about inodes to skip in the dump
  */
-extern void inomap_skip( xfs_ino_t ino );
+extern void inomap_skip(xfs_ino_t ino);
 
 
 /* inomap_writehdr - updates the write header with inomap-private info
  * to be communicated to the restore side
  */
-extern void inomap_writehdr( content_inode_hdr_t *scwhdrp );
+extern void inomap_writehdr(content_inode_hdr_t *scwhdrp);
 
 
 /* inomap_dump - dumps the map to media - content-abstraction-knowledgable
  *
  * returns error from media write op
  */
-extern rv_t inomap_dump( drive_t *drivep );
+extern rv_t inomap_dump(drive_t *drivep);
 
 
 /* map state values
@@ -111,16 +111,16 @@ struct seg {
 
 typedef struct seg seg_t;
 
-#define INOPERSEG	( sizeof( (( seg_t * )0 )->lobits ) * NBBY )
+#define INOPERSEG	(sizeof(((seg_t *)0)->lobits) * NBBY)
 
-#define HNKSZ		( 4 * PGSZ )
-#define SEGPERHNK	( ( HNKSZ / sizeof( seg_t )) - 1 )
+#define HNKSZ		(4 * PGSZ)
+#define SEGPERHNK	((HNKSZ / sizeof(seg_t)) - 1)
 
 struct hnk {
-	seg_t seg[ SEGPERHNK ];
+	seg_t seg[SEGPERHNK];
 	xfs_ino_t maxino;
 	struct hnk *nextp;		/* no longer used, kept for binary compat */
-	char pad[sizeof( seg_t ) - sizeof( xfs_ino_t ) - sizeof( struct hnk * )];
+	char pad[sizeof(seg_t) - sizeof(xfs_ino_t) - sizeof(struct hnk *)];
 };
 
 typedef struct hnk hnk_t;
@@ -129,11 +129,11 @@ typedef struct hnk hnk_t;
  * requires a pointer to a context block, obtained from
  * inomap_alloc_context(), and released by inomap_free_context().
  */
-extern void *inomap_alloc_context( void );
-extern void inomap_reset_context( void *contextp );
-extern void inomap_free_context( void *contextp );
-extern int inomap_get_state( void *contextp, xfs_ino_t ino );
-extern int inomap_get_gen( void *contextp, xfs_ino_t ino, gen_t *gen );
+extern void *inomap_alloc_context(void);
+extern void inomap_reset_context(void *contextp);
+extern void inomap_free_context(void *contextp);
+extern int inomap_get_state(void *contextp, xfs_ino_t ino);
+extern int inomap_get_gen(void *contextp, xfs_ino_t ino, gen_t *gen);
 
 
 /* generators returning the next dir or non-dir ino selected in this dump.

@@ -60,27 +60,27 @@
 #define MLOG_SS_CNT	7		/* NOTE! bump this when adding ss */
 
 #define MLOG_SS_SHIFT	8
-#define MLOG_SS_MASK	( 0xff << MLOG_SS_SHIFT )
+#define MLOG_SS_MASK	(0xff << MLOG_SS_SHIFT)
 
-/* subsystem flags - NOTE! only one may be specified! use in mlog( first arg )
+/* subsystem flags - NOTE! only one may be specified! use in mlog(first arg)
  */
-#define MLOG_ALL	( MLOG_SS_GEN << MLOG_SS_SHIFT )
-#define MLOG_PROC	( MLOG_SS_PROC << MLOG_SS_SHIFT )
-#define MLOG_DRIVE	( MLOG_SS_DRIVE << MLOG_SS_SHIFT )
-#define MLOG_MEDIA	( MLOG_SS_MEDIA << MLOG_SS_SHIFT )
-#define MLOG_INV	( MLOG_SS_INV << MLOG_SS_SHIFT )
+#define MLOG_ALL	(MLOG_SS_GEN << MLOG_SS_SHIFT)
+#define MLOG_PROC	(MLOG_SS_PROC << MLOG_SS_SHIFT)
+#define MLOG_DRIVE	(MLOG_SS_DRIVE << MLOG_SS_SHIFT)
+#define MLOG_MEDIA	(MLOG_SS_MEDIA << MLOG_SS_SHIFT)
+#define MLOG_INV	(MLOG_SS_INV << MLOG_SS_SHIFT)
 #ifdef DUMP
-#define MLOG_INOMAP	( MLOG_SS_INOMAP << MLOG_SS_SHIFT )
+#define MLOG_INOMAP	(MLOG_SS_INOMAP << MLOG_SS_SHIFT)
 #endif /* DUMP */
 #ifdef RESTORE
-#define MLOG_TREE	( MLOG_SS_TREE << MLOG_SS_SHIFT )
+#define MLOG_TREE	(MLOG_SS_TREE << MLOG_SS_SHIFT)
 #endif /* RESTORE */
-#define MLOG_EXCLFILES	( MLOG_SS_EXCLFILES << MLOG_SS_SHIFT )
+#define MLOG_EXCLFILES	(MLOG_SS_EXCLFILES << MLOG_SS_SHIFT)
 
 /* mlog_level - set during initialization, exported to facilitate
  * message logging decisions. one per subsystem (see above)
  */
-extern int mlog_level_ss[ MLOG_SS_CNT ];
+extern int mlog_level_ss[MLOG_SS_CNT];
 
 /* made external so main.c sigint dialog can change
  */
@@ -90,43 +90,43 @@ extern int mlog_timestamp;
 
 /* mlog_ss_name - so main.c sigint dialog can allow changes
  */
-extern char *mlog_ss_names[ MLOG_SS_CNT ];
+extern char *mlog_ss_names[MLOG_SS_CNT];
 
 /* initializes the mlog abstraction. split into two phases to
  * unravel some initialization sequencing problems.
  */
-extern void mlog_init0( void );
-extern bool_t mlog_init1( int argc, char *argv[ ] );
-extern bool_t mlog_init2( void );
+extern void mlog_init0(void);
+extern bool_t mlog_init1(int argc, char *argv[]);
+extern bool_t mlog_init2(void);
 
 /* post-initialization, to tell mlog how many streams
  */
-extern void mlog_tell_streamcnt( size_t streamcnt );
+extern void mlog_tell_streamcnt(size_t streamcnt);
 
 /* override the -v option
  */
-void mlog_override_level( int levelarg );
+void mlog_override_level(int levelarg);
 
 /* vprintf-based message format
  */
-extern void mlog( int level, char *fmt, ... );
-extern void mlog_va( int levelarg, char *fmt, va_list args );
-#define mlog_exit( e, r ) _mlog_exit( __FILE__, __LINE__, (e), (r) )
-extern int  _mlog_exit( const char *file, int line, int exit_code, rv_t return_code );
-#define mlog_exit_hint( r ) _mlog_exit_hint( __FILE__, __LINE__, (r) )
-extern void _mlog_exit_hint( const char *file, int line, rv_t rv );
-extern rv_t mlog_get_hint( void );
-extern void mlog_exit_flush( void );
+extern void mlog(int level, char *fmt, ...);
+extern void mlog_va(int levelarg, char *fmt, va_list args);
+#define mlog_exit(e, r) _mlog_exit(__FILE__, __LINE__, (e), (r))
+extern int  _mlog_exit(const char *file, int line, int exit_code, rv_t return_code);
+#define mlog_exit_hint(r) _mlog_exit_hint(__FILE__, __LINE__, (r))
+extern void _mlog_exit_hint(const char *file, int line, rv_t rv);
+extern rv_t mlog_get_hint(void);
+extern void mlog_exit_flush(void);
 
 /* the following calls are exported ONLY to dlog.c!
  */
-extern void mlog_lock( void );
-extern void mlog_unlock( void );
+extern void mlog_lock(void);
+extern void mlog_unlock(void);
 
 /* fold_t - a character string made to look like a "fold here"
  */
 #define FOLD_LEN	79
-typedef char fold_t[ FOLD_LEN + 1 ];
-extern void fold_init( fold_t fold, char *infostr, char c );
+typedef char fold_t[FOLD_LEN + 1];
+extern void fold_init(fold_t fold, char *infostr, char c);
 
 #endif /* MLOG_H */

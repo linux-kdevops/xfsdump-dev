@@ -50,7 +50,7 @@
 #define	GETOPT_SUBTREE		's'	/* subtree dump (content_inode.c) */
 #define GETOPT_DUMPTIME		't'	/* use mtime of file as dump time */
 /*				'u' */
-#define	GETOPT_VERBOSITY	'v'	/* verbosity level (0 to 4 ) */
+#define	GETOPT_VERBOSITY	'v'	/* verbosity level (0 to 4) */
 /*				'w' */
 /*				'x'	   used in irix for xvm snapshot */
 /*				'y' */

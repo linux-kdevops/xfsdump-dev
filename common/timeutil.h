@@ -24,14 +24,14 @@
 
 /* ctime32 - takes a time32_t instead of a time_t
  */
-extern char *ctime32( const time32_t *timep );
+extern char *ctime32(const time32_t *timep);
 
 /* ctime32_r - takes a time32_t instead of a time_t
  */
-extern char *ctime32_r( const time32_t *timep, char *buf );
+extern char *ctime32_r(const time32_t *timep, char *buf);
 
 /* ctimennl - ctime(3C) with newline removed
  */
-extern char *ctimennl( const time32_t *clockp );
+extern char *ctimennl(const time32_t *clockp);
 
 #endif /* TIMEUTIL_H */

@@ -18,6 +18,6 @@
 #ifndef CONTENT_COMMON_H
 #define CONTENT_COMMON_H
 
-extern bool_t Media_prompt_change( drive_t *drivep );
+extern bool_t Media_prompt_change(drive_t *drivep);
 
 #endif /* CONTENT_COMMON_H */

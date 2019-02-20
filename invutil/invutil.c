@@ -78,51 +78,51 @@ main(int argc, char *argv[])
     uuid_clear(uuid);
     uuid_clear(session);
 
-    while((c = getopt( argc, argv, GETOPT_CMDSTRING)) != EOF) {
+    while((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 	switch(c) {
 	case GETOPT_DEBUG:
 	    debug = BOOL_TRUE;
 	    break;
 	case GETOPT_INTERACTIVE:
 	    if (force) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_FORCE,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (session_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_PRUNESESSION,
-			 c );
+			 c);
 		usage();
 	    }
 	    interactive_option = BOOL_TRUE;
 	    break;
 	case GETOPT_NONINTERACTIVE: /* obsoleted by -F */
 	    if (interactive_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_INTERACTIVE,
-			 c );
+			 c);
 		usage();
 	    }
 	    force = BOOL_TRUE;
 	    break;
 	case GETOPT_UUID:
 	    if (check_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_CHECKPRUNEFSTAB,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (mntpnt_option || session_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 mntpnt_option ? GETOPT_PRUNEMNT : GETOPT_PRUNESESSION,
-			 c );
+			 c);
 		usage();
 	    }
 	    uuid_option = BOOL_TRUE;
@@ -133,51 +133,51 @@ main(int argc, char *argv[])
 	    break;
 	case GETOPT_CHECKPRUNEFSTAB:
 	    if (mntpnt_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_PRUNEMNT,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (uuid_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_UUID,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (session_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_PRUNESESSION,
-			 c );
+			 c);
 		usage();
 	    }
 	    check_option = BOOL_TRUE;
 	    break;
 	case GETOPT_FORCE:
 	    if (interactive_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_INTERACTIVE,
-			 c );
+			 c);
 		usage();
 	    }
 	    force = BOOL_TRUE;
 	    break;
 	case GETOPT_PRUNEMNT:
 	    if (check_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_CHECKPRUNEFSTAB,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (uuid_option || session_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 uuid_option ? GETOPT_UUID : GETOPT_PRUNESESSION,
-			 c );
+			 c);
 		usage();
 	    }
 	    mntpnt_option = BOOL_TRUE;
@@ -188,24 +188,24 @@ main(int argc, char *argv[])
 	    break;
 	case GETOPT_PRUNESESSION:
 	    if (check_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_CHECKPRUNEFSTAB,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (interactive_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 GETOPT_INTERACTIVE,
-			 c );
+			 c);
 		usage();
 	    }
 	    if (mntpnt_option || uuid_option) {
-		fprintf( stderr, "%s: may not specify both -%c and -%c\n",
+		fprintf(stderr, "%s: may not specify both -%c and -%c\n",
 			 g_programName,
 			 mntpnt_option ? GETOPT_PRUNEMNT : GETOPT_UUID,
-			 c );
+			 c);
 		usage();
 	    }
 	    session_option = BOOL_TRUE;
@@ -218,11 +218,11 @@ main(int argc, char *argv[])
     }
 
     if (r_mf_label != NULL && !(mntpnt_option || uuid_option)) {
-	    fprintf( stderr, "%s: -%c requires either -%c or -%c\n",
+	    fprintf(stderr, "%s: -%c requires either -%c or -%c\n",
 			 g_programName,
 			 GETOPT_PRUNEMEDIALABEL,
 			 GETOPT_PRUNEMNT,
-			 GETOPT_UUID );
+			 GETOPT_UUID);
 	    usage();
     }
 
@@ -245,9 +245,9 @@ main(int argc, char *argv[])
     /* sanity check the inventory database directory, setup global paths
      */
     if (!inv_setup_base()) {
-        fprintf( stderr,
+        fprintf(stderr,
                 "%s: both /var/lib/xfsdump and /var/xfsdump exist - fatal\n",
-	        g_programName );
+	        g_programName);
         exit(1);
     }
     inventory_path = INV_DIRPATH;
@@ -276,7 +276,7 @@ main(int argc, char *argv[])
 		    &session, timeSecs, r_mf_label);
 	}
     }
-    else if ( interactive_option ) {
+    else if (interactive_option) {
 	invutil_interactive(inventory_path, mntPoint, &uuid, 0);
 	printf("\n");
     }
@@ -370,7 +370,7 @@ ParseDate(char *strDate)
 #endif
 
     if (*fmt == NULL || (date = mktime(&tm)) < 0) {
-        fprintf(stderr, "%s: bad date, \"%s\"\n", g_programName, strDate );
+        fprintf(stderr, "%s: bad date, \"%s\"\n", g_programName, strDate);
         usage();
     }
 
@@ -408,10 +408,10 @@ GetNameOfStobj (char *inv_path, char *filename)
     char *name;
 
     str = basename(filename);
-    name = (char *) malloc( strlen( inv_path ) + 1  + strlen( str ) + 1);
-    strcpy( name, inv_path );
-    strcat( name, "/" );
-    strcat( name, str );
+    name = (char *) malloc(strlen(inv_path) + 1  + strlen(str) + 1);
+    strcpy(name, inv_path);
+    strcat(name, "/");
+    strcat(name, str);
 
     return(name);
 }
@@ -422,13 +422,13 @@ GetNameOfInvIndex (char *inv_path, uuid_t uuid)
     char str[UUID_STR_LEN + 1];
     char *name;
 
-    uuid_unparse( uuid, str );
-    name = (char *) malloc( strlen( inv_path ) + 1  + strlen( str )
-			     + strlen( INV_INVINDEX_PREFIX ) + 1);
-    strcpy( name, inv_path );
-    strcat( name, "/" );
-    strcat( name, str );
-    strcat( name, INV_INVINDEX_PREFIX );
+    uuid_unparse(uuid, str);
+    name = (char *) malloc(strlen(inv_path) + 1  + strlen(str)
+			     + strlen(INV_INVINDEX_PREFIX) + 1);
+    strcpy(name, inv_path);
+    strcat(name, "/");
+    strcat(name, str);
+    strcat(name, INV_INVINDEX_PREFIX);
 
     return(name);
 }
@@ -438,11 +438,11 @@ GetFstabFullPath(char *inv_path)
 {
     char *fstabname;
 
-    fstabname = (char *) malloc( strlen(inv_path) + 1 /* one for the "/" */
-				   + strlen("fstab") + 1 );
-    strcpy( fstabname, inv_path );
-    strcat( fstabname, "/" );
-    strcat( fstabname, "fstab" );
+    fstabname = (char *) malloc(strlen(inv_path) + 1 /* one for the "/" */
+				   + strlen("fstab") + 1);
+    strcpy(fstabname, inv_path);
+    strcat(fstabname, "/");
+    strcat(fstabname, "fstab");
     return(fstabname);
 }
 
@@ -463,18 +463,18 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
     invt_counter_t *counter,cnt;
 
     if (mountPt == NULL && uuid_is_null(*uuidp) && uuid_is_null(*sessionp)) {
-	fprintf( stderr, "%s: mountpoint, uuid or session "
-			 "must be specified\n", g_programName );
-	fprintf( stderr, "%s: abnormal termination\n", g_programName );
+	fprintf(stderr, "%s: mountpoint, uuid or session "
+			 "must be specified\n", g_programName);
+	fprintf(stderr, "%s: abnormal termination\n", g_programName);
 	exit(1);
     }
 
     fstabname = GetFstabFullPath(inv_path);
-    fd = open_and_lock( fstabname,
+    fd = open_and_lock(fstabname,
 			FILE_WRITE,
-			wait_for_locks );
+			wait_for_locks);
     if (fd < 0) {
-	fprintf( stderr, "%s: abnormal termination\n", g_programName );
+	fprintf(stderr, "%s: abnormal termination\n", g_programName);
 	exit(1);
     }
 
@@ -492,13 +492,13 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
     printf("Processing file %s\n", fstabname);
 
     /* check each entry in fstab for mount pt or uuid match */
-    for (i = 0; i < counter->ic_curnum; )
+    for (i = 0; i < counter->ic_curnum;)
     {
 	removeflag = BOOL_FALSE;
 
 	printf("   Found entry for %s\n" , fstabentry[i].ft_mountpt);
 
-	for (j = i +1 ; j < counter->ic_curnum ; j++ ) {
+	for (j = i +1 ; j < counter->ic_curnum ; j++) {
 	    if (uuid_compare(fstabentry[i].ft_uuid, fstabentry[j].ft_uuid) == 0)
 	    {
 		printf("     duplicate fstab entry\n");
@@ -519,7 +519,7 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
 		   (r_mf_label ? r_mf_label : "(NULL)"));
 #endif
 
-	    if ( checkonly == BOOL_FALSE ) {
+	    if (checkonly == BOOL_FALSE) {
 		if(mountPt != NULL && strcmp(mountPt, fstabentry[i].ft_mountpt) == 0) {
 		    printf("     Match on hostname and path\n");
 		    IdxCheckOnly = BOOL_FALSE;
@@ -542,18 +542,18 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
 
 	    if (CheckAndPruneInvIndexFile(
 			IdxCheckOnly, invname, sessionp,
-			prunetime, r_mf_label) == -1 ) {
+			prunetime, r_mf_label) == -1) {
 		removeflag = BOOL_TRUE;
 	    }
 
-	    free( invname );
+	    free(invname);
 
 	}
 
 	if (removeflag == BOOL_TRUE)
 	{
 	    printf("     removing fstab entry %s\n", fstabentry[i].ft_mountpt);
-	    if ( counter->ic_curnum > 1 ) {
+	    if (counter->ic_curnum > 1) {
 		bcopy((void *)&fstabentry[i + 1],
 		      (void *)&fstabentry[i],
 		      (sizeof(invt_fstab_t) * (counter->ic_curnum - i - 1)));
@@ -566,7 +566,7 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
 
     fstabEntries = counter->ic_curnum;
 
-    munmap( mapaddr,
+    munmap(mapaddr,
 	    (nEntries*sizeof(invt_fstab_t)) + sizeof(invt_counter_t));
 
     if ((fstabEntries != 0)  && (fstabEntries != nEntries)) {
@@ -588,14 +588,14 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
 	if(debug) {
 	    printf("unlink fstab file %s\n", fstabname);
 	}
-	unlink( fstabname );
+	unlink(fstabname);
     }
 
-    free( fstabname );
+    free(fstabname);
 }
 
 int
-CheckAndPruneInvIndexFile( bool_t checkonly,
+CheckAndPruneInvIndexFile(bool_t checkonly,
 			   char *idxFileName,
 			   uuid_t *sessionp,
 			   time32_t prunetime,
@@ -615,14 +615,14 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
     printf("      processing index file \n"
 	   "       %s\n",idxFileName);
 
-    fd = open_and_lock( idxFileName,
+    fd = open_and_lock(idxFileName,
 			FILE_WRITE,
-			wait_for_locks );
+			wait_for_locks);
     if (fd < 0) {
         return -1;
     }
 
-    read_n_bytes( fd, &header, sizeof(invt_counter_t), idxFileName);
+    read_n_bytes(fd, &header, sizeof(invt_counter_t), idxFileName);
     nEntries = header.ic_curnum;
 
     temp = mmap_n_bytes(fd,
@@ -630,9 +630,9 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
 			BOOL_FALSE, idxFileName);
 
     counter = (invt_counter_t *)temp;
-    invIndexEntry = (invt_entry_t *)( temp + sizeof(invt_counter_t));
+    invIndexEntry = (invt_entry_t *)(temp + sizeof(invt_counter_t));
 
-    for (i=0; i < counter->ic_curnum; )
+    for (i=0; i < counter->ic_curnum;)
     {
 	removeflag = BOOL_FALSE;
 	printf("         Checking access for\n"
@@ -644,7 +644,7 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
 		   ctime32(&(invIndexEntry[i].ie_timeperiod.tp_end)));
 	}
 
-	if (( access( invIndexEntry[i].ie_filename, R_OK | W_OK ) == -1)  &&
+	if ((access(invIndexEntry[i].ie_filename, R_OK | W_OK) == -1)  &&
 	   (errno == ENOENT))
 	{
 	    printf("         Unable to access %s referred in %s\n",
@@ -660,7 +660,7 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
 
 	if (removeflag == BOOL_TRUE)
 	{
-	    if ( counter->ic_curnum > 1 ) {
+	    if (counter->ic_curnum > 1) {
 	        bcopy((void *)&invIndexEntry[i + 1],
 		      (void *)&invIndexEntry[i],
 		      (sizeof(invt_entry_t) * (counter->ic_curnum - i - 1)));
@@ -673,18 +673,18 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
 
     validEntries = counter->ic_curnum;
 
-    munmap( temp, (nEntries*sizeof(invt_entry_t)) + sizeof(invt_counter_t) );
+    munmap(temp, (nEntries*sizeof(invt_entry_t)) + sizeof(invt_counter_t));
 
     if ((validEntries != 0)  && (validEntries != nEntries)) {
 	if(debug) {
 	    printf("ftruncate idx from %d to %d (%ld bytes)\n",
 		   nEntries,
 		   validEntries,
-		   (long) sizeof(invt_counter_t) + (validEntries * sizeof(invt_entry_t)) );
+		   (long) sizeof(invt_counter_t) + (validEntries * sizeof(invt_entry_t)));
             printf("- truncate %s\n", idxFileName);
 	}
-    	ftruncate( fd,
-		   sizeof(invt_counter_t) + (validEntries * sizeof(invt_entry_t)) );
+    	ftruncate(fd,
+		   sizeof(invt_counter_t) + (validEntries * sizeof(invt_entry_t)));
     }
 
     if (debug) {
@@ -693,14 +693,14 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
 	       validEntries);
     }
 
-    close( fd );
+    close(fd);
 
     if (validEntries == 0)
     {
 	if(debug) {
 	    printf("unlink idx file %s\n", idxFileName);
 	}
-	unlink( idxFileName );
+	unlink(idxFileName);
 	return(-1);
     }
 
@@ -708,7 +708,7 @@ CheckAndPruneInvIndexFile( bool_t checkonly,
 }
 
 int
-CheckAndPruneStObjFile( bool_t checkonly,
+CheckAndPruneStObjFile(bool_t checkonly,
 			char *StObjFileName,
 			uuid_t *sessionp,
 			time32_t prunetime,
@@ -734,9 +734,9 @@ CheckAndPruneStObjFile( bool_t checkonly,
     invt_sescounter_t *counter;
     invt_sescounter_t header;
 
-    fd = open_and_lock( StObjFileName,
+    fd = open_and_lock(StObjFileName,
 			FILE_WRITE,
-			wait_for_locks );
+			wait_for_locks);
     if (fd < 0) {
         return -1;
     }
@@ -751,11 +751,11 @@ CheckAndPruneStObjFile( bool_t checkonly,
 
     temp = mmap_n_bytes(fd, sb.st_size, BOOL_FALSE, StObjFileName);
     counter = (invt_sescounter_t *)temp;
-    StObjhdr = (invt_seshdr_t *)( temp + sizeof(invt_sescounter_t));
+    StObjhdr = (invt_seshdr_t *)(temp + sizeof(invt_sescounter_t));
     StObjses = (invt_session_t *)(temp + StObjhdr->sh_sess_off);
 
     sescount = 0;
-    for (i=0; i < counter->ic_curnum; ) {
+    for (i=0; i < counter->ic_curnum;) {
 	removeflag = BOOL_FALSE;
 	if (StObjhdr->sh_pruned)
 	    prunedcount++;
@@ -788,37 +788,37 @@ CheckAndPruneStObjFile( bool_t checkonly,
 		       ctime32(&StObjhdr->sh_time));
 	    printf("\t\tdevice:\t\t%s\n", StObjses->s_devpath);
 	    printf("\t\tsession label:\t\"%s\"\n", StObjses->s_label);
-	    uuid_unparse( StObjses->s_sesid, str );
+	    uuid_unparse(StObjses->s_sesid, str);
 	    printf("\t\tsession id:\t%s\n", str);
 	    printf("\t\tlevel:\t\t%d\n", StObjhdr->sh_level);
-	    printf("\t\tstreams:\t%d\n", StObjses->s_cur_nstreams );
-	    for ( i = 0; i < (int) StObjses->s_cur_nstreams; i++ ) {
-		printf( "\t\tstream %d:\n", i);
+	    printf("\t\tstreams:\t%d\n", StObjses->s_cur_nstreams);
+	    for (i = 0; i < (int) StObjses->s_cur_nstreams; i++) {
+		printf("\t\tstream %d:\n", i);
 		StObjstrm = (invt_stream_t *)(temp +
 					      StObjhdr->sh_streams_off +
 					      (i * sizeof(invt_stream_t)));
-		printf( "\t\t\tpathname:\t%s\n",
+		printf("\t\t\tpathname:\t%s\n",
 			StObjstrm->st_cmdarg);
-		printf( "\t\t\tinode start:\t%llu\n",
+		printf("\t\t\tinode start:\t%llu\n",
 			(unsigned long long) StObjstrm->st_startino.ino);
-		printf( "\t\t\tinode   end:\t%llu\n",
+		printf("\t\t\tinode   end:\t%llu\n",
 			(unsigned long long) StObjstrm->st_endino.ino);
-		printf( "\t\t\tinterrupted:\t%s\n",
-			StObjstrm->st_interrupted ? "YES" : "NO" );
-		printf( "\t\t\tmedia files:\t%d\n",
+		printf("\t\t\tinterrupted:\t%s\n",
+			StObjstrm->st_interrupted ? "YES" : "NO");
+		printf("\t\t\tmedia files:\t%d\n",
 			StObjstrm->st_nmediafiles);
-		for ( j = 0; j < StObjstrm->st_nmediafiles; j++) {
+		for (j = 0; j < StObjstrm->st_nmediafiles; j++) {
 		    StObjmed = (invt_mediafile_t *)(temp +
 						    StObjstrm->st_firstmfile +
 						    (j * sizeof(invt_mediafile_t)));
-		    printf( "\t\t\tmfile file %d:\n", j);
-		    printf( "\t\t\t\tmfile size:\t%lld\n",
+		    printf("\t\t\tmfile file %d:\n", j);
+		    printf("\t\t\t\tmfile size:\t%lld\n",
 			    (long long) StObjmed->mf_size);
-		    printf( "\t\t\t\tmfile start:\t%llu\n",
+		    printf("\t\t\t\tmfile start:\t%llu\n",
 			    (unsigned long long) StObjmed->mf_startino.ino);
-		    printf( "\t\t\t\tmfile end:\t%llu\n",
+		    printf("\t\t\t\tmfile end:\t%llu\n",
 			    (unsigned long long) StObjmed->mf_endino.ino);
-		    printf( "\t\t\t\tmedia label:\t\"%s\"\n",
+		    printf("\t\t\t\tmedia label:\t\"%s\"\n",
 			    StObjmed->mf_label);
 		}
 	    }
@@ -842,12 +842,12 @@ CheckAndPruneStObjFile( bool_t checkonly,
 	    && (uses_specified_mf_label(StObjhdr, StObjses, temp, r_mf_label))){
 	    bool_t GotResponse = BOOL_FALSE;
 
-	    uuid_unparse( StObjses->s_sesid, str );
+	    uuid_unparse(StObjses->s_sesid, str);
 
 	    if(force) {
 		printf("-------------------------------------------------\n");
 		printf("Pruning this matching entry:\n");
-		printf( "UUID\t\t:\t%s\nMOUNT POINT\t:\t%s\n"
+		printf("UUID\t\t:\t%s\nMOUNT POINT\t:\t%s\n"
 			"DEV PATH\t:\t%s\n"
 			"LABEL\t\t:\t%s\n"
 			"TIME OF DUMP\t:\t%s",
@@ -862,20 +862,20 @@ CheckAndPruneStObjFile( bool_t checkonly,
 		       "DEV PATH\t:\t%s\nTIME OF DUMP\t:\t%s",
 		       str, StObjses->s_mountpt, StObjses->s_devpath,
 		       ctime32(&StObjhdr->sh_time));
-		while ( GotResponse == BOOL_FALSE )
+		while (GotResponse == BOOL_FALSE)
 		{
 		    char *chp;
 
 		    printf("\nDo you want to prune this entry: [y/n] ");
-		    fgets( response, GEN_STRLEN, stdin );
-		    chp = strchr( response, '\n');
+		    fgets(response, GEN_STRLEN, stdin);
+		    chp = strchr(response, '\n');
 		    if (chp)
 			*chp = '\0';
-		    if (strcasecmp( response, "Y" ) == 0) {
+		    if (strcasecmp(response, "Y") == 0) {
 			removeflag = BOOL_TRUE;
 			GotResponse = BOOL_TRUE;
 		    }
-		    else if (strcasecmp( response, "N" ) == 0) {
+		    else if (strcasecmp(response, "N") == 0) {
 			GotResponse = BOOL_TRUE;
 		    }
 		}
@@ -891,26 +891,26 @@ CheckAndPruneStObjFile( bool_t checkonly,
 
 	i++;
 
-	StObjhdr = (invt_seshdr_t *)( temp + sizeof(invt_sescounter_t) +
-				      (i * sizeof(invt_seshdr_t)) );
+	StObjhdr = (invt_seshdr_t *)(temp + sizeof(invt_sescounter_t) +
+				      (i * sizeof(invt_seshdr_t)));
 	StObjses = (invt_session_t *)(temp + StObjhdr->sh_sess_off);
     }
 
     validEntries = counter->ic_curnum - prunedcount - removedcount;
 
-    munmap( temp, sb.st_size);
+    munmap(temp, sb.st_size);
 
     if (debug && removedcount)
 	printf("       pruned %d entries from this StObj file,"
 	       " %d remaining\n", removedcount, validEntries);
 
-    close( fd );
+    close(fd);
 
     if (validEntries == 0)
     {
 	if (debug)
 	    printf("Removing: %s\n", StObjFileName);
-	unlink( StObjFileName );
+	unlink(StObjFileName);
 	return(-1);
     }
 
@@ -938,10 +938,10 @@ uses_specified_mf_label(
     if (!r_mf_label) {
 	return 1;	/* prune */
     }
-    for ( s = 0; s < (int) StObjses->s_cur_nstreams; s++ ) {
+    for (s = 0; s < (int) StObjses->s_cur_nstreams; s++) {
 	StObjstrm = (invt_stream_t *)
 	    (temp + StObjhdr->sh_streams_off + (s * sizeof(invt_stream_t)));
-	for ( m = 0; m < StObjstrm->st_nmediafiles; m++, num_media_objects++) {
+	for (m = 0; m < StObjstrm->st_nmediafiles; m++, num_media_objects++) {
 	    StObjmed = (invt_mediafile_t *)
 		(temp + StObjstrm->st_firstmfile + (m * sizeof(invt_mediafile_t)));
 	    if (!strncmp(StObjmed->mf_label, r_mf_label,
@@ -963,7 +963,7 @@ uses_specified_mf_label(
 
 /* copied from inv_api.c */
 char *
-inv_DEBUG_lock_str( int c )
+inv_DEBUG_lock_str(int c)
 {
 #ifdef USE_LOCKF
     static char *lockstr[] = {
@@ -1050,9 +1050,9 @@ open_and_lock(char * path, Open_t open_type, uint lock_wait_flag)
 
     fd = open(path, open_mode);
     if (fd < 0) {
-	fprintf( stderr, "%s: open of %s failed.\n",
+	fprintf(stderr, "%s: open of %s failed.\n",
 		 g_programName, path);
-	perror( "open" );
+	perror("open");
 	return SYSCALL_FAILED;
     }
 
@@ -1146,16 +1146,16 @@ mmap_n_bytes(int fd, size_t count, bool_t checkonly, char *path)
 {
     void *  temp;
 
-    lseek( fd, 0, SEEK_SET );
-    temp = mmap( NULL, count,
+    lseek(fd, 0, SEEK_SET);
+    temp = mmap(NULL, count,
 		 (checkonly == BOOL_TRUE) ? PROT_READ : PROT_READ|PROT_WRITE,
-		 MAP_SHARED, fd, 0 );
+		 MAP_SHARED, fd, 0);
 
     if (temp == (void *)-1) {
-	fprintf( stderr, "%s: error in mmap of %ld bytes for file %s\n",
+	fprintf(stderr, "%s: error in mmap of %ld bytes for file %s\n",
 		 g_programName, (long) count, path);
 	perror("mmap");
-	fprintf( stderr, "%s: abnormal termination\n", g_programName );
+	fprintf(stderr, "%s: abnormal termination\n", g_programName);
 	exit(1);
     }
     return temp;

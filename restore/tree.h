@@ -20,7 +20,7 @@
 
 /* tree_init - creates a new tree abstraction.
  */
-extern bool_t tree_init( char *hkdir,
+extern bool_t tree_init(char *hkdir,
 			 char *dstdir,
 			 bool_t toconlypr,
 			 bool_t ownerpr,
@@ -34,15 +34,15 @@ extern bool_t tree_init( char *hkdir,
 			 bool_t restoredmpr,
 			 bool_t dstdirisxfspr,
 			 uint32_t dumpformat,
-			 bool_t truncategenpr );
+			 bool_t truncategenpr);
 
 /* tree_sync - synchronizes with an existing tree abstraction
  */
-extern bool_t tree_sync( char *hkdir,
+extern bool_t tree_sync(char *hkdir,
 			 char *dstdir,
 			 bool_t toconlypr,
 			 bool_t fullpr,
-			 bool_t dstdirisxfspr );
+			 bool_t dstdirisxfspr);
 
 /* tree_check_dump_format - detect the rare case where a
  * cumulative restore begins with a format 3 (or newer)
@@ -50,32 +50,32 @@ extern bool_t tree_sync( char *hkdir,
  * a format 2 dump. the restore will fail unless the
  * original restore was told to use format 2 gen numbers.
  */
-extern bool_t tree_check_dump_format( uint32_t dumpformat );
+extern bool_t tree_check_dump_format(uint32_t dumpformat);
 
 
 /* tree_begindir - begins application of dumped directory to tree.
  * returns handle to dir node. returns by reference the dirattr
  * handle if new. caller must pre-zero (DAH_NULL).
  */
-extern nh_t tree_begindir( filehdr_t *fhdrp, dah_t *dahp );
+extern nh_t tree_begindir(filehdr_t *fhdrp, dah_t *dahp);
 
 /* tree_addent - adds a directory entry; takes dirh from above call
  */
-extern rv_t tree_addent( nh_t dirh,
+extern rv_t tree_addent(nh_t dirh,
 			 xfs_ino_t ino,
 			 gen_t gen,
 			 char *name,
-			 size_t namelen );
+			 size_t namelen);
 
 /* ends application of dir
  */
-extern void tree_enddir( nh_t dirh );
+extern void tree_enddir(nh_t dirh);
 
 #ifdef TREE_CHK
 /* tree_chk - do a sanity check of the tree prior to post-processing and
  * non-dir restoral. returns FALSE if corruption detected.
  */
-extern bool_t tree_chk( void );
+extern bool_t tree_chk(void);
 #endif /* TREE_CHK */
 
 /* tree_marknoref - mark all nodes as no reference, not dumped dirs, and
@@ -83,40 +83,40 @@ extern bool_t tree_chk( void );
  * of the restoral of a dump session, in order to detect directory entries
  * no longer needed.
  */
-extern void tree_marknoref( void );
+extern void tree_marknoref(void);
 
 /* mark all nodes in tree as either selected or unselected, depending on sense
  */
-extern void tree_markallsubtree( bool_t sensepr );
+extern void tree_markallsubtree(bool_t sensepr);
 
-extern bool_t tree_subtree_parse( bool_t sensepr, char *path );
+extern bool_t tree_subtree_parse(bool_t sensepr, char *path);
 
-extern bool_t tree_post( char *path1, char *path2 );
+extern bool_t tree_post(char *path1, char *path2);
 
-extern rv_t tree_cb_links( xfs_ino_t ino,
+extern rv_t tree_cb_links(xfs_ino_t ino,
 			   gen_t gen,
 			   int32_t ctime,
 			   int32_t mtime,
-			   bool_t ( * funcp )( void *contextp,
+			   bool_t (* funcp)(void *contextp,
 					       bool_t linkpr,
 					       char *path1,
-					       char *path2 ),
+					       char *path2),
 			   void *contextp,
 			   char *path1,
-			   char *path2 );
+			   char *path2);
 
 /* called after all dirs have been restored. adjusts the ref flags,
  * by noting that dirents not refed because their parents were not dumped
  * are virtually reffed if their parents are refed.
  */
-extern bool_t tree_adjref( void );
+extern bool_t tree_adjref(void);
 
-extern bool_t tree_setattr( char *path );
-extern bool_t tree_delorph( void );
-extern bool_t tree_subtree_inter( void );
+extern bool_t tree_setattr(char *path);
+extern bool_t tree_delorph(void);
+extern bool_t tree_subtree_inter(void);
 
-extern bool_t tree_extattr( bool_t ( * cbfunc )( char *path, dah_t dah ),
-			    char *path );
+extern bool_t tree_extattr(bool_t (* cbfunc)(char *path, dah_t dah),
+			    char *path);
 	/* does a depthwise bottom-up traversal of the tree, calling
 	 * the supplied callback for all directories with a non-NULL dirattr
 	 * handle. The callback will get called with the directory's pathname

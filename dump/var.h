@@ -21,8 +21,8 @@
 /* var.[ch] - abstraction dealing with /var/[lib/]xfsdump/
  */
 
-extern void var_create( void );
+extern void var_create(void);
 
-extern void var_skip( uuid_t *dumped_fsidp, void ( *cb )( xfs_ino_t ino ));
+extern void var_skip(uuid_t *dumped_fsidp, void (*cb)(xfs_ino_t ino));
 
 #endif /* VAR_H */

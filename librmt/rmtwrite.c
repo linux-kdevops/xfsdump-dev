@@ -67,6 +67,6 @@ static int _rmt_write(int fildes, char *buf, unsigned int nbyte)
 	}
 
 	_rmt_abort(fildes);
-	setoserror( EIO );
+	setoserror(EIO);
 	return(-1);
 }

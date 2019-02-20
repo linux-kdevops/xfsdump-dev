@@ -27,27 +27,27 @@
 static qlockh_t lock_qlockh = QLOCKH_NULL;
 
 bool_t
-lock_init( void )
+lock_init(void)
 {
 	/* initialization sanity checks
 	 */
-	assert( lock_qlockh == QLOCKH_NULL );
+	assert(lock_qlockh == QLOCKH_NULL);
 
 	/* allocate a qlock
 	 */
-	lock_qlockh = qlock_alloc( QLOCK_ORD_CRIT );
+	lock_qlockh = qlock_alloc(QLOCK_ORD_CRIT);
 
 	return BOOL_TRUE;
 }
 
 void
-lock( void )
+lock(void)
 {
-	qlock_lock( lock_qlockh );
+	qlock_lock(lock_qlockh);
 }
 
 void
-unlock( void )
+unlock(void)
 {
-	qlock_unlock( lock_qlockh );
+	qlock_unlock(lock_qlockh);
 }

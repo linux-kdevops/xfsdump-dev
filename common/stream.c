@@ -40,13 +40,13 @@ struct spm {
 };
 
 typedef struct spm spm_t;
-static spm_t spm[ STREAM_SIMMAX * 3 ];
+static spm_t spm[STREAM_SIMMAX * 3];
 static bool_t initialized = BOOL_FALSE;
 
 void
-stream_init( void )
+stream_init(void)
 {
-	( void )memset( ( void * )spm, 0, sizeof( spm ));
+	(void)memset((void *)spm, 0, sizeof(spm));
 	initialized = BOOL_TRUE;
 }
 
@@ -61,24 +61,24 @@ stream_init( void )
  */
 
 void
-stream_register( pthread_t tid, int streamix )
+stream_register(pthread_t tid, int streamix)
 {
 	spm_t *p = spm;
 	spm_t *ep = spm + N(spm);
 
-	assert( streamix < STREAM_SIMMAX );
+	assert(streamix < STREAM_SIMMAX);
 
 	lock();
-	for ( ; p < ep ; p++ ) {
-		if ( p->s_state == S_FREE ) {
+	for (; p < ep ; p++) {
+		if (p->s_state == S_FREE) {
 			p->s_state = S_RUNNING;
 			break;
 		}
 	}
 	unlock();
-	assert( p < ep );
+	assert(p < ep);
 
-	if ( p >= ep ) return;
+	if (p >= ep) return;
 
 	p->s_tid = tid;
 	p->s_ix = streamix;
@@ -89,40 +89,40 @@ stream_register( pthread_t tid, int streamix )
 
 /* NOTE: lock() must be held when calling stream_dead() */
 void
-stream_dead( pthread_t tid )
+stream_dead(pthread_t tid)
 {
 	spm_t *p = spm;
 	spm_t *ep = spm + N(spm);
 
-	for ( ; p < ep ; p++ )
-		if ( pthread_equal( p->s_tid, tid ) ) {
+	for (; p < ep ; p++)
+		if (pthread_equal(p->s_tid, tid)) {
 			p->s_state = S_ZOMBIE;
 			break;
 		}
-	assert( p < ep );
+	assert(p < ep);
 }
 
 void
-stream_free( pthread_t tid )
+stream_free(pthread_t tid)
 {
 	spm_t *p = spm;
 	spm_t *ep = spm + N(spm);
 
 	lock();
-	for ( ; p < ep ; p++ ) {
-		if ( pthread_equal( p->s_tid, tid ) ) {
-			(void) memset( (void *) p, 0, sizeof(spm_t) );
+	for (; p < ep ; p++) {
+		if (pthread_equal(p->s_tid, tid)) {
+			(void) memset((void *) p, 0, sizeof(spm_t));
 			p->s_state = S_FREE;
 			break;
 		}
 	}
 	unlock();
-	assert( p < ep );
+	assert(p < ep);
 }
 
 int
-stream_find_all( stream_state_t states[], int nstates,
-		 pthread_t tids[], int ntids )
+stream_find_all(stream_state_t states[], int nstates,
+		 pthread_t tids[], int ntids)
 {
 	int i, count = 0;
 	spm_t *p = spm;
@@ -134,7 +134,7 @@ stream_find_all( stream_state_t states[], int nstates,
 
 	/* lock - make sure we get a consistent snapshot of the stream status */
 	lock();
-	for ( ; p < ep && count < ntids; p++ )
+	for (; p < ep && count < ntids; p++)
 		for (i = 0; i < nstates; i++)
 			if (p->s_state == states[i]) {
 				tids[count++] = p->s_tid;
@@ -145,7 +145,7 @@ stream_find_all( stream_state_t states[], int nstates,
 }
 
 static spm_t *
-stream_find( pthread_t tid, stream_state_t s[], int nstates )
+stream_find(pthread_t tid, stream_state_t s[], int nstates)
 {
 	int i;
 	spm_t *p = spm;
@@ -154,8 +154,8 @@ stream_find( pthread_t tid, stream_state_t s[], int nstates )
 	assert(nstates > 0);
 
 	/* note we don't lock the stream array in this function */
-	for ( ; p < ep ; p++ )
-		if ( pthread_equal( p->s_tid, tid ) ) {
+	for (; p < ep ; p++)
+		if (pthread_equal(p->s_tid, tid)) {
 			/* check state */
 			for (i = 0; i < nstates; i++)
 				if (p->s_state == s[i])
@@ -165,13 +165,13 @@ stream_find( pthread_t tid, stream_state_t s[], int nstates )
 #ifdef STREAM_DEBUG
 	{
 		static const char *state_strings[] = { "S_FREE", "S_RUNNING", "S_ZOMBIE" };
-		mlog( MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK | MLOG_BARE,
+		mlog(MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK | MLOG_BARE,
 		      "stream_find(): no stream with tid: %lu and state%s:",
-		      tid, nstates == 1 ? "" : "s" );
+		      tid, nstates == 1 ? "" : "s");
 		for (i = 0; i < nstates; i++)
-			mlog( MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK | MLOG_BARE,
+			mlog(MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK | MLOG_BARE,
 			      " %s", state_strings[s[i]]);
-		mlog( MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK | MLOG_BARE, "\n");
+		mlog(MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK | MLOG_BARE, "\n");
 	}
 #endif /* STREAM_DEBUG */
 
@@ -185,12 +185,12 @@ stream_find( pthread_t tid, stream_state_t s[], int nstates )
  */
 
 int
-stream_getix( pthread_t tid )
+stream_getix(pthread_t tid)
 {
 	stream_state_t states[] = { S_RUNNING };
 	spm_t *p;
 	int ix;
-	p = stream_find( tid, states, N(states) );
+	p = stream_find(tid, states, N(states));
 	ix = p ? p->s_ix : -1;
 	return ix;
 }
@@ -208,8 +208,8 @@ stream_getix( pthread_t tid )
 	spm_t *p;							\
 	pthread_t mytid = pthread_self();				\
 									\
-	if ( !pthread_equal(mytid, (tid))) {				\
-		mlog( MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK,		\
+	if (!pthread_equal(mytid, (tid))) {				\
+		mlog(MLOG_DEBUG | MLOG_ERROR | MLOG_NOLOCK,		\
 		      "stream_set_" #field_name "(): "			\
 		      "foreign stream (tid %lu) "			\
 		      "not permitted to update this stream (tid %lu)\n",\
@@ -218,28 +218,28 @@ stream_getix( pthread_t tid )
 	}								\
 									\
 	lock();								\
-	p = stream_find( (tid), states, N(states) );			\
+	p = stream_find((tid), states, N(states));			\
 	if (p) p->s_exit_ ## field_name = (value);			\
 	unlock();
 
-void stream_set_code( pthread_t tid, int exit_code )
+void stream_set_code(pthread_t tid, int exit_code)
 {
-	stream_set( code, tid, exit_code );
+	stream_set(code, tid, exit_code);
 }
 
-void stream_set_return( pthread_t tid, rv_t rv )
+void stream_set_return(pthread_t tid, rv_t rv)
 {
-	stream_set( return, tid, rv );
+	stream_set(return, tid, rv);
 }
 
-void stream_set_hint( pthread_t tid, rv_t rv )
+void stream_set_hint(pthread_t tid, rv_t rv)
 {
-	stream_set( hint, tid, rv );
+	stream_set(hint, tid, rv);
 }
 
 
 bool_t
-stream_get_exit_status( pthread_t tid,
+stream_get_exit_status(pthread_t tid,
 			stream_state_t states[],
 			int nstates,
 			stream_state_t *state,
@@ -252,7 +252,7 @@ stream_get_exit_status( pthread_t tid,
 	spm_t *p;
 
 	lock();
-	p = stream_find( tid, states, nstates );
+	p = stream_find(tid, states, nstates);
 	if (! p) goto unlock;
 
 	if (state) *state = p->s_state;
@@ -268,7 +268,7 @@ stream_get_exit_status( pthread_t tid,
 }
 
 size_t
-stream_cnt( void )
+stream_cnt(void)
 {
 	spm_t *p = spm;
 	spm_t *ep = spm + N(spm);
@@ -276,19 +276,19 @@ stream_cnt( void )
 	size_t ixcnt;
 	size_t bitix;
 
-	assert( sizeof( ixmap ) * NBBY >= STREAM_SIMMAX );
+	assert(sizeof(ixmap) * NBBY >= STREAM_SIMMAX);
 
 	lock();
-	for ( ; p < ep ; p++ ) {
-		if ( p->s_state == S_RUNNING ) {
-			ixmap |= ( size_t )1 << p->s_ix;
+	for (; p < ep ; p++) {
+		if (p->s_state == S_RUNNING) {
+			ixmap |= (size_t)1 << p->s_ix;
 		}
 	}
 	unlock();
 
 	ixcnt = 0;
-	for ( bitix = 0 ; bitix < STREAM_SIMMAX ; bitix++ ) {
-		if ( ixmap & ( ( size_t )1 << bitix )) {
+	for (bitix = 0 ; bitix < STREAM_SIMMAX ; bitix++) {
+		if (ixmap & ((size_t)1 << bitix)) {
 			ixcnt++;
 		}
 	}

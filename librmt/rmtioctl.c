@@ -193,7 +193,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 		if (RMTHOST(fildes) == UNAME_UNDEFINED) {
 			_rmt_msg(RMTWARN,
 		_("rmtioctl: remote host type not supported for MTIOCTOP\n"));
-			setoserror( EPROTONOSUPPORT );
+			setoserror(EPROTONOSUPPORT);
 			return(-1);
 		}
 
@@ -201,7 +201,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 		if (RMTHOST(fildes) == UNAME_IRIX) {
 			mt_op = mtop_irixmap[mt_op];
 			if (mt_op == -1) {
-			    setoserror( EINVAL );
+			    setoserror(EINVAL);
 			    return(-1);
 			}
 		}
@@ -209,7 +209,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 		/* map the linux op code to the standard/fallback op code */
 			mt_op = mtop_stdmap[mt_op];
 			if (mt_op == -1) {
-			    setoserror( EINVAL );
+			    setoserror(EINVAL);
 			    return(-1);
 			}
 		}
@@ -248,7 +248,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 		    case UNAME_UNDEFINED:
 			_rmt_msg(RMTWARN,
 		_("rmtioctl: remote host type not supported for MTIOCGET\n"));
-			setoserror( EPROTONOSUPPORT );
+			setoserror(EPROTONOSUPPORT);
 			return(-1);
 		    case UNAME_IRIX:
 			if (sizeof(struct irix_mtget) != rc) {
@@ -256,7 +256,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 				_("rmtioctl: IRIX mtget structure of wrong size"
 				  " - got %d, wanted %d\n"),
 				rc, sizeof(struct irix_mtget));
-			    setoserror( EPROTONOSUPPORT );
+			    setoserror(EPROTONOSUPPORT);
 			    return(-1);
 			}
 			break;
@@ -273,12 +273,12 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			  "- got %d, wanted %d or %d\n"),
 				rc, sizeof(struct linux32_mtget),
 				sizeof(struct linux64_mtget));
-			    setoserror( EPROTONOSUPPORT );
+			    setoserror(EPROTONOSUPPORT);
 			    return(-1);
 			}
 			break;
 		    default:
-			setoserror( EPROTONOSUPPORT );
+			setoserror(EPROTONOSUPPORT);
 			return(-1);
 		}
 
@@ -303,7 +303,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 			cnt = read(READ(fildes), p, ssize);
 			if (cnt <= 0) {
 				_rmt_abort(fildes);
-				setoserror( EIO );
+				setoserror(EIO);
 				return(-1);
 			}
 		}
@@ -421,7 +421,7 @@ _rmt_ioctl(int fildes, unsigned int op, void *arg)
 
 	}
         else {
-	    setoserror( EINVAL );
+	    setoserror(EINVAL);
 	    return(-1);
 	}
 }

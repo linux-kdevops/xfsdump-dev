@@ -53,8 +53,8 @@ typedef struct media_context media_context_t;
 #define TERM_IS_SET(rmv_hdrp)	(rmv_hdrp->mrmv_flags & RMVMEDIA_TERMINATOR_BLOCK)
 
 
-#define CAN_OVERWRITE( drivep )	(drivep->d_capabilities & DRIVE_CAP_OVERWRITE)
-#define CAN_APPEND( drivep )	(drivep->d_capabilities & DRIVE_CAP_APPEND)
-#define CAN_BSF( drivep )	(drivep->d_capabilities & DRIVE_CAP_BSF)
+#define CAN_OVERWRITE(drivep)	(drivep->d_capabilities & DRIVE_CAP_OVERWRITE)
+#define CAN_APPEND(drivep)	(drivep->d_capabilities & DRIVE_CAP_APPEND)
+#define CAN_BSF(drivep)	(drivep->d_capabilities & DRIVE_CAP_BSF)
 
 #endif

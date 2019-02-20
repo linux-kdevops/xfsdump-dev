@@ -55,32 +55,32 @@ struct seg {
 
 typedef struct seg seg_t;
 
-#define INOPERSEG	( sizeofmember( seg_t, lobits ) * NBBY )
+#define INOPERSEG	(sizeofmember(seg_t, lobits) * NBBY)
 
-#define HNKSZ		( 4 * PGSZ )
-#define SEGPERHNK	( ( HNKSZ / sizeof( seg_t )) - 1 )
+#define HNKSZ		(4 * PGSZ)
+#define SEGPERHNK	((HNKSZ / sizeof(seg_t)) - 1)
 
 struct hnk {
-	seg_t seg[ SEGPERHNK ];
+	seg_t seg[SEGPERHNK];
 	xfs_ino_t maxino;
 	struct hnk *nextp;
-	char pad[sizeof( seg_t ) - sizeof( xfs_ino_t ) - sizeof( struct hnk * )];
+	char pad[sizeof(seg_t) - sizeof(xfs_ino_t) - sizeof(struct hnk *)];
 };
 
 typedef struct hnk hnk_t;
 
-extern bool_t inomap_sync_pers( char *hkdir );
-extern rv_t inomap_restore_pers( drive_t *drivep,
+extern bool_t inomap_sync_pers(char *hkdir);
+extern rv_t inomap_restore_pers(drive_t *drivep,
 				 content_inode_hdr_t *scrhdrp,
-				 char *hkdir );
-extern void inomap_del_pers( char *hkdir );
-extern void inomap_sanitize( void );
-extern bool_t inomap_rst_needed( xfs_ino_t begino, xfs_ino_t endino );
-extern void inomap_rst_add( xfs_ino_t ino );
-extern void inomap_rst_del( xfs_ino_t ino );
-extern rv_t inomap_discard( drive_t *drivep, content_inode_hdr_t *scrhdrp );
-extern void inomap_cbiter( int mapstatemask,
-			   bool_t ( * cbfunc )( void *ctxp, xfs_ino_t ino ),
-			   void *ctxp );
+				 char *hkdir);
+extern void inomap_del_pers(char *hkdir);
+extern void inomap_sanitize(void);
+extern bool_t inomap_rst_needed(xfs_ino_t begino, xfs_ino_t endino);
+extern void inomap_rst_add(xfs_ino_t ino);
+extern void inomap_rst_del(xfs_ino_t ino);
+extern rv_t inomap_discard(drive_t *drivep, content_inode_hdr_t *scrhdrp);
+extern void inomap_cbiter(int mapstatemask,
+			   bool_t (* cbfunc)(void *ctxp, xfs_ino_t ino),
+			   void *ctxp);
 
 #endif /* INOMAP_H */

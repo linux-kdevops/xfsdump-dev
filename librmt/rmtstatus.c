@@ -47,7 +47,7 @@ int fildes;
 		if (read(READ(fildes), cp, 1) != 1)
 		{
 			_rmt_abort(fildes);
-			setoserror( EIO );
+			setoserror(EIO);
 			return(-1);
 		}
 		if (*cp == '\n')
@@ -60,7 +60,7 @@ int fildes;
 	if (i == BUFMAGIC)
 	{
 		_rmt_abort(fildes);
-		setoserror( EIO );
+		setoserror(EIO);
 		return(-1);
 	}
 
@@ -74,7 +74,7 @@ int fildes;
 
 	if (*cp == 'E' || *cp == 'F')
 	{
-		setoserror( atoi(cp + 1) );
+		setoserror(atoi(cp + 1));
 		while (read(READ(fildes), &c, 1) == 1)
 			if (c == '\n')
 				break;
@@ -92,7 +92,7 @@ int fildes;
 	if (*cp != 'A')
 	{
 		_rmt_abort(fildes);
-		setoserror( EIO );
+		setoserror(EIO);
 		return(-1);
 	}
 

@@ -409,12 +409,12 @@ generate_stobj_menu(node_t *startnode, int level, char *StObjFileName)
 	return startnode;
     }
 
-    StObjhdr = (invt_seshdr_t *)( stobj_file[idx].mapaddr + sizeof(invt_sescounter_t));
+    StObjhdr = (invt_seshdr_t *)(stobj_file[idx].mapaddr + sizeof(invt_sescounter_t));
     StObjses = (invt_session_t *)(stobj_file[idx].mapaddr + StObjhdr->sh_sess_off);
 
     data_idx = 0;
     n = startnode;
-    for (i=0; i < stobj_file[idx].counter->ic_curnum; ) {
+    for (i=0; i < stobj_file[idx].counter->ic_curnum;) {
 	session = malloc(sizeof(*session));
 	if(session == NULL) {
 	    fprintf(stderr, "%s: internal memory error: session malloc\n", g_programName);
@@ -453,7 +453,7 @@ generate_stobj_menu(node_t *startnode, int level, char *StObjFileName)
 	add_stobj_data(idx, session);
 
 	parent_session = n;
-	for ( j = 0; j < (int) StObjses->s_cur_nstreams; j++ ) {
+	for (j = 0; j < (int) StObjses->s_cur_nstreams; j++) {
 	    StObjstrm = (invt_stream_t *)(stobj_file[idx].mapaddr +
 					  StObjhdr->sh_streams_off +
 					  (j * sizeof(invt_stream_t)));
@@ -486,7 +486,7 @@ generate_stobj_menu(node_t *startnode, int level, char *StObjFileName)
 	    add_stobj_data(idx, StObjstrm);
 
 	    parent_stream = n;
-	    for ( k = 0; k < StObjstrm->st_nmediafiles; k++) {
+	    for (k = 0; k < StObjstrm->st_nmediafiles; k++) {
 		StObjmed = (invt_mediafile_t *)(stobj_file[idx].mapaddr +
 						StObjstrm->st_firstmfile +
 						(k * sizeof(invt_mediafile_t)));
@@ -522,8 +522,8 @@ generate_stobj_menu(node_t *startnode, int level, char *StObjFileName)
 
 	i++;
 
-	StObjhdr = (invt_seshdr_t *)( stobj_file[idx].mapaddr + sizeof(invt_sescounter_t) +
-				      (i * sizeof(invt_seshdr_t)) );
+	StObjhdr = (invt_seshdr_t *)(stobj_file[idx].mapaddr + sizeof(invt_sescounter_t) +
+				      (i * sizeof(invt_seshdr_t)));
 	StObjses = (invt_session_t *)(stobj_file[idx].mapaddr + StObjhdr->sh_sess_off);
     }
 
@@ -578,13 +578,13 @@ open_stobj(char *StObjFileName)
     char		*name;
 
     errno=0;
-    fd = open_and_lock( StObjFileName, FILE_WRITE, wait_for_locks );
+    fd = open_and_lock(StObjFileName, FILE_WRITE, wait_for_locks);
     if (fd < 0) {
 	return fd;
     }
 
     read_n_bytes(fd, &cnt, sizeof(invt_sescounter_t), StObjFileName);
-    lseek( fd, 0, SEEK_SET );
+    lseek(fd, 0, SEEK_SET);
     errno = 0;
     if (fstat(fd, &sb) < 0) {
 	fprintf(stderr, "Could not get stat info on %s\n", StObjFileName);
@@ -610,16 +610,16 @@ close_stobj_file(int fidx, int unlink_ok)
     if(fidx >= stobj_numfiles || stobj_file[fidx].fd < 0)
 	return 0;
 
-    munmap( stobj_file[fidx].mapaddr, stobj_file[fidx].size);
-    close( stobj_file[fidx].fd );
+    munmap(stobj_file[fidx].mapaddr, stobj_file[fidx].size);
+    close(stobj_file[fidx].fd);
     stobj_file[fidx].fd = -1;
 
     if(unlink_ok == BOOL_TRUE) {
 	unlink(stobj_file[fidx].name);
     }
 
-    free( stobj_file[fidx].name );
-    free( stobj_file[fidx].data );
+    free(stobj_file[fidx].name);
+    free(stobj_file[fidx].data);
 
     stobj_file[fidx].name = NULL;
     stobj_file[fidx].data = NULL;
@@ -641,15 +641,15 @@ close_all_stobj()
 	    continue;
 
 	unlink_ok = BOOL_TRUE;
-	StObjhdr = (invt_seshdr_t *)( stobj_file[i].mapaddr + sizeof(invt_sescounter_t));
-	for(j = 0; j < stobj_file[i].counter->ic_curnum; ) {
+	StObjhdr = (invt_seshdr_t *)(stobj_file[i].mapaddr + sizeof(invt_sescounter_t));
+	for(j = 0; j < stobj_file[i].counter->ic_curnum;) {
 	    if(StObjhdr->sh_pruned != 1) {
 		unlink_ok = BOOL_FALSE;
 		break;
 	    }
 	    j++;
-	    StObjhdr = (invt_seshdr_t *)( stobj_file[i].mapaddr + sizeof(invt_sescounter_t) +
-					  (j * sizeof(invt_seshdr_t)) );
+	    StObjhdr = (invt_seshdr_t *)(stobj_file[i].mapaddr + sizeof(invt_sescounter_t) +
+					  (j * sizeof(invt_seshdr_t)));
 	}
 
 	close_stobj_file(i, unlink_ok);

@@ -44,7 +44,7 @@
 
 /* declarations of externally defined global symbols *************************/
 
-extern void usage( void );
+extern void usage(void);
 extern char *homedir;
 
 /* declare all drive strategies here
@@ -56,10 +56,10 @@ extern drive_strategy_t drive_strategy_rmt;
 
 /* forward declarations of locally defined static functions ******************/
 
-static drive_t *drive_alloc( char *, size_t );
-static void drive_allochdrs( drive_t *drivep,
+static drive_t *drive_alloc(char *, size_t);
+static void drive_allochdrs(drive_t *drivep,
 			     global_hdr_t *gwhdrtemplatep,
-			     ix_t driveix );
+			     ix_t driveix);
 
 
 /* definition of locally defined global variables ****************************/
@@ -85,22 +85,22 @@ static drive_strategy_t *strategypp[] = {
  * specified on the command line.
  */
 bool_t
-drive_init1( int argc, char *argv[ ] )
+drive_init1(int argc, char *argv[])
 {
 	int c;
 	ix_t driveix;
 
 	/* sanity check asserts
 	 */
-	assert( sizeof( drive_hdr_t ) == DRIVE_HDR_SZ );
+	assert(sizeof(drive_hdr_t) == DRIVE_HDR_SZ);
 
 	/* count drive arguments
 	 */
 	optind = 1;
 	opterr = 0;
 	drivecnt = 0;
-	while ( ( c = getopt( argc, argv, GETOPT_CMDSTRING )) != EOF ) {
-		switch ( c ) {
+	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
+		switch (c) {
 		case GETOPT_DUMPDEST:
 			drivecnt++;
 			break;
@@ -110,8 +110,8 @@ drive_init1( int argc, char *argv[ ] )
 	/* allocate an array to hold ptrs to drive descriptors
 	 */
 	if (drivecnt > 0) {
-		drivepp = ( drive_t ** )calloc( drivecnt, sizeof( drive_t * ));
-		assert( drivepp );
+		drivepp = (drive_t **)calloc(drivecnt, sizeof(drive_t *));
+		assert(drivepp);
 	}
 
 	/* initialize the partialmax value.  Each drive can be completing a file
@@ -128,33 +128,33 @@ drive_init1( int argc, char *argv[ ] )
 	optind = 1;
 	opterr = 0;
 	driveix = 0;
-	while ( ( c = getopt( argc, argv, GETOPT_CMDSTRING )) != EOF ) {
-		switch ( c ) {
+	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
+		switch (c) {
 		case GETOPT_DUMPDEST:
-			if ( ! optarg || optarg[ 0 ] == '-' ) {
-				mlog( MLOG_NORMAL,
+			if (! optarg || optarg[0] == '-') {
+				mlog(MLOG_NORMAL,
 				      _("-%c argument missing\n"),
-				      c );
-				usage( );
+				      c);
+				usage();
 				return BOOL_FALSE;
 			}
 
 			/* allocate a drive descriptor
 			 */
-			drivepp[ driveix ] = drive_alloc( optarg, driveix );
+			drivepp[driveix] = drive_alloc(optarg, driveix);
 			driveix++;
 			break;
 		}
 	}
-	assert( driveix == drivecnt );
+	assert(driveix == drivecnt);
 
 	/* the user may specify stdin as the source, by
 	 * a single dash ('-') with no option letter. This must appear
 	 * between all lettered arguments and the file system pathname.
 	 */
-	if ( optind < argc && ! strcmp( argv[ optind ], "-" )) {
-		if ( driveix > 0 ) {
-			mlog( MLOG_NORMAL,
+	if (optind < argc && ! strcmp(argv[optind ], "-")) {
+		if (driveix > 0) {
+			mlog(MLOG_NORMAL,
 #ifdef DUMP
 			_("cannot specify source files and stdout together\n")
 #endif /* DUMP */
@@ -162,7 +162,7 @@ drive_init1( int argc, char *argv[ ] )
 			_("cannot specify source files and stdin together\n")
 #endif /* RESTORE */
 			      );
-			usage( );
+			usage();
 			return BOOL_FALSE;
 		}
 
@@ -172,20 +172,20 @@ drive_init1( int argc, char *argv[ ] )
 		 * Bug #393618 - prasadb 04/16/97
 		 * allocate an array to hold ptrs to drive descriptors
 		 */
-		drivepp = ( drive_t ** )calloc( drivecnt, sizeof( drive_t * ));
-		assert( drivepp );
+		drivepp = (drive_t **)calloc(drivecnt, sizeof(drive_t *));
+		assert(drivepp);
 
-		drivepp[ 0 ] = drive_alloc( "stdio", 0 );
+		drivepp[0 ] = drive_alloc("stdio", 0);
 
 #ifdef DUMP   /* ifdef added around dlog_desist() by prasadb to fix 435626 */
-		dlog_desist( );
+		dlog_desist();
 #endif
 	}
 
 	/* verify that some dump destination(s) / restore source(s) specified
 	 */
-	if ( drivecnt == 0 ) {
-		mlog( MLOG_NORMAL | MLOG_ERROR,
+	if (drivecnt == 0) {
+		mlog(MLOG_NORMAL | MLOG_ERROR,
 #ifdef DUMP
 			_("no destination file(s) specified\n")
 #endif /* DUMP */
@@ -193,43 +193,43 @@ drive_init1( int argc, char *argv[ ] )
 			_("no source file(s) specified\n")
 #endif /* RESTORE */
 			);
-		usage( );
+		usage();
 		return BOOL_FALSE;
 	}
 
 	/* run each drive past each strategy, pick the best match
 	 * and instantiate a drive manager.
 	 */
-	for ( driveix = 0 ; driveix < drivecnt ; driveix++ ) {
-		drive_t *drivep = drivepp[ driveix ];
+	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+		drive_t *drivep = drivepp[driveix];
 		int bestscore = 0 - INTGENMAX;
 		ix_t six;
-		ix_t scnt = sizeof( strategypp ) / sizeof( strategypp[ 0 ] );
+		ix_t scnt = sizeof(strategypp) / sizeof(strategypp[0]);
 		drive_strategy_t *bestsp = 0;
 		bool_t ok;
 
-		for ( six = 0 ; six < scnt ; six++ ) {
-			drive_strategy_t *sp = strategypp[ six ];
+		for (six = 0 ; six < scnt ; six++) {
+			drive_strategy_t *sp = strategypp[six];
 			int score;
-			score = ( * sp->ds_match )( argc,
+			score = (* sp->ds_match)(argc,
 						    argv,
-						    drivep );
-			if ( ! bestsp || score > bestscore ) {
+						    drivep);
+			if (! bestsp || score > bestscore) {
 				bestsp = sp;
 				bestscore = score;
 			}
 		}
-		assert( bestsp );
+		assert(bestsp);
 		drivep->d_strategyp = bestsp;
 		drivep->d_recmarksep = bestsp->ds_recmarksep;
 		drivep->d_recmfilesz = bestsp->ds_recmfilesz;
-		mlog( MLOG_VERBOSE,
+		mlog(MLOG_VERBOSE,
 		      _("using %s strategy\n"),
-		      bestsp->ds_description );
-		ok = ( * bestsp->ds_instantiate )( argc,
+		      bestsp->ds_description);
+		ok = (* bestsp->ds_instantiate)(argc,
 						   argv,
-						   drivep );
-		if ( ! ok ) {
+						   drivep);
+		if (! ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -245,19 +245,19 @@ drive_init1( int argc, char *argv[ ] )
  */
 /* ARGSUSED */
 bool_t
-drive_init2( int argc,
-	     char *argv[ ],
-	     global_hdr_t *gwhdrtemplatep )
+drive_init2(int argc,
+	     char *argv[],
+	     global_hdr_t *gwhdrtemplatep)
 {
 	ix_t driveix;
 
-	for ( driveix = 0 ; driveix < drivecnt ; driveix++ ) {
-		drive_t *drivep = drivepp[ driveix ];
+	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+		drive_t *drivep = drivepp[driveix];
 		bool_t ok;
 
-		drive_allochdrs( drivep, gwhdrtemplatep, driveix );
-		ok = ( * drivep->d_opsp->do_init )( drivep );
-		if ( ! ok ) {
+		drive_allochdrs(drivep, gwhdrtemplatep, driveix);
+		ok = (* drivep->d_opsp->do_init)(drivep);
+		if (! ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -270,16 +270,16 @@ drive_init2( int argc,
  * synchronizes with async operations begun by drive_init2.
  */
 bool_t
-drive_init3( void )
+drive_init3(void)
 {
 	ix_t driveix;
 
-	for ( driveix = 0 ; driveix < drivecnt ; driveix++ ) {
-		drive_t *drivep = drivepp[ driveix ];
+	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+		drive_t *drivep = drivepp[driveix];
 		bool_t ok;
 
-		ok = ( * drivep->d_opsp->do_sync )( drivep );
-		if ( ! ok ) {
+		ok = (* drivep->d_opsp->do_sync)(drivep);
+		if (! ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -294,17 +294,17 @@ drive_init3( void )
  * utility function for use by drive-specific strategies.
  */
 void
-drive_mark_commit( drive_t *drivep, off64_t ncommitted )
+drive_mark_commit(drive_t *drivep, off64_t ncommitted)
 {
 	drive_markrec_t *dmp;
 
-	for ( dmp = drivep->d_markrecheadp
+	for (dmp = drivep->d_markrecheadp
 	;
-	dmp && dmp->dm_log <= ( drive_mark_t )ncommitted
+	dmp && dmp->dm_log <= (drive_mark_t)ncommitted
 	;
 	) {
 		drivep->d_markrecheadp = dmp->dm_nextp;
-		( * dmp->dm_cbfuncp )( dmp->dm_cbcontextp, dmp, BOOL_TRUE );
+		(* dmp->dm_cbfuncp)(dmp->dm_cbcontextp, dmp, BOOL_TRUE);
 		dmp = drivep->d_markrecheadp;
 	}
 }
@@ -314,17 +314,17 @@ drive_mark_commit( drive_t *drivep, off64_t ncommitted )
  * utility function for use by drive-specific strategies.
  */
 void
-drive_mark_discard( drive_t *drivep )
+drive_mark_discard(drive_t *drivep)
 {
 	drive_markrec_t *dmp;
 
-	for ( dmp = drivep->d_markrecheadp
+	for (dmp = drivep->d_markrecheadp
 	;
 	dmp
 	;
-	drivep->d_markrecheadp = dmp->dm_nextp, dmp = dmp->dm_nextp ) {
+	drivep->d_markrecheadp = dmp->dm_nextp, dmp = dmp->dm_nextp) {
 
-		( * dmp->dm_cbfuncp )( dmp->dm_cbcontextp, dmp, BOOL_FALSE );
+		(* dmp->dm_cbfuncp)(dmp->dm_cbcontextp, dmp, BOOL_FALSE);
 	}
 }
 
@@ -332,15 +332,15 @@ drive_mark_discard( drive_t *drivep )
  * to print drive throughput and streaming metrics.
  */
 void
-drive_display_metrics( void )
+drive_display_metrics(void)
 {
 	ix_t driveix;
 
-	for ( driveix = 0 ; driveix < drivecnt ; driveix++ ) {
-		drive_t *drivep = drivepp[ driveix ];
+	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+		drive_t *drivep = drivepp[driveix];
 		drive_ops_t *dop = drivep->d_opsp;
-		if ( dop->do_display_metrics ) {
-			( * dop->do_display_metrics )( drivep );
+		if (dop->do_display_metrics) {
+			(* dop->do_display_metrics)(drivep);
 		}
 	}
 }
@@ -352,30 +352,30 @@ drive_display_metrics( void )
  * descriptor. do NOT allocate hdr buffers.
  */
 static drive_t *
-drive_alloc( char *pathname, ix_t driveix )
+drive_alloc(char *pathname, ix_t driveix)
 {
 	drive_t *drivep;
 	struct stat64 statbuf;
 
 	/* allocate the descriptor
 	 */
-	drivep = ( drive_t * )calloc( 1, sizeof( drive_t ));
-	assert( drivep );
+	drivep = (drive_t *)calloc(1, sizeof(drive_t));
+	assert(drivep);
 
 	/* convert the pathname to an absolute pathname
 	 * NOTE: string "stdio" is reserved to mean send to standard out
 	 */
-	if ( strcmp( pathname, "stdio" )) {
-		pathname = path_reltoabs( pathname, homedir );
+	if (strcmp(pathname, "stdio")) {
+		pathname = path_reltoabs(pathname, homedir);
 	}
 
 	/* set pipe flags
 	 */
-	if ( ! strcmp( pathname, "stdio" )) {
+	if (! strcmp(pathname, "stdio")) {
 		drivep->d_isunnamedpipepr = BOOL_TRUE;
-	} else if ( ! stat64( pathname, &statbuf )
+	} else if (! stat64(pathname, &statbuf)
 		    &&
-		    ( statbuf.st_mode & S_IFMT ) == S_IFIFO ) {
+		    (statbuf.st_mode & S_IFMT) == S_IFIFO) {
 		drivep->d_isnamedpipepr = BOOL_TRUE;
 	}
 
@@ -391,7 +391,7 @@ drive_alloc( char *pathname, ix_t driveix )
  * hdrs, and ptrs into the hdrs.
  */
 static void
-drive_allochdrs( drive_t *drivep, global_hdr_t *gwhdrtemplatep, ix_t driveix )
+drive_allochdrs(drive_t *drivep, global_hdr_t *gwhdrtemplatep, ix_t driveix)
 {
 	global_hdr_t *grhdrp;
 	drive_hdr_t *drhdrp;
@@ -400,22 +400,22 @@ drive_allochdrs( drive_t *drivep, global_hdr_t *gwhdrtemplatep, ix_t driveix )
 
 	/* allocate the read header
 	 */
-	grhdrp = ( global_hdr_t * )calloc( 1, sizeof( global_hdr_t ));
-	assert( grhdrp );
+	grhdrp = (global_hdr_t *)calloc(1, sizeof(global_hdr_t));
+	assert(grhdrp);
 	gwhdrp = NULL;
 	dwhdrp = NULL;
 
 	/* calculate pointer to the drive portion of the read header
 	 */
-	drhdrp = ( drive_hdr_t * )grhdrp->gh_upper;
+	drhdrp = (drive_hdr_t *)grhdrp->gh_upper;
 
 	/* global write hdr used only for dumps. will be NULL for restore
 	 */
-	if ( gwhdrtemplatep ) {
+	if (gwhdrtemplatep) {
 		/* allocate the write header
 		 */
-		gwhdrp = ( global_hdr_t * )calloc( 1, sizeof( global_hdr_t ));
-		assert( gwhdrp );
+		gwhdrp = (global_hdr_t *)calloc(1, sizeof(global_hdr_t));
+		assert(gwhdrp);
 
 		/* copy the template
 		 */
@@ -423,7 +423,7 @@ drive_allochdrs( drive_t *drivep, global_hdr_t *gwhdrtemplatep, ix_t driveix )
 
 		/* calculate pointer to the drive portion of the read header
 		 */
-		dwhdrp = ( drive_hdr_t * )gwhdrp->gh_upper;
+		dwhdrp = (drive_hdr_t *)gwhdrp->gh_upper;
 
 		/* fill in generic drive fields of write hdr
 		 */

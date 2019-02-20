@@ -41,7 +41,7 @@
 #define GLOBAL_HDR_UUID_SZ	0x10
 
 struct global_hdr {
-	char gh_magic[ GLOBAL_HDR_MAGIC_SZ ];		/*   8    8 */
+	char gh_magic[GLOBAL_HDR_MAGIC_SZ];		/*   8    8 */
 		/* unique signature of xfsdump */
 	uint32_t gh_version;				/*   4    c */
 		/* header version */
@@ -49,55 +49,55 @@ struct global_hdr {
 		/* 32-bit unsigned additive inverse of entire header */
 	time32_t gh_timestamp;				/*   4   14 */
 		/* time32_t of dump */
-	char gh_pad1[ 4 ];				/*   4   18 */
+	char gh_pad1[4];				/*   4   18 */
 		/* alignment */
 	uint64_t gh_ipaddr;				/*   8   20 */
 		/* from gethostid(2), room for expansion */
 	uuid_t gh_dumpid;				/*  10   30 */
 		/* ID of dump session	 */
-	char gh_pad2[ 0xd0 ];				/*  d0  100 */
+	char gh_pad2[0xd0];				/*  d0  100 */
 		/* alignment */
-	char gh_hostname[ GLOBAL_HDR_STRING_SZ ];	/* 100  200 */
+	char gh_hostname[GLOBAL_HDR_STRING_SZ];	/* 100  200 */
 		/* from gethostname(2) */
-	char gh_dumplabel[ GLOBAL_HDR_STRING_SZ ];	/* 100  300 */
+	char gh_dumplabel[GLOBAL_HDR_STRING_SZ];	/* 100  300 */
 		/* label of dump session */
-	char gh_pad3[ 0x100 ];				/* 100  400 */
+	char gh_pad3[0x100];				/* 100  400 */
 		/* padding */
-	char gh_upper[ GLOBAL_HDR_SZ - 0x400 ];		/* c00 1000 */
+	char gh_upper[GLOBAL_HDR_SZ - 0x400];		/* c00 1000 */
 		/* header info private to upper software layers */
 };
 
 typedef struct global_hdr global_hdr_t;
 
 
-/* used by main( ) to allocate and populate a global header template.
+/* used by main() to allocate and populate a global header template.
  * drive managers will copy this into the write header.
  */
-extern global_hdr_t * global_hdr_alloc( int argc, char *argv[ ] );
+extern global_hdr_t * global_hdr_alloc(int argc, char *argv[]);
 
 
-/* used by main( ) to free the global header template after drive ini.
+/* used by main() to free the global header template after drive ini.
  */
-extern void global_hdr_free( global_hdr_t *ghdrp );
+extern void global_hdr_free(global_hdr_t *ghdrp);
 
 
 /* global_hdr_checksum_set - fill in the global media file header checksum.
  * utility function for use by drive-specific strategies.
  */
-extern void global_hdr_checksum_set( global_hdr_t *hdrp );
+extern void global_hdr_checksum_set(global_hdr_t *hdrp);
 
 
 /* global_hdr_checksum_check - check the global media file header checksum.
  * utility function for use by drive-specific strategies.
  * returns BOOL_TRUE if ok, BOOL_FALSE if bad
  */
-extern bool_t global_hdr_checksum_check( global_hdr_t *hdrp );
+extern bool_t global_hdr_checksum_check(global_hdr_t *hdrp);
 
 /* global_version_check - if we know this version number, return BOOL_TRUE
  * else return BOOL_FALSE
  */
 
-extern bool_t global_version_check( uint32_t version );
+extern bool_t global_version_check(uint32_t version);
 
 
 #endif /* GLOBAL_H */

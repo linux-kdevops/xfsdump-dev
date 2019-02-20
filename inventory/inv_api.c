@@ -47,7 +47,7 @@
 /*----------------------------------------------------------------------*/
 
 inv_idbtoken_t
-inv_open( inv_predicate_t bywhat, inv_oflag_t forwhat, void *pred )
+inv_open(inv_predicate_t bywhat, inv_oflag_t forwhat, void *pred)
 {
 	int fd, stobjfd, num, retval;
 	inv_idbtoken_t tok = INV_TOKEN_NULL;
@@ -55,17 +55,17 @@ inv_open( inv_predicate_t bywhat, inv_oflag_t forwhat, void *pred )
 
 	int index = 0;
 
-	assert ( pred );
-	fd = retval = init_idb ( pred, bywhat, forwhat, &tok );
+	assert (pred);
+	fd = retval = init_idb (pred, bywhat, forwhat, &tok);
 
-	if ( retval == I_DONE )
+	if (retval == I_DONE)
 		return tok;
 
 	/* if we just want to search the db, all we need is the invidx.
 	   at this point, we know that a tok wasnt created in init_idb() */
-	if ( forwhat == INV_SEARCH_ONLY ) {
+	if (forwhat == INV_SEARCH_ONLY) {
 		/* fd == I_EMPTYINV or fd == valid fd */
-		tok = get_token( fd, -1);
+		tok = get_token(fd, -1);
 		tok->d_oflag = forwhat;
 		return tok;
 	}
@@ -73,51 +73,51 @@ inv_open( inv_predicate_t bywhat, inv_oflag_t forwhat, void *pred )
 	/* XXX also, see if it is too full. if so, make another and leave a
 	   reference to the new file in the old one */
 
-	stobjfd = idx_get_stobj( fd, forwhat, &index );
-	if ( stobjfd < 0 ) {
-		close( fd );
+	stobjfd = idx_get_stobj(fd, forwhat, &index);
+	if (stobjfd < 0) {
+		close(fd);
 		return INV_TOKEN_NULL;
 	}
 
-	assert ( index > 0 );
+	assert (index > 0);
 
 	/* Now we need to make sure that this has enough space */
-	INVLOCK( stobjfd, LOCK_SH );
+	INVLOCK(stobjfd, LOCK_SH);
 
-	num = GET_SESCOUNTERS( stobjfd, &sescnt );
-	if ( num < 0 ) {
-		close( fd );
-		INVLOCK( stobjfd, LOCK_UN );
-		close( stobjfd );
+	num = GET_SESCOUNTERS(stobjfd, &sescnt);
+	if (num < 0) {
+		close(fd);
+		INVLOCK(stobjfd, LOCK_UN);
+		close(stobjfd);
 		return INV_TOKEN_NULL;
 	}
 
-	/* create another storage object ( and, an inv_index entry for it
-	   too ) if we've filled this one up */
+	/* create another storage object (and, an inv_index entry for it
+	   too) if we've filled this one up */
 
-	if ( (uint) num >= sescnt->ic_maxnum ) {
-		mlog( MLOG_DEBUG | MLOG_INV, "$ INV: creating a new storage obj & "
-		      "index entry. \n" );
-		INVLOCK( stobjfd, LOCK_UN );
+	if ((uint) num >= sescnt->ic_maxnum) {
+		mlog(MLOG_DEBUG | MLOG_INV, "$ INV: creating a new storage obj & "
+		      "index entry. \n");
+		INVLOCK(stobjfd, LOCK_UN);
 		close (stobjfd);
 
-		INVLOCK( fd, LOCK_EX );
-		stobjfd = idx_create_entry( &tok, fd, BOOL_FALSE );
-		INVLOCK( fd, LOCK_UN );
+		INVLOCK(fd, LOCK_EX);
+		stobjfd = idx_create_entry(&tok, fd, BOOL_FALSE);
+		INVLOCK(fd, LOCK_UN);
 
-		free ( sescnt );
-		if ( stobjfd < 0 ) {
-			close( fd );
+		free (sescnt);
+		if (stobjfd < 0) {
+			close(fd);
 			return INV_TOKEN_NULL;
 		}
 		return tok;
 	}
 
-	INVLOCK( stobjfd, LOCK_UN );
+	INVLOCK(stobjfd, LOCK_UN);
 
-	free ( sescnt );
-	tok = get_token( fd, stobjfd );
-	tok->d_invindex_off = IDX_HDR_OFFSET( index - 1 );
+	free (sescnt);
+	tok = get_token(fd, stobjfd);
+	tok->d_invindex_off = IDX_HDR_OFFSET(index - 1);
 	tok->d_oflag = forwhat;
 	return tok;
 
@@ -134,12 +134,12 @@ inv_open( inv_predicate_t bywhat, inv_oflag_t forwhat, void *pred )
 
 
 bool_t
-inv_close( inv_idbtoken_t tok )
+inv_close(inv_idbtoken_t tok)
 {
-	close ( tok->d_invindex_fd );
-	if ( tok->d_stobj_fd >= 0 )
-		close ( tok->d_stobj_fd );
-	destroy_token( tok );
+	close (tok->d_invindex_fd);
+	if (tok->d_stobj_fd >= 0)
+		close (tok->d_stobj_fd);
+	destroy_token(tok);
 	return BOOL_TRUE;
 }
 
@@ -167,7 +167,7 @@ inv_writesession_open(
 	uint		nstreams,
 	time32_t	time,
 	char		*mntpt,
-	char		*devpath )
+	char		*devpath)
 {
 	invt_session_t  ses;
 	int		fd;
@@ -177,17 +177,17 @@ inv_writesession_open(
 	inv_sestoken_t	sestok;
 	inv_oflag_t     forwhat;
 
-	assert ( tok != INV_TOKEN_NULL );
-	assert ( sesid && fsid && mntpt && devpath );
+	assert (tok != INV_TOKEN_NULL);
+	assert (sesid && fsid && mntpt && devpath);
 	forwhat = tok->d_oflag;
 	fd = tok->d_stobj_fd;
-	assert ( forwhat != INV_SEARCH_ONLY );
-	assert ( fd > 0 );
+	assert (forwhat != INV_SEARCH_ONLY);
+	assert (fd > 0);
 
-	if ( ! ( tok->d_update_flag & FSTAB_UPDATED ) ) {
-		if ( fstab_put_entry( fsid, mntpt, devpath, forwhat ) < 0 ) {
-		       mlog( MLOG_NORMAL | MLOG_INV, _(
-				"INV: put_fstab_entry failed.\n") );
+	if (! (tok->d_update_flag & FSTAB_UPDATED)) {
+		if (fstab_put_entry(fsid, mntpt, devpath, forwhat) < 0) {
+		       mlog(MLOG_NORMAL | MLOG_INV, _(
+				"INV: put_fstab_entry failed.\n"));
 		       return INV_TOKEN_NULL;
 		}
 		tok->d_update_flag |= FSTAB_UPDATED;
@@ -195,12 +195,12 @@ inv_writesession_open(
 
 
 	/* copy the session information to store */
-	memset( (void *)&ses, 0, sizeof( ses ) );	/* paranoia */
-	memcpy( &ses.s_sesid, sesid, sizeof( uuid_t ) );
-	memcpy( &ses.s_fsid, fsid, sizeof( uuid_t ) );
-	strcpy( ses.s_label, label );
-	strcpy( ses.s_mountpt, mntpt );
-	strcpy( ses.s_devpath, devpath );
+	memset((void *)&ses, 0, sizeof(ses));	/* paranoia */
+	memcpy(&ses.s_sesid, sesid, sizeof(uuid_t));
+	memcpy(&ses.s_fsid, fsid, sizeof(uuid_t));
+	strcpy(ses.s_label, label);
+	strcpy(ses.s_mountpt, mntpt);
+	strcpy(ses.s_devpath, devpath);
 	ses.s_max_nstreams = nstreams;
 
         hdr.sh_pruned = 0; /* session is not pruned by invutil */
@@ -210,41 +210,41 @@ inv_writesession_open(
 	hdr.sh_flag |= (isresumed) ? INVT_RESUMED : 0;
 	/* sh_streams_off and sh_sess_off will be set in create_session() */
 
-	sestok = get_sesstoken( tok );
+	sestok = get_sesstoken(tok);
 
 	/* we need to put the new session in the appropriate place in
 	   storage object. So first find out howmany sessions are there */
 
-	INVLOCK( fd, LOCK_EX );
-	if ( GET_SESCOUNTERS( fd, &sescnt) < 0 ) {
-		free ( sestok );
-		INVLOCK( fd, LOCK_UN );
+	INVLOCK(fd, LOCK_EX);
+	if (GET_SESCOUNTERS(fd, &sescnt) < 0) {
+		free (sestok);
+		INVLOCK(fd, LOCK_UN);
 		return INV_TOKEN_NULL;
 	}
 
 	/* create the writesession, and get ready for the streams to come
 	   afterwards */
-	rval = stobj_create_session( sestok, fd, sescnt, &ses, &hdr );
+	rval = stobj_create_session(sestok, fd, sescnt, &ses, &hdr);
 	assert (rval > 0);
 
 
-	INVLOCK( fd, LOCK_UN );
+	INVLOCK(fd, LOCK_UN);
 
 	sestok->sd_sesstime = time;
 
-	if ( tok->d_update_flag & NEW_INVINDEX ) {
-		if ( idx_put_sesstime( sestok, INVT_STARTTIME ) < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_INV, _(
-				"INV: put_starttime failed.\n") );
+	if (tok->d_update_flag & NEW_INVINDEX) {
+		if (idx_put_sesstime(sestok, INVT_STARTTIME) < 0) {
+			mlog(MLOG_NORMAL | MLOG_INV, _(
+				"INV: put_starttime failed.\n"));
 			return INV_TOKEN_NULL;
 		}
 		tok->d_update_flag &= ~(NEW_INVINDEX);
 	}
 
-	free ( sescnt );
+	free (sescnt);
 
 
-	return ( rval < 0 )? INV_TOKEN_NULL: sestok;
+	return (rval < 0)? INV_TOKEN_NULL: sestok;
 }
 
 
@@ -259,19 +259,19 @@ inv_writesession_open(
 
 
 bool_t
-inv_writesession_close( inv_sestoken_t tok )
+inv_writesession_close(inv_sestoken_t tok)
 {
 	int		rval;
 
-	assert ( tok != INV_TOKEN_NULL );
+	assert (tok != INV_TOKEN_NULL);
 
 	/* now update end_time in the inv index header */
-	rval = idx_put_sesstime( tok, INVT_ENDTIME );
+	rval = idx_put_sesstime(tok, INVT_ENDTIME);
 
-	memset( tok, 0, sizeof( invt_sesdesc_entry_t ) );
-	free ( tok );
+	memset(tok, 0, sizeof(invt_sesdesc_entry_t));
+	free (tok);
 
-	return ( rval < 0 ) ? BOOL_FALSE: BOOL_TRUE;
+	return (rval < 0) ? BOOL_FALSE: BOOL_TRUE;
 
 }
 
@@ -285,7 +285,7 @@ inv_writesession_close( inv_sestoken_t tok )
 inv_stmtoken_t
 inv_stream_open(
 	inv_sestoken_t tok,
-	char		*cmdarg )
+	char		*cmdarg)
 {
 	inv_stmtoken_t stok;
 	invt_stream_t  stream;
@@ -294,21 +294,21 @@ inv_stream_open(
 	int fd;
 	bool_t err = BOOL_FALSE;
 
-	assert ( tok != INV_TOKEN_NULL );
+	assert (tok != INV_TOKEN_NULL);
 
 	/* this memset is needed as a dump interrupted/crashed very soon
 	 * after starting results in an inventory with exteremely large
 	 * starting/ending inodes or offsets. This can be misleading.
 	 * See bug #463702 for an example.
 	 */
-	memset( (void *)&stream, 0 , sizeof(invt_stream_t) );
+	memset((void *)&stream, 0 , sizeof(invt_stream_t));
 
 	stream.st_nmediafiles = 0;
 	stream.st_interrupted = BOOL_TRUE; /* fix for 353197 */
-	strcpy( stream.st_cmdarg, cmdarg );
+	strcpy(stream.st_cmdarg, cmdarg);
 
 	/* XXX yukk... make the token descriptors not pointers */
-	stok = ( inv_stmtoken_t ) malloc( sizeof( invt_strdesc_entry_t ) );
+	stok = (inv_stmtoken_t) malloc(sizeof(invt_strdesc_entry_t));
 
 	stok->md_sesstok = tok;
 	stok->md_lastmfile = 0;
@@ -316,46 +316,46 @@ inv_stream_open(
 	/* get the session to find out where the stream is going to go */
 	fd = tok->sd_invtok->d_stobj_fd;
 
-	INVLOCK( fd, LOCK_EX );
+	INVLOCK(fd, LOCK_EX);
 
 	/* get the session header and the session */
-	if ( stobj_get_sessinfo( tok, &seshdr, &ses ) <= 0 )
+	if (stobj_get_sessinfo(tok, &seshdr, &ses) <= 0)
 		err = BOOL_TRUE;
 
-	if ( ( ! err )  && ses.s_cur_nstreams < ses.s_max_nstreams ) {
+	if ((! err)  && ses.s_cur_nstreams < ses.s_max_nstreams) {
 		/* this is where this stream header will be written to */
-		stok->md_stream_off = (off64_t) (sizeof( invt_stream_t ) *
-					         ses.s_cur_nstreams )
+		stok->md_stream_off = (off64_t) (sizeof(invt_stream_t) *
+					         ses.s_cur_nstreams)
 			                         + seshdr.sh_streams_off;
 		ses.s_cur_nstreams++;
 
 		/* write it back. */
-		if ( PUT_REC_NOLOCK( fd, &ses, sizeof( ses ),
-				     tok->sd_session_off ) < 0 )
+		if (PUT_REC_NOLOCK(fd, &ses, sizeof(ses),
+				     tok->sd_session_off) < 0)
 			err = BOOL_TRUE;
-	} else if ( ! err ) {
-		mlog ( MLOG_NORMAL, _(
+	} else if (! err) {
+		mlog (MLOG_NORMAL, _(
 		       "INV: cant create more than %d streams."
-		       " Max'd out..\n"), ses.s_cur_nstreams );
+		       " Max'd out..\n"), ses.s_cur_nstreams);
 		err = BOOL_TRUE;
 	}
 
-	if ( ! err ) {
+	if (! err) {
 		stream.st_firstmfile = stream.st_lastmfile =
 			               stok->md_stream_off;
 
 		/* now write the stream header on to the disk */
-		if ( PUT_REC_NOLOCK( fd, &stream, sizeof( invt_stream_t ),
-				    stok->md_stream_off ) > 0 ) {
+		if (PUT_REC_NOLOCK(fd, &stream, sizeof(invt_stream_t),
+				    stok->md_stream_off) > 0) {
 			/* we're all set */
-			INVLOCK( fd, LOCK_UN );
+			INVLOCK(fd, LOCK_UN);
 			return stok;
 		}
 	}
 
 	/* error occured somewhere */
-	free ( stok );
-	INVLOCK( fd, LOCK_UN );
+	free (stok);
+	INVLOCK(fd, LOCK_UN);
 	return INV_TOKEN_NULL;
 
 }
@@ -372,36 +372,36 @@ inv_stream_open(
 bool_t
 inv_stream_close(
 		inv_stmtoken_t	tok,
-		bool_t wasinterrupted )
+		bool_t wasinterrupted)
 {
 	invt_stream_t strm;
 	int fd = tok->md_sesstok->sd_invtok->d_stobj_fd;
 	int rval;
 	bool_t dowrite = BOOL_FALSE;
 
-	rval = idx_put_sesstime( tok->md_sesstok, INVT_ENDTIME );
+	rval = idx_put_sesstime(tok->md_sesstok, INVT_ENDTIME);
 	if (rval < 0)
-		mlog( MLOG_NORMAL | MLOG_INV, _(
+		mlog(MLOG_NORMAL | MLOG_INV, _(
 		      "INV: idx_put_sesstime failed in "
-		      "inv_stream_close() \n") );
-	INVLOCK( fd, LOCK_EX );
-	if ((rval = GET_REC_NOLOCK( fd, &strm, sizeof( invt_stream_t ),
-			       tok->md_stream_off )) > 0 ) {
+		      "inv_stream_close() \n"));
+	INVLOCK(fd, LOCK_EX);
+	if ((rval = GET_REC_NOLOCK(fd, &strm, sizeof(invt_stream_t),
+			       tok->md_stream_off)) > 0) {
 
-		if ( strm.st_interrupted != wasinterrupted ) {
+		if (strm.st_interrupted != wasinterrupted) {
 			strm.st_interrupted = wasinterrupted;
 			dowrite = BOOL_TRUE;
 		}
 
 		/* get the last media file to figure out what our last
 		   ino was. we have a pointer to that in the stream token */
-		if ( tok->md_lastmfile ){
-			if ( strm.st_endino.ino !=
+		if (tok->md_lastmfile){
+			if (strm.st_endino.ino !=
 			      tok->md_lastmfile->mf_endino.ino ||
 			     strm.st_endino.offset !=
 			      tok->md_lastmfile->mf_endino.offset) {
 
-			      mlog( MLOG_DEBUG | MLOG_INV, "INV: stream_close() "
+			      mlog(MLOG_DEBUG | MLOG_INV, "INV: stream_close() "
 				    " - endinos dont match ! \n");
 			      dowrite = BOOL_TRUE;
 			      strm.st_endino = tok->md_lastmfile->mf_endino;
@@ -414,15 +414,15 @@ inv_stream_close(
 		}
 	}
 
-	INVLOCK( fd, LOCK_UN );
+	INVLOCK(fd, LOCK_UN);
 
-	if ( tok->md_lastmfile ) {
-		free ( tok->md_lastmfile );
+	if (tok->md_lastmfile) {
+		free (tok->md_lastmfile);
 	}
-	memset( tok, 0, sizeof( invt_strdesc_entry_t ) );
-	free ( tok );
+	memset(tok, 0, sizeof(invt_strdesc_entry_t));
+	free (tok);
 
-	return ( rval < 0 ) ? BOOL_FALSE: BOOL_TRUE;
+	return (rval < 0) ? BOOL_FALSE: BOOL_TRUE;
 }
 
 
@@ -452,15 +452,15 @@ inv_put_mediafile(
 	int 		 rval;
 
 
-	assert ( tok != INV_TOKEN_NULL );
-	assert ( tok->md_sesstok->sd_invtok->d_update_flag & FSTAB_UPDATED );
-	assert ( tok->md_sesstok->sd_invtok->d_stobj_fd >= 0 );
+	assert (tok != INV_TOKEN_NULL);
+	assert (tok->md_sesstok->sd_invtok->d_update_flag & FSTAB_UPDATED);
+	assert (tok->md_sesstok->sd_invtok->d_stobj_fd >= 0);
 
-	mf = (invt_mediafile_t *) calloc( 1, sizeof( invt_mediafile_t ) );
+	mf = (invt_mediafile_t *) calloc(1, sizeof(invt_mediafile_t));
 
 	/* copy the media file information */
-	memcpy( &mf->mf_moid, moid, sizeof( uuid_t ) );
-	strcpy( mf->mf_label, label );
+	memcpy(&mf->mf_moid, moid, sizeof(uuid_t));
+	strcpy(mf->mf_label, label);
 	mf->mf_mfileidx = mfileindex;
 	mf->mf_startino.ino = startino;
 	mf->mf_startino.offset = startino_offset;
@@ -468,25 +468,25 @@ inv_put_mediafile(
 	mf->mf_endino.offset = endino_offset;
 	mf->mf_size = size;
 	mf->mf_flag = 0;
-	if ( isgood )
+	if (isgood)
 		mf->mf_flag |= INVT_MFILE_GOOD;
 
 	/* This flag is used to indicate the media file that contains the
 	   dump of the sessioninfo structure that contains all but this
 	   media file */
-	if ( isinvdump )
+	if (isinvdump)
 		mf->mf_flag |= INVT_MFILE_INVDUMP;
 
-	INVLOCK( tok->md_sesstok->sd_invtok->d_stobj_fd, LOCK_EX );
-	rval = stobj_put_mediafile( tok, mf );
-	INVLOCK( tok->md_sesstok->sd_invtok->d_stobj_fd, LOCK_UN );
+	INVLOCK(tok->md_sesstok->sd_invtok->d_stobj_fd, LOCK_EX);
+	rval = stobj_put_mediafile(tok, mf);
+	INVLOCK(tok->md_sesstok->sd_invtok->d_stobj_fd, LOCK_UN);
 
 	/* we dont free the mfile here. we always keep the last mfile
 	   around, inside the inv_stmtoken, and when we add a new mfile,
 	   we free the previous one. The last one is freed in stream_close()
 	   */
 
-	return ( rval < 0 ) ? BOOL_FALSE: BOOL_TRUE;
+	return (rval < 0) ? BOOL_FALSE: BOOL_TRUE;
 
 }
 
@@ -510,7 +510,7 @@ bool_t
 inv_get_sessioninfo(
 	inv_sestoken_t		tok,
 	void		      **bufpp,	/* buf to fill */
-	size_t		       *bufszp )/* size of that buffer */
+	size_t		       *bufszp)/* size of that buffer */
 {
 	invt_session_t 	ses;
 	invt_seshdr_t	hdr;
@@ -518,23 +518,23 @@ inv_get_sessioninfo(
 	int		fd;
 
 
-	assert( tok != INV_TOKEN_NULL );
-	assert( tok->sd_invtok );
+	assert(tok != INV_TOKEN_NULL);
+	assert(tok->sd_invtok);
 	*bufpp = NULL;
 	*bufszp = 0;
 	fd = tok->sd_invtok->d_stobj_fd;
 
-	INVLOCK( fd, LOCK_SH );
+	INVLOCK(fd, LOCK_SH);
 
 	/* Next we get the session header, and the session information. Then
 	   we can figure out how much space to allocate */
-	if ( stobj_get_sessinfo( tok, &hdr, &ses ) <= 0 ) {
-		INVLOCK( fd, LOCK_UN );
+	if (stobj_get_sessinfo(tok, &hdr, &ses) <= 0) {
+		INVLOCK(fd, LOCK_UN);
 		return BOOL_FALSE;
 	}
 
-	rval = stobj_pack_sessinfo( fd, &ses, &hdr, bufpp, bufszp );
-	INVLOCK( fd, LOCK_UN );
+	rval = stobj_pack_sessinfo(fd, &ses, &hdr, bufpp, bufszp);
+	INVLOCK(fd, LOCK_UN);
 
 
 	return rval;
@@ -555,18 +555,18 @@ inv_get_sessioninfo(
 /*----------------------------------------------------------------------*/
 
 bool_t
-inv_put_sessioninfo( invt_sessinfo_t *s )
+inv_put_sessioninfo(invt_sessinfo_t *s)
 {
 	static bool_t invdir_ok = BOOL_FALSE;
 
-	if ( !invdir_ok ) {
-		if ( make_invdirectory( INV_SEARCH_N_MOD ) < 0 )
+	if (!invdir_ok) {
+		if (make_invdirectory(INV_SEARCH_N_MOD) < 0)
 			return BOOL_FALSE;
 		else
 			invdir_ok = BOOL_TRUE;
 	}
 
-      	return insert_session( s );
+      	return insert_session(s);
 
 }
 
@@ -588,7 +588,7 @@ inv_free_session(
 	assert(ses);
 	assert(*ses);
 
-	for ( i = 0; i < (*ses)->s_nstreams; i++ ) {
+	for (i = 0; i < (*ses)->s_nstreams; i++) {
 		/* the array of mediafiles is contiguous */
 		free ((*ses)->s_streams[i].st_mediafiles);
 	}
@@ -619,12 +619,12 @@ inv_lasttime_level_lessthan(
 	time32_t	**tm)
 {
 	int 	rval;
-	if ( tok != INV_TOKEN_NULL ) {
+	if (tok != INV_TOKEN_NULL) {
 		rval =  search_invt(fsidp, tok->d_invindex_fd, &level,
 				    (void **)tm,
 				    (search_callback_t)tm_level_lessthan);
 
-		return ( rval < 0) ? BOOL_FALSE: BOOL_TRUE;
+		return (rval < 0) ? BOOL_FALSE: BOOL_TRUE;
 	}
 
 	return invmgr_query_all_sessions(fsidp,		 /* fs uuid ptr */
@@ -652,12 +652,12 @@ inv_lastsession_level_lessthan(
 	inv_session_t	**ses)
 {
 	int 	rval;
-	if ( tok != INV_TOKEN_NULL ) {
+	if (tok != INV_TOKEN_NULL) {
 		rval = search_invt(fsidp, tok->d_invindex_fd, &level,
 				   (void **)ses,
 				   (search_callback_t)lastsess_level_lessthan);
 
-		return ( rval < 0) ? BOOL_FALSE: BOOL_TRUE;
+		return (rval < 0) ? BOOL_FALSE: BOOL_TRUE;
 	}
 
 	return invmgr_query_all_sessions(fsidp,		 /* fs uuid */
@@ -684,15 +684,15 @@ inv_lastsession_level_equalto(
 	uuid_t		*fsidp,
 	inv_idbtoken_t	tok,
 	u_char		level,
-	inv_session_t	**ses )
+	inv_session_t	**ses)
 {
 	int 	rval;
-	if ( tok != INV_TOKEN_NULL ) {
+	if (tok != INV_TOKEN_NULL) {
 		rval = search_invt(fsidp, tok->d_invindex_fd, &level,
 				   (void **)ses,
 				   (search_callback_t)lastsess_level_equalto);
 
-		return ( rval < 0) ? BOOL_FALSE: BOOL_TRUE;
+		return (rval < 0) ? BOOL_FALSE: BOOL_TRUE;
 	}
 
 	return invmgr_query_all_sessions(fsidp,		 /* fs uuid */
@@ -758,7 +758,7 @@ inv_get_session_bylabel(
 /*----------------------------------------------------------------------*/
 
 bool_t
-inv_delete_mediaobj( uuid_t *moid )
+inv_delete_mediaobj(uuid_t *moid)
 {
 	inv_oflag_t forwhat = INV_SEARCH_N_MOD;
 
@@ -771,8 +771,8 @@ inv_delete_mediaobj( uuid_t *moid )
 		         forall mediafiles (m) in strm {
 			     if (m.mediaobj == moid) {
 			     // delete m
-			     if ( --strm.nmediafiles == 0 )
-			        if ( --s.nstreams == 0 )
+			     if (--strm.nmediafiles == 0)
+			        if (--s.nstreams == 0)
 			            delete-session (s)
 			     }
 			 }
@@ -786,40 +786,40 @@ inv_delete_mediaobj( uuid_t *moid )
 	int numfs, i, fd, invfd;
 	char fname[INV_STRLEN];
 
-	fd = fstab_getall( &arr, &cnt, &numfs, forwhat );
-	if ( fd < 0 || numfs <= 0 ) {
-		mlog( MLOG_NORMAL | MLOG_INV, _("INV: Error in fstab\n") );
+	fd = fstab_getall(&arr, &cnt, &numfs, forwhat);
+	if (fd < 0 || numfs <= 0) {
+		mlog(MLOG_NORMAL | MLOG_INV, _("INV: Error in fstab\n"));
 		return BOOL_FALSE;
 	}
 
-	close( fd );
+	close(fd);
 
-	for ( i = 0; i < numfs; i++) {
-		if ( fstab_get_fname( &arr[i].ft_uuid,
+	for (i = 0; i < numfs; i++) {
+		if (fstab_get_fname(&arr[i].ft_uuid,
 				      fname,
 				      (inv_predicate_t)INV_BY_UUID,
 				      forwhat
 				     )
-		     < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_INV, _(
-			      "INV: Cant get inv-name for uuid\n") );
+		     < 0) {
+			mlog(MLOG_NORMAL | MLOG_INV, _(
+			      "INV: Cant get inv-name for uuid\n"));
 			return BOOL_FALSE;
 		}
-		strcat( fname, INV_INVINDEX_PREFIX );
-		invfd = open( fname, INV_OFLAG(forwhat));
-		if ( invfd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_INV, _(
+		strcat(fname, INV_INVINDEX_PREFIX);
+		invfd = open(fname, INV_OFLAG(forwhat));
+		if (invfd < 0) {
+			mlog(MLOG_NORMAL | MLOG_INV, _(
 			     "INV: Open failed on %s\n"),
-			     fname );
+			     fname);
 			return BOOL_FALSE;
 		}
 
 		if (search_invt(&arr[i].ft_uuid, invfd, NULL, (void **)&moid,
 				(search_callback_t)stobj_delete_mobj)
-		    < 0 )
+		    < 0)
 			return BOOL_FALSE;
 		/* we have to delete the session, etc */
-		close( invfd );
+		close(invfd);
 	}
 
 	return BOOL_TRUE;
@@ -899,8 +899,8 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 		rptr = wptr + 1;
 		while (*wptr != '\0')
 			*wptr++ = *rptr++;
-		while ( ( c = getopt( argc, argv, invoptstring)) != EOF ) {
-			switch ( c ) {
+		while ((c = getopt(argc, argv, invoptstring)) != EOF) {
+			switch (c) {
 			case GETOPT_INVPRINT:
 				prctx->depth = 0;
 				rval |= I_IFOUND ;
@@ -912,8 +912,8 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 		optarg = NULL;
 	}
 
-	while ( ( c = getopt( argc, argv, GETOPT_CMDSTRING )) != EOF ) {
-		switch ( c ) {
+	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
+		switch (c) {
 		case GETOPT_INVPRINT:
 			rval |= I_IFOUND ;
 			if ((options = optarg) == NULL)
@@ -924,7 +924,7 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 				if (value == NULL && d != OPT_FSTAB &&
 				     d != OPT_INVIDX && d != OPT_INVCHECK)
 					continue;
-				switch( d ) {
+				switch(d) {
 					/* process mntpt option */
 				      case OPT_MNT:
 					bywhat = (inv_predicate_t) INV_BY_MOUNTPT;
@@ -950,14 +950,14 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 				      case OPT_DEPTH:
 					prctx->depth = atoi(value);
 					if (prctx->depth < 0 ||
-					    prctx->depth > 4 )
+					    prctx->depth > 4)
 						prctx->depth = 0;
 					break;
 
 				      case OPT_MOBJID:
 					{
 					uuid_t *u;
-					u = malloc ( sizeof( uuid_t ) );
+					u = malloc (sizeof(uuid_t));
 					uuid_parse(value, *u);
 					prctx->mobj.type = INVT_MOID;
 					prctx->mobj.value = (void *)u;
@@ -988,13 +988,13 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 					break;
 
 				      default:
-					if ( strlen(value) == 1 &&
-					     atoi(value) < PR_MAXDEPTH )
+					if (strlen(value) == 1 &&
+					     atoi(value) < PR_MAXDEPTH)
 						prctx->depth = atoi(value);
 					else {
-						mlog( MLOG_NORMAL | MLOG_INV, _(
+						mlog(MLOG_NORMAL | MLOG_INV, _(
 					       "INV: invalid sub-option %s"
-					       " for -I option\n"), value );
+					       " for -I option\n"), value);
 						rval |= I_IERR;
 					}
 					break;
@@ -1006,18 +1006,18 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 	}
 
 	if (npreds > 1) {
-		mlog( MLOG_NORMAL | MLOG_INV, _(
+		mlog(MLOG_NORMAL | MLOG_INV, _(
 		     "INV: Only one of mnt=,dev= and fsid=value can be used.\n")
 		     );
 		rval |= I_IERR;
 	}
 	else if (npreds2 > 1) {
-		mlog( MLOG_NORMAL | MLOG_INV, _(
+		mlog(MLOG_NORMAL | MLOG_INV, _(
 		     "INV: Only one of mobjid= and mobjlabel= can be used.\n")
 		     );
 		rval |= I_IERR;
 	}
-	else if ( (rval & I_IFOUND) && !(rval & I_IERR) && fs
+	else if ((rval & I_IFOUND) && !(rval & I_IERR) && fs
 		 && ! prctx->fstab && ! prctx->invcheck) {
 		inv_idbtoken_t tok;
 
@@ -1032,33 +1032,33 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 			invt_counter_t *cnt = NULL;
 			inv_oflag_t forwhat = INV_SEARCH_ONLY;
 
-			fd = fstab_getall( &arr, &cnt, &numfs, forwhat );
-			free( cnt );
+			fd = fstab_getall(&arr, &cnt, &numfs, forwhat);
+			free(cnt);
 
 			rval |= I_IERR; /* Cleared if successful */
 
-			if ( fd >= 0 ) {
-				for ( i = 0; i < numfs; i++ ) {
+			if (fd >= 0) {
+				for (i = 0; i < numfs; i++) {
 					tok = inv_open(
-						(inv_predicate_t )INV_BY_UUID,
+						(inv_predicate_t)INV_BY_UUID,
 						INV_SEARCH_ONLY,
-						&arr[i].ft_uuid );
-					if ( tok == INV_TOKEN_NULL )
+						&arr[i].ft_uuid);
+					if (tok == INV_TOKEN_NULL)
 						break;
-					if ( STREQL( arr[i].ft_mountpt, fs) ) {
+					if (STREQL(arr[i].ft_mountpt, fs)) {
 						prctx->index = i;
 						invmgr_inv_print(
 						          tok->d_invindex_fd,
-							  prctx );
+							  prctx);
 						rval &= ~(I_IERR);
 					}
-					inv_close( tok );
+					inv_close(tok);
 				}
-				free ( arr );
+				free (arr);
 				rval |= I_IDONE;
 			}
-			if ( (rval&I_IERR) ) {
-				mlog( MLOG_NORMAL | MLOG_INV, _(
+			if ((rval&I_IERR)) {
+				mlog(MLOG_NORMAL | MLOG_INV, _(
 				    "INV: open failed on mount point \"%s\"\n"),
 				     fs);
 			}
@@ -1066,14 +1066,14 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 		}
 
 		/* We have to print only one file system to print by UUID */
-		tok = inv_open( bywhat, INV_SEARCH_ONLY, fs);
-		if ( tok != INV_TOKEN_NULL ) {
+		tok = inv_open(bywhat, INV_SEARCH_ONLY, fs);
+		if (tok != INV_TOKEN_NULL) {
 			prctx->index = 0;
 			invmgr_inv_print(tok->d_invindex_fd, prctx);
-			inv_close( tok );
+			inv_close(tok);
 			rval |= I_IDONE;
 		} else {
-			mlog( MLOG_NORMAL | MLOG_INV, _(
+			mlog(MLOG_NORMAL | MLOG_INV, _(
 			     "INV: open failed on file system id \"%s\"\n"),
 			     fs);
 			rval |= I_IERR;
@@ -1085,7 +1085,7 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 
 /* This prints out all the sessions of a filesystem that are in the inventory */
 bool_t
-inv_DEBUG_print( int argc, char **argv )
+inv_DEBUG_print(int argc, char **argv)
 {
 	invt_counter_t *cnt = NULL;
 	invt_fstab_t *arr = NULL;
@@ -1099,37 +1099,37 @@ inv_DEBUG_print( int argc, char **argv )
 	prctx.level = PR_MAXLEVEL;
 
 	/* If user didnt indicate -i option, we can't do anything */
-	rval = inv_getopt( argc, argv, &prctx );
+	rval = inv_getopt(argc, argv, &prctx);
 
 	if (!prctx.invcheck && ! prctx.fstab) {
 		if (! (rval & I_IFOUND)) {
 			return BOOL_TRUE;
-		} else if ( rval & I_IERR || rval & I_IDONE ) {
+		} else if (rval & I_IERR || rval & I_IDONE) {
 			return BOOL_FALSE;
 		}
 	}
 
-	fd = fstab_getall( &arr, &cnt, &numfs, forwhat );
-	free( cnt );
+	fd = fstab_getall(&arr, &cnt, &numfs, forwhat);
+	free(cnt);
 
-	if ( fd >= 0 ) {
+	if (fd >= 0) {
 		 if (prctx.fstab) {
-			 fstab_DEBUG_print( arr, numfs );
+			 fstab_DEBUG_print(arr, numfs);
 			 if (! prctx.invidx)
 				 return BOOL_FALSE;
 		 }
 
-		for ( i = 0; i < numfs; i++ ) {
-			tok = inv_open( ( inv_predicate_t )INV_BY_UUID,
+		for (i = 0; i < numfs; i++) {
+			tok = inv_open((inv_predicate_t)INV_BY_UUID,
 					forwhat,
-				        &arr[i].ft_uuid );
-			if ( tok == INV_TOKEN_NULL ) {
-				free ( arr );
+				        &arr[i].ft_uuid);
+			if (tok == INV_TOKEN_NULL) {
+				free (arr);
 				return BOOL_FALSE;
 			}
 
 			if (prctx.invcheck) {
-				mlog( MLOG_VERBOSE | MLOG_INV, _(
+				mlog(MLOG_VERBOSE | MLOG_INV, _(
 				     "INV: checking fs \"%s\"\n"),
 				     &arr[i].ft_mountpt
 				     );
@@ -1137,10 +1137,10 @@ inv_DEBUG_print( int argc, char **argv )
 			}
 			else {
 				prctx.index = i;
-				invmgr_inv_print( tok->d_invindex_fd,
-						 &prctx );
+				invmgr_inv_print(tok->d_invindex_fd,
+						 &prctx);
 			}
-			inv_close( tok );
+			inv_close(tok);
 		}
 	}
 

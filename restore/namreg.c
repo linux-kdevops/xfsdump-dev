@@ -76,21 +76,21 @@ typedef struct namreg_tran namreg_tran_t;
  * checking is enabled.
  */
 #define CHKBITCNT		2
-#define	CHKBITSHIFT		( NBBY * sizeof( nrh_t ) - CHKBITCNT )
-#define	CHKBITLOMASK		( ( 1ULL << CHKBITCNT ) - 1 )
-#define	CHKBITMASK		( CHKBITLOMASK << CHKBITSHIFT )
+#define	CHKBITSHIFT		(NBBY * sizeof(nrh_t) - CHKBITCNT)
+#define	CHKBITLOMASK		((1ULL << CHKBITCNT) - 1)
+#define	CHKBITMASK		(CHKBITLOMASK << CHKBITSHIFT)
 #define CHKHDLCNT		CHKBITSHIFT
-#define CHKHDLMASK		( ( 1ULL << CHKHDLCNT ) - 1 )
-#define CHKGETBIT( h )		( ( (h) >> CHKBITSHIFT ) & CHKBITLOMASK )
-#define CHKGETHDL( h )		( (h) & CHKHDLMASK )
-#define CHKMKHDL( c, h )	( ( ( (c) << CHKBITSHIFT ) & CHKBITMASK )	\
+#define CHKHDLMASK		((1ULL << CHKHDLCNT) - 1)
+#define CHKGETBIT(h)		(((h) >> CHKBITSHIFT) & CHKBITLOMASK)
+#define CHKGETHDL(h)		((h) & CHKHDLMASK)
+#define CHKMKHDL(c, h)	((((c) << CHKBITSHIFT) & CHKBITMASK)	\
 				  |					\
-				  ( (h) & CHKHDLMASK ))
-#define HDLMAX			( ( off64_t )CHKHDLMASK )
+				  ((h) & CHKHDLMASK))
+#define HDLMAX			((off64_t)CHKHDLMASK)
 
 #else /* NAMREGCHK */
 
-#define HDLMAX			( NRH_NULL - 1 )
+#define HDLMAX			(NRH_NULL - 1)
 
 #endif /* NAMREGCHK */
 
@@ -101,7 +101,7 @@ extern size_t pgsz;
 
 /* forward declarations of locally defined static functions ******************/
 
-static rv_t namreg_flush( void );
+static rv_t namreg_flush(void);
 
 /* definition of locally defined global variables ****************************/
 
@@ -116,56 +116,56 @@ static namreg_pers_t *npp = 0;
 /* definition of locally defined global functions ****************************/
 
 bool_t
-namreg_init( char *hkdir, bool_t resume, uint64_t inocnt )
+namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 {
-	if ( ntp ) {
+	if (ntp) {
 		return BOOL_TRUE;
 	}
 
 	/* sanity checks
 	 */
-	assert( ! ntp );
-	assert( ! npp );
+	assert(! ntp);
+	assert(! npp);
 
-	assert( sizeof( namreg_pers_t ) <= NAMREG_PERS_SZ );
+	assert(sizeof(namreg_pers_t) <= NAMREG_PERS_SZ);
 
 	/* allocate and initialize context
 	 */
-	ntp = ( namreg_tran_t * )calloc( 1, sizeof( namreg_tran_t ));
-	assert( ntp );
+	ntp = (namreg_tran_t *)calloc(1, sizeof(namreg_tran_t));
+	assert(ntp);
 
 	/* generate a string containing the pathname of the namreg file
 	 */
-	ntp->nt_pathname = open_pathalloc( hkdir, namregfile, 0 );
+	ntp->nt_pathname = open_pathalloc(hkdir, namregfile, 0);
 
 	/* open the namreg file
 	 */
-	if ( resume ) {
+	if (resume) {
 		/* open existing file
 		 */
-		ntp->nt_fd = open( ntp->nt_pathname, O_RDWR );
-		if ( ntp->nt_fd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_ERROR, _(
+		ntp->nt_fd = open(ntp->nt_pathname, O_RDWR);
+		if (ntp->nt_fd < 0) {
+			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not find name registry file %s: "
 			      "%s\n"),
 			      ntp->nt_pathname,
-			      strerror( errno ));
+			      strerror(errno));
 			return BOOL_FALSE;
 		}
 	} else {
 		/* create the namreg file, first unlinking any older version
 		 * laying around
 		 */
-		( void )unlink( ntp->nt_pathname );
-		ntp->nt_fd = open( ntp->nt_pathname,
+		(void)unlink(ntp->nt_pathname);
+		ntp->nt_fd = open(ntp->nt_pathname,
 				   O_RDWR | O_CREAT | O_EXCL,
-				   S_IRUSR | S_IWUSR );
-		if ( ntp->nt_fd < 0 ) {
-			mlog( MLOG_NORMAL | MLOG_ERROR, _(
+				   S_IRUSR | S_IWUSR);
+		if (ntp->nt_fd < 0) {
+			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not create name registry file %s: "
 			      "%s\n"),
 			      ntp->nt_pathname,
-			      strerror( errno ));
+			      strerror(errno));
 			return BOOL_FALSE;
 		}
 
@@ -179,7 +179,7 @@ namreg_init( char *hkdir, bool_t resume, uint64_t inocnt )
 		int loglevel;
 		size_t trycnt;
 
-		for ( trycnt = 0,
+		for (trycnt = 0,
 		      successpr = BOOL_FALSE,
 		      ioctlcmd = XFS_IOC_RESVSP64,
 		      loglevel = MLOG_VERBOSE
@@ -188,25 +188,25 @@ namreg_init( char *hkdir, bool_t resume, uint64_t inocnt )
 		      ;
 		      trycnt++,
 		      ioctlcmd = XFS_IOC_ALLOCSP64,
-		      loglevel = max( MLOG_NORMAL, loglevel - 1 )) {
+		      loglevel = max(MLOG_NORMAL, loglevel - 1)) {
 			off64_t initsz;
 			struct flock64 flock64;
 			int rval;
 
-			if ( ! ioctlcmd ) {
+			if (! ioctlcmd) {
 				continue;
 			}
 
-			initsz = ( off64_t )NAMREG_PERS_SZ
+			initsz = (off64_t)NAMREG_PERS_SZ
 				 +
-				 ( ( off64_t )inocnt * NAMREG_AVGLEN );
+				 ((off64_t)inocnt * NAMREG_AVGLEN);
 			flock64.l_whence = 0;
 			flock64.l_start = 0;
 			flock64.l_len = initsz;
-			rval = ioctl( ntp->nt_fd, ioctlcmd, &flock64 );
-			if ( rval ) {
-				if ( errno != ENOTTY ) {
-					mlog( loglevel | MLOG_NOTE, _(
+			rval = ioctl(ntp->nt_fd, ioctlcmd, &flock64);
+			if (rval) {
+				if (errno != ENOTTY) {
+					mlog(loglevel | MLOG_NOTE, _(
 					      "attempt to reserve %lld bytes for %s "
 					      "using %s "
 					      "failed: %s (%d)\n"),
@@ -217,8 +217,8 @@ namreg_init( char *hkdir, bool_t resume, uint64_t inocnt )
 					      "XFS_IOC_RESVSP64"
 					      :
 					      "XFS_IOC_ALLOCSP64",
-					      strerror( errno ),
-					      errno );
+					      strerror(errno),
+					      errno);
 				}
 			} else {
 				successpr = BOOL_TRUE;
@@ -229,23 +229,23 @@ namreg_init( char *hkdir, bool_t resume, uint64_t inocnt )
 
 	/* mmap the persistent descriptor
 	 */
-	assert( ! ( NAMREG_PERS_SZ % pgsz ));
-	npp = ( namreg_pers_t * ) mmap_autogrow(
+	assert(! (NAMREG_PERS_SZ % pgsz));
+	npp = (namreg_pers_t *) mmap_autogrow(
 				        NAMREG_PERS_SZ,
 				        ntp->nt_fd,
-				        ( off_t )0 );
-	if ( npp == ( namreg_pers_t * )-1 ) {
-		mlog( MLOG_NORMAL | MLOG_ERROR, _(
+				        (off_t)0);
+	if (npp == (namreg_pers_t *)-1) {
+		mlog(MLOG_NORMAL | MLOG_ERROR, _(
 		      "unable to map %s: %s\n"),
 		      ntp->nt_pathname,
-		      strerror( errno ));
+		      strerror(errno));
 		return BOOL_FALSE;
 	}
 
 	/* initialize persistent state
 	 */
-	if ( ! resume ) {
-		npp->np_appendoff = ( off64_t )NAMREG_PERS_SZ;
+	if (! resume) {
+		npp->np_appendoff = (off64_t)NAMREG_PERS_SZ;
 	}
 
 	/* initialize transient state
@@ -256,7 +256,7 @@ namreg_init( char *hkdir, bool_t resume, uint64_t inocnt )
 }
 
 nrh_t
-namreg_add( char *name, size_t namelen )
+namreg_add(char *name, size_t namelen)
 {
 	off64_t oldoff;
 	unsigned char c;
@@ -264,23 +264,23 @@ namreg_add( char *name, size_t namelen )
 
 	/* sanity checks
 	 */
-	assert( ntp );
-	assert( npp );
-	assert( !ntp->nt_map );
+	assert(ntp);
+	assert(npp);
+	assert(!ntp->nt_map);
 
 	/* make sure file pointer is positioned to append
 	 */
-	if ( ! ntp->nt_at_endpr ) {
+	if (! ntp->nt_at_endpr) {
 		off64_t newoff;
-		newoff = lseek64( ntp->nt_fd, npp->np_appendoff, SEEK_SET );
-		if ( newoff == ( off64_t )-1 ) {
-			mlog( MLOG_NORMAL, _(
+		newoff = lseek64(ntp->nt_fd, npp->np_appendoff, SEEK_SET);
+		if (newoff == (off64_t)-1) {
+			mlog(MLOG_NORMAL, _(
 			      "lseek of namreg failed: %s\n"),
-			      strerror( errno ));
-			assert( 0 );
+			      strerror(errno));
+			assert(0);
 			return NRH_NULL;
 		}
-		assert( npp->np_appendoff == newoff );
+		assert(npp->np_appendoff == newoff);
 		ntp->nt_at_endpr = BOOL_TRUE;
 	}
 
@@ -296,8 +296,8 @@ namreg_add( char *name, size_t namelen )
 
 	/* write a one byte unsigned string length into the buffer.
 	 */
-	assert( namelen < 256 );
-	c = ( unsigned char )( namelen & 0xff );
+	assert(namelen < 256);
+	c = (unsigned char)(namelen & 0xff);
 	ntp->nt_buf[ntp->nt_off++] = c;
 
 	/* write the name string into the buffer.
@@ -305,18 +305,18 @@ namreg_add( char *name, size_t namelen )
 	memcpy(ntp->nt_buf + ntp->nt_off, name, namelen);
 	ntp->nt_off += namelen;
 
-	npp->np_appendoff += ( off64_t )( 1 + namelen );
-	assert( oldoff <= HDLMAX );
+	npp->np_appendoff += (off64_t)(1 + namelen);
+	assert(oldoff <= HDLMAX);
 
 #ifdef NAMREGCHK
 
 	/* encode the lsb of the len plus the first character into the handle.
 	 */
-	nrh = CHKMKHDL( ( nrh_t )namelen + ( nrh_t )*name, ( nrh_t )oldoff );
+	nrh = CHKMKHDL((nrh_t)namelen + (nrh_t)*name, (nrh_t)oldoff);
 
 #else /* NAMREGCHK */
 
-	nrh = ( nrh_t )oldoff;
+	nrh = (nrh_t)oldoff;
 
 #endif /* NAMREGCHK */
 
@@ -325,38 +325,38 @@ namreg_add( char *name, size_t namelen )
 
 /* ARGSUSED */
 void
-namreg_del( nrh_t nrh )
+namreg_del(nrh_t nrh)
 {
 	/* currently not implemented - grows, never shrinks
 	 */
 }
 
 static rv_t
-namreg_flush( void )
+namreg_flush(void)
 {
 	ssize_t nwritten;
 
 	/* sanity checks
 	*/
-	assert( ntp );
+	assert(ntp);
 
 	if (ntp->nt_off) {
 
 		/* write the accumulated name strings.
 		*/
-		nwritten = write( ntp->nt_fd, ( void * )ntp->nt_buf, ntp->nt_off );
-		if ( nwritten != ntp->nt_off ) {
-			if ( nwritten < 0 ) {
-				mlog( MLOG_NORMAL | MLOG_ERROR,
+		nwritten = write(ntp->nt_fd, (void *)ntp->nt_buf, ntp->nt_off);
+		if (nwritten != ntp->nt_off) {
+			if (nwritten < 0) {
+				mlog(MLOG_NORMAL | MLOG_ERROR,
 					_("write of namreg buffer failed: %s\n"),
-					strerror( errno ));
+					strerror(errno));
 			} else {
-				mlog( MLOG_NORMAL | MLOG_ERROR,
+				mlog(MLOG_NORMAL | MLOG_ERROR,
 					_("write of namreg buffer failed: "
 					"expected to write %ld, actually "
 					"wrote %ld\n"), ntp->nt_off, nwritten);
 			}
-			assert( 0 );
+			assert(0);
 			return RV_UNKNOWN;
 		}
 		ntp->nt_off = 0;
@@ -365,9 +365,9 @@ namreg_flush( void )
 }
 
 int
-namreg_get( nrh_t nrh,
+namreg_get(nrh_t nrh,
 	    char *bufp,
-	    size_t bufsz )
+	    size_t bufsz)
 {
 	off64_t newoff;
 	int nread;
@@ -381,55 +381,55 @@ namreg_get( nrh_t nrh,
 
 	/* sanity checks
 	 */
-	assert( ntp );
-	assert( npp );
+	assert(ntp);
+	assert(npp);
 
 	/* make sure we aren't being given a NULL handle
 	 */
-	assert( nrh != NRH_NULL );
+	assert(nrh != NRH_NULL);
 
 	/* convert the handle into the offset
 	 */
 #ifdef NAMREGCHK
 
-	newoff = ( off64_t )( size64_t )CHKGETHDL( nrh );
-	chkbit = CHKGETBIT( nrh );
+	newoff = (off64_t)(size64_t)CHKGETHDL(nrh);
+	chkbit = CHKGETBIT(nrh);
 
 #else /* NAMREGCHK */
 
-	newoff = ( off64_t )( size64_t )nrh;
+	newoff = (off64_t)(size64_t)nrh;
 
 #endif /* NAMREGCHK */
 
 	/* do sanity check on offset
 	 */
-	assert( newoff <= HDLMAX );
-	assert( newoff < npp->np_appendoff );
-	assert( newoff >= ( off64_t )NAMREG_PERS_SZ );
+	assert(newoff <= HDLMAX);
+	assert(newoff < npp->np_appendoff);
+	assert(newoff >= (off64_t)NAMREG_PERS_SZ);
 
-	lock( );
+	lock();
 
-	if ( ntp->nt_map ) {
+	if (ntp->nt_map) {
 
 		in_bufp = ntp->nt_map + newoff - NAMREG_PERS_SZ;
 
 	} else {
 
-		if ( ntp->nt_at_endpr && ntp->nt_off ) {
+		if (ntp->nt_at_endpr && ntp->nt_off) {
 			if (namreg_flush() != RV_OK) {
-				unlock( );
+				unlock();
 				return -3;
 			}
 		}
 
 		/* seek to the name
 		*/
-		newoff = lseek64( ntp->nt_fd, newoff, SEEK_SET );
-		if ( newoff == ( off64_t )-1 ) {
-			unlock( );
-			mlog( MLOG_NORMAL, _(
+		newoff = lseek64(ntp->nt_fd, newoff, SEEK_SET);
+		if (newoff == (off64_t)-1) {
+			unlock();
+			mlog(MLOG_NORMAL, _(
 				"lseek of namreg failed: %s\n"),
-				strerror( errno ));
+				strerror(errno));
 			return -3;
 		}
 		ntp->nt_at_endpr = BOOL_FALSE;
@@ -438,13 +438,13 @@ namreg_get( nrh_t nrh,
 		 * NOTE: assumes read_buf is big enough for the longest
 		 * allowed name (255 chars) plus one byte for length.
 		 */
-		nread = read( ntp->nt_fd, ( void * )read_buf, sizeof(read_buf) );
-		if ( nread <= 0 ) {
-			unlock( );
-			mlog( MLOG_NORMAL, _(
+		nread = read(ntp->nt_fd, (void *)read_buf, sizeof(read_buf));
+		if (nread <= 0) {
+			unlock();
+			mlog(MLOG_NORMAL, _(
 				"read of namreg failed: %s (nread = %d)\n"),
-				strerror( errno ),
-				nread );
+				strerror(errno),
+				nread);
 			return -3;
 		}
 
@@ -453,9 +453,9 @@ namreg_get( nrh_t nrh,
 
 	/* deal with a short caller-supplied buffer
 	 */
-	len = ( size_t )in_bufp[0];
-	if ( bufsz < len + 1 ) {
-		unlock( );
+	len = (size_t)in_bufp[0];
+	if (bufsz < len + 1) {
+		unlock();
 		return -1;
 	}
 
@@ -467,42 +467,42 @@ namreg_get( nrh_t nrh,
 
 	/* validate the checkbit
 	 */
-	assert( chkbit
+	assert(chkbit
 		==
-		( ( ( nrh_t )len + ( nrh_t )bufp[ 0 ] ) & CHKBITLOMASK ));
+		(((nrh_t)len + (nrh_t)bufp[0]) & CHKBITLOMASK));
 
 #endif /* NAMREGCHK */
 
 	/* null-terminate the string if room
 	 */
-	bufp[ len ] = 0;
+	bufp[len] = 0;
 
-	unlock( );
+	unlock();
 
-	return ( int )len;
+	return (int)len;
 }
 
 rv_t
-namreg_map( void )
+namreg_map(void)
 {
 	rv_t rv;
 
 	/* ensure all entries have been written */
-	if ( (rv = namreg_flush()) != RV_OK ) {
+	if ((rv = namreg_flush()) != RV_OK) {
 		return rv;
 	}
 
-	ntp->nt_map = ( char * ) mmap_autogrow(
+	ntp->nt_map = (char *) mmap_autogrow(
 					npp->np_appendoff - NAMREG_PERS_SZ,
 					ntp->nt_fd,
-					NAMREG_PERS_SZ );
+					NAMREG_PERS_SZ);
 
 	/* it's okay if this fails, just fall back to (the much slower)
 	 * seek-and-read lookups.
 	 */
-	if ( ntp->nt_map == ( char * )-1 ) {
-		mlog( MLOG_DEBUG, "failed to map namreg: %s\n",
-			strerror( errno ) );
+	if (ntp->nt_map == (char *)-1) {
+		mlog(MLOG_DEBUG, "failed to map namreg: %s\n",
+			strerror(errno));
 		ntp->nt_map = NULL;
 	}
 

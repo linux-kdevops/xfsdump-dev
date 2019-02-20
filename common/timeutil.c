@@ -38,12 +38,12 @@ ctime32_r(const time32_t *timep, char *buf)
 }
 
 char *
-ctimennl( const time32_t *clockp )
+ctimennl(const time32_t *clockp)
 {
-	char *p = ctime32( clockp );
+	char *p = ctime32(clockp);
 
-	if ( p && strlen( p ) > 0 ) {
-		p[ strlen( p ) - 1 ] = 0;
+	if (p && strlen(p) > 0) {
+		p[strlen(p) - 1] = 0;
 	}
 
 	return p;
