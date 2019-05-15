@@ -90,7 +90,7 @@ ring_create(size_t ringlen,
 
 	/* allocate the buffers and initialize the messages
 	 */
-	for (mix = 0 ; mix < ringlen ; mix++) {
+	for (mix = 0; mix < ringlen; mix++) {
 		ring_msg_t *msgp = &ringp->r_msgp[mix];
 		msgp->rm_mix = mix;
 		msgp->rm_op = RING_OP_NONE;
@@ -264,7 +264,7 @@ ring_reset(ring_t *ringp, ring_msg_t *msgp)
 	ringp->r_active_out_ix = 0;
 	ringp->r_client_cnt = 0;
 	ringp->r_slave_cnt = 0;
-	for (mix = 0 ; mix < ringp->r_len ; mix++) {
+	for (mix = 0; mix < ringp->r_len; mix++) {
 		ring_msg_t *msgp = &ringp->r_msgp[mix];
 		msgp->rm_mix = mix;
 		msgp->rm_op = RING_OP_NONE;
@@ -420,7 +420,7 @@ ring_slave_entry(void *ringctxp)
 
 	/* loop reading and precessing messages until told to die
 	 */
-	for (loopmode = LOOPMODE_NORMAL ; loopmode != LOOPMODE_DIE ;) {
+	for (loopmode = LOOPMODE_NORMAL; loopmode != LOOPMODE_DIE;) {
 		ring_msg_t *msgp;
 		int rval;
 

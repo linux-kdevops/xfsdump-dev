@@ -301,7 +301,7 @@ inv_stream_open(
 	 * starting/ending inodes or offsets. This can be misleading.
 	 * See bug #463702 for an example.
 	 */
-	memset((void *)&stream, 0 , sizeof(invt_stream_t));
+	memset((void *)&stream, 0, sizeof(invt_stream_t));
 
 	stream.st_nmediafiles = 0;
 	stream.st_interrupted = BOOL_TRUE; /* fix for 353197 */
@@ -706,7 +706,7 @@ inv_lastsession_level_equalto(
 /*----------------------------------------------------------------------*/
 /* inv_getsession_byuuid                                                */
 /*                                                                      */
-/* Given a file system uuid and a session uuid , ses is populated with	*/
+/* Given a file system uuid and a session uuid, ses is populated with	*/
 /* the session that contains the matching system uuid.			*/
 /*									*/
 /* Returns FALSE on an error, TRUE if the session was found.		*/
@@ -903,7 +903,7 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 			switch (c) {
 			case GETOPT_INVPRINT:
 				prctx->depth = 0;
-				rval |= I_IFOUND ;
+				rval |= I_IFOUND;
 				break;
 			}
 		}
@@ -915,7 +915,7 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		switch (c) {
 		case GETOPT_INVPRINT:
-			rval |= I_IFOUND ;
+			rval |= I_IFOUND;
 			if ((options = optarg) == NULL)
 				break;
 

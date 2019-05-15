@@ -133,7 +133,7 @@ cldmgr_join(void)
 	int xc = EXIT_NORMAL;
 
 	lock();
-	for (; p < ep ; p++) {
+	for (; p < ep; p++) {
 		if (p->c_state == C_EXITED) {
 			if ((int)(p->c_streamix) >= 0) {
 				stream_dead(p->c_tid);
@@ -173,7 +173,7 @@ cldmgr_remainingcnt(void)
 
 	cnt = 0;
 	lock();
-	for (; p < ep ; p++) {
+	for (; p < ep; p++) {
 		if (p->c_state == C_ALIVE) {
 			cnt++;
 		}
@@ -190,7 +190,7 @@ cldmgr_otherstreamsremain(ix_t streamix)
 	cld_t *ep = cld + sizeof(cld) / sizeof(cld[0]);
 
 	lock();
-	for (; p < ep ; p++) {
+	for (; p < ep; p++) {
 		if (p->c_state == C_ALIVE && p->c_streamix != streamix) {
 			unlock();
 			return BOOL_TRUE;
@@ -208,7 +208,7 @@ cldmgr_getcld(void)
 	cld_t *ep = cld + sizeof(cld) / sizeof(cld[0]);
 
 	lock();
-	for (; p < ep ; p++) {
+	for (; p < ep; p++) {
 		if (p->c_state == C_AVAIL) {
 			p->c_state = C_ALIVE;
 			break;

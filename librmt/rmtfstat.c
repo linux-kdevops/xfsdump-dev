@@ -73,7 +73,7 @@ _rmt_fstat(int fildes, char *arg)
 
 	/* adjust read count to prevent overflow */
 
-	adj_rc = (rc > sizeof(struct stat)) ? sizeof(struct stat) : rc ;
+	adj_rc = (rc > sizeof(struct stat)) ? sizeof(struct stat) : rc;
 	rc -= adj_rc;
 
 	for (; adj_rc > 0; adj_rc -= cnt, arg += cnt)

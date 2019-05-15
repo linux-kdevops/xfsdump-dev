@@ -250,7 +250,7 @@ global_hdr_checksum_set(global_hdr_t *hdrp)
 
 	hdrp->gh_checksum = 0;
 	accum = 0;
-	for (p = beginp ; p < endp ; p++) {
+	for (p = beginp; p < endp; p++) {
 		accum += INT_GET(*p, ARCH_CONVERT);
 	}
 	INT_SET(hdrp->gh_checksum, ARCH_CONVERT, (int32_t)(~accum + 1));
@@ -269,7 +269,7 @@ global_hdr_checksum_check(global_hdr_t *hdrp)
 	uint32_t accum;
 
 	accum = 0;
-	for (p = beginp ; p < endp ; p++) {
+	for (p = beginp; p < endp; p++) {
 		accum += INT_GET(*p, ARCH_CONVERT);
 	}
 	return accum == 0 ? BOOL_TRUE : BOOL_FALSE;

@@ -363,7 +363,7 @@ inomap_build(jdm_fshandle_t *fshandlep,
 
 	if (startptcnt > 1) {
 		ix_t startptix;
-		for (startptix = 0 ; startptix < startptcnt ; startptix++) {
+		for (startptix = 0; startptix < startptcnt; startptix++) {
 			startpt_t *p;
 			startpt_t *ep;
 
@@ -643,7 +643,7 @@ cb_inoinresumerange(xfs_ino_t ino)
 {
 	register size_t streamix;
 
-	for (streamix = 0 ; streamix < cb_resumerangecnt ; streamix++) {
+	for (streamix = 0; streamix < cb_resumerangecnt; streamix++) {
 		register drange_t *rp = &cb_resumerangep[streamix];
 		if (! (rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
 		     &&
@@ -668,7 +668,7 @@ cb_inoresumed(xfs_ino_t ino)
 {
 	size_t streamix;
 
-	for (streamix = 0 ; streamix < cb_resumerangecnt ; streamix++) {
+	for (streamix = 0; streamix < cb_resumerangecnt; streamix++) {
 		drange_t *rp = &cb_resumerangep[streamix];
 		if (! (rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
 		     &&
@@ -1283,7 +1283,7 @@ inomap_iter(void *contextp, int statemask)
 
 			ino = segp->base + addrp->inooff;
 			endino = segp->base + INOPERSEG;
-			for (; ino < endino ; ino++, addrp->inooff++) {
+			for (; ino < endino; ino++, addrp->inooff++) {
 				int st;
 				st = SEG_GET_BITS(segp, ino);
 				if (statemask & (1 << st)) {
@@ -1427,8 +1427,8 @@ inomap_dump(drive_t *drivep)
 
 	/* use write_buf to dump the hunks
 	 */
-	for (addr.hnkoff = 0 ;
-	      addr.hnkoff <= inomap.lastseg.hnkoff ;
+	for (addr.hnkoff = 0;
+	      addr.hnkoff <= inomap.lastseg.hnkoff;
 	      addr.hnkoff++) {
 		int rval;
 		rv_t rv;
@@ -1484,7 +1484,7 @@ subtreelist_parse(jdm_fshandle_t *fshandlep,
 
 	/* do a recursive descent for each subtree specified
 	 */
-	for (subtreeix = 0 ; subtreeix < subtreecnt ; subtreeix++) {
+	for (subtreeix = 0; subtreeix < subtreecnt; subtreeix++) {
 		int cbrval = 0;
 		char *currentpath = subtreebuf[subtreeix];
 		assert(*currentpath != '/');
@@ -1658,7 +1658,7 @@ quantity2offset(jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty)
 		return 0;
 	}
 
-	for (; ;) {
+	for (;;) {
 		int eix;
 		int rval;
 
@@ -1678,7 +1678,7 @@ quantity2offset(jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty)
 			return offset_next;
 		}
 
-		for (eix = 1 ; eix <= bmap[0].bmv_entries ; eix++) {
+		for (eix = 1; eix <= bmap[0].bmv_entries; eix++) {
 			getbmapx_t *bmapp = &bmap[eix];
 			off64_t qty_new;
 			if (bmapp->bmv_block == -1) {

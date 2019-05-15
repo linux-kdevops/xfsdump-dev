@@ -200,7 +200,7 @@ drive_init1(int argc, char *argv[])
 	/* run each drive past each strategy, pick the best match
 	 * and instantiate a drive manager.
 	 */
-	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+	for (driveix = 0; driveix < drivecnt; driveix++) {
 		drive_t *drivep = drivepp[driveix];
 		int bestscore = 0 - INTGENMAX;
 		ix_t six;
@@ -208,7 +208,7 @@ drive_init1(int argc, char *argv[])
 		drive_strategy_t *bestsp = 0;
 		bool_t ok;
 
-		for (six = 0 ; six < scnt ; six++) {
+		for (six = 0; six < scnt; six++) {
 			drive_strategy_t *sp = strategypp[six];
 			int score;
 			score = (* sp->ds_match)(argc,
@@ -251,7 +251,7 @@ drive_init2(int argc,
 {
 	ix_t driveix;
 
-	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+	for (driveix = 0; driveix < drivecnt; driveix++) {
 		drive_t *drivep = drivepp[driveix];
 		bool_t ok;
 
@@ -274,7 +274,7 @@ drive_init3(void)
 {
 	ix_t driveix;
 
-	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+	for (driveix = 0; driveix < drivecnt; driveix++) {
 		drive_t *drivep = drivepp[driveix];
 		bool_t ok;
 
@@ -336,7 +336,7 @@ drive_display_metrics(void)
 {
 	ix_t driveix;
 
-	for (driveix = 0 ; driveix < drivecnt ; driveix++) {
+	for (driveix = 0; driveix < drivecnt; driveix++) {
 		drive_t *drivep = drivepp[driveix];
 		drive_ops_t *dop = drivep->d_opsp;
 		if (dop->do_display_metrics) {

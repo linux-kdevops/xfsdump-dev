@@ -269,7 +269,7 @@ static int ds_instantiate(int, char *[], drive_t *);
 static bool_t do_init(drive_t *);
 static bool_t do_sync(drive_t *);
 static int do_begin_read(drive_t *);
-static char *do_read(drive_t *, size_t , size_t *, int *);
+static char *do_read(drive_t *, size_t, size_t *, int *);
 static void do_return_read_buf(drive_t *, char *, size_t);
 static void do_get_mark(drive_t *, drive_mark_t *);
 static int do_seek_mark(drive_t *, drive_mark_t *);
@@ -278,12 +278,12 @@ static void do_get_mark(drive_t *, drive_mark_t *);
 static void do_end_read(drive_t *);
 static int do_begin_write(drive_t *);
 static void do_set_mark(drive_t *, drive_mcbfp_t, void *, drive_markrec_t *);
-static char * do_get_write_buf(drive_t *, size_t , size_t *);
+static char * do_get_write_buf(drive_t *, size_t, size_t *);
 static int do_write(drive_t *, char *, size_t);
 static size_t do_get_align_cnt(drive_t *);
 static int do_end_write(drive_t *, off64_t *);
-static int do_fsf(drive_t *, int , int *);
-static int do_bsf(drive_t *, int , int *);
+static int do_fsf(drive_t *, int, int *);
+static int do_bsf(drive_t *, int, int *);
 static int do_rewind(drive_t *);
 static int do_erase(drive_t *);
 static int do_eject_media(drive_t *);
@@ -293,7 +293,7 @@ static void do_quit(drive_t *);
 
 /* misc. local utility funcs
  */
-static int	mt_op(int , int , int);
+static int	mt_op(int, int, int);
 static int determine_write_error(int, int);
 static int read_label(drive_t *);
 static bool_t tape_rec_checksum_check(drive_context_t *, char *);
@@ -423,7 +423,7 @@ ds_match(int argc, char *argv[], drive_t *drivep)
 
 	/* Check if the min rmt flag and block size have
 	 * been specified.
-	 * If so , this is a non-SGI drive and this is the right
+	 * If so, this is a non-SGI drive and this is the right
 	 * strategy.
 	 */
 	{
@@ -757,7 +757,7 @@ do_begin_read(drive_t *drivep)
 			return rval;
 		}
 	} else {
-		rval = read_label(drivep) ;
+		rval = read_label(drivep);
 		if (rval) {
 			if (! contextp->dc_singlethreadedpr) {
 			    Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
@@ -1330,7 +1330,7 @@ do_next_mark(drive_t *drivep)
 	}
 
 noerrorsearch:
-	for (; ;) {
+	for (;;) {
 		rval = getrec(drivep);
 		if (rval == DRIVE_ERROR_CORRUPTION) {
 			goto resetring;
@@ -2230,7 +2230,7 @@ do_fsf(drive_t *drivep, int count, int *statp)
 	assert(count);
 	assert(contextp->dc_mode == OM_NONE);
 
-	for (i = 0 ; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		done = 0;
 		opcount = 2;
 
@@ -2328,7 +2328,7 @@ do_bsf(drive_t *drivep, int count, int *statp)
 
 	/* now loop, skipping media files
 	 */
-	for (skipped = 0 ; skipped < count ; skipped++) {
+	for (skipped = 0; skipped < count; skipped++) {
 
 		/* move to the left of the next file mark on the left.
 		 * check for BOT.
@@ -2932,7 +2932,7 @@ tape_rec_checksum_set(drive_context_t *contextp, char *bufp)
 	INT_SET(rechdrp->ischecksum, ARCH_CONVERT, 1);
 	rechdrp->checksum = 0;
 	accum = 0;
-	for (p = beginp ; p < endp ; p++) {
+	for (p = beginp; p < endp; p++) {
 	        accum += INT_GET(*p, ARCH_CONVERT);
 	}
 	INT_SET(rechdrp->checksum, ARCH_CONVERT, (int32_t)(~accum + 1));
@@ -2949,7 +2949,7 @@ tape_rec_checksum_check(drive_context_t *contextp, char *bufp)
 
 	if (contextp->dc_recchksumpr && INT_GET(rechdrp->ischecksum, ARCH_CONVERT)) {
 		accum = 0;
-		for (p = beginp ; p < endp ; p++) {
+		for (p = beginp; p < endp; p++) {
 	       		accum += INT_GET(*p, ARCH_CONVERT);
 		}
 		return accum == 0 ? BOOL_TRUE : BOOL_FALSE;
@@ -3139,7 +3139,7 @@ prepare_drive(drive_t *drivep)
 	else
 		tape_recsz = tape_blksz;
 
-	/* if the overwrite option was specified , return.
+	/* if the overwrite option was specified, return.
 	 */
 	if (contextp->dc_overwritepr) {
 		mlog(MLOG_DEBUG | MLOG_DRIVE,
@@ -3935,7 +3935,7 @@ erase_and_verify(drive_t *drivep)
 	 * detect if we have erased the tape.
 	 */
 
-	tempbufp = (char *) calloc(1 , (size_t)tape_recsz);
+	tempbufp = (char *) calloc(1, (size_t)tape_recsz);
 	strcpy(tempbufp, ERASE_MAGIC);
 	Write(drivep, tempbufp, tape_recsz, &saved_errno);
 	free(tempbufp);

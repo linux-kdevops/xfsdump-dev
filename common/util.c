@@ -175,7 +175,7 @@ bigstat_iter(jdm_fshandle_t *fshandlep,
 		      "bulkstat returns buflen %d ino %llu\n",
 		      buflenout,
 		      buf->bs_ino);
-		for (p = buf, endp = buf + buflenout ; p < endp ; p++) {
+		for (p = buf, endp = buf + buflenout; p < endp; p++) {
 			int rval;
 
 			if (p->bs_ino == 0)
@@ -308,7 +308,7 @@ inogrp_iter(int fsfd,
 			free(igrp);
 			return 0;
 		}
-		for (p = igrp, endp = igrp + inogrpcnt ; p < endp ; p++) {
+		for (p = igrp, endp = igrp + inogrpcnt; p < endp; p++) {
 			int rval;
 
 			rval = (* fp)(arg1, fsfd, p);

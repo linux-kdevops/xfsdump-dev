@@ -656,7 +656,7 @@ main(int argc, char *argv[])
 	 * drive.h, initialized by drive_init[12]
 	 */
 	if (! init_error) {
-		for (stix = 0 ; stix < drivecnt ; stix++) {
+		for (stix = 0; stix < drivecnt; stix++) {
 			ok = cldmgr_create(childmain,
 					    stix,
 					    "child",
@@ -673,7 +673,7 @@ main(int argc, char *argv[])
 	if (progrpt_enabledpr) {
 		(void)alarm((uint)progrpt_interval);
 	}
-	for (; ;) {
+	for (;;) {
 		time32_t now;
 		bool_t stop_requested = BOOL_FALSE;
 		int stop_timeout = -1;
@@ -839,7 +839,7 @@ main(int argc, char *argv[])
 				char **statline;
 				ix_t i;
 				statlinecnt = content_statline(&statline);
-				for (i = 0 ; i < statlinecnt ; i++) {
+				for (i = 0; i < statlinecnt; i++) {
 					mlog(MLOG_NORMAL,
 					      statline[i]);
 				}
@@ -1054,7 +1054,7 @@ preemptchk(int flg)
 			char **statline;
 			ix_t i;
 			statlinecnt = content_statline(&statline);
-			for (i = 0 ; i < statlinecnt ; i++) {
+			for (i = 0; i < statlinecnt; i++) {
 				mlog(MLOG_NORMAL,
 				      statline[i]);
 			}
@@ -1217,7 +1217,7 @@ loadoptfile(int *argcp, char ***argvp)
 	 * skip the GETOPT_OPTFILE option which put us here!
 	 */
 	sz = 0;
-	for (i =  0 ; i < *argcp ; i++) {
+	for (i =  0; i < *argcp; i++) {
 		if (i == (int)optfileix) {
 			i++; /* to skip option argument */
 			continue;
@@ -1261,7 +1261,7 @@ loadoptfile(int *argcp, char ***argvp)
 
 	/* copy the remaining command line args into the buffer
 	 */
-	for (; i < *argcp ; i++) {
+	for (; i < *argcp; i++) {
 		if (i == (int)optfileix) {
 			i++; /* to skip option argument */
 			continue;
@@ -1277,7 +1277,7 @@ loadoptfile(int *argcp, char ***argvp)
 
 	/* change newlines and carriage returns into spaces
 	 */
-	for (p = argbuf ; *p ; p++) {
+	for (p = argbuf; *p; p++) {
 		if (strchr("\n\r", ( int)( *p))) {
 			*p = ' ';
 		}
@@ -1287,7 +1287,7 @@ loadoptfile(int *argcp, char ***argvp)
 	 */
 	tokencnt = 0;
 	p = argbuf;
-	for (; ;) {
+	for (;;) {
 		/* start at the first non-separator character
 		 */
 		while (*p && strchr(sep, (int)(*p))) {
@@ -1547,7 +1547,7 @@ sigint_dialog(void)
 	preamblestr[preamblecnt++] = fold;
 	preamblestr[preamblecnt++ ] = "\n";
 	preamblestr[preamblecnt++ ] = "\n";
-	for (i = 0 ; i < statlinecnt ; i++) {
+	for (i = 0; i < statlinecnt; i++) {
 		preamblestr[preamblecnt++] = statline[i];
 	}
 	if (stop_in_progress) {
@@ -1649,7 +1649,7 @@ sigint_dialog(void)
 		choicecnt = 0;
 		/* number of lines must match number of subsystems
 		 */
-		for (choicecnt = 0 ; choicecnt < MLOG_SS_CNT ; choicecnt++) {
+		for (choicecnt = 0; choicecnt < MLOG_SS_CNT; choicecnt++) {
 			choicestr[choicecnt] = mlog_ss_names[choicecnt];
 		}
 		allix = choicecnt;
@@ -2264,7 +2264,7 @@ sig_numstring(int num)
 			       (sizeof(sig_printmap)
 			         /
 			         sizeof(sig_printmap[0]));
-	for (; p < endp ; p++) {
+	for (; p < endp; p++) {
 		if (p->num == num) {
 			return p->string;
 		}
@@ -2279,7 +2279,7 @@ strpbrkquotes(char *p, const char *sep)
 	bool_t prevcharwasbackslash = BOOL_FALSE;
 	bool_t inquotes = BOOL_FALSE;
 
-	for (; ; p++) {
+	for (;; p++) {
 		if (*p == 0) {
 			return 0;
 		}
@@ -2337,7 +2337,7 @@ stripquotes(char *p)
 	endp = p + len;
 	justremovedbackslash = BOOL_FALSE;
 
-	for (nextp = p ; nextp < endp ;) {
+	for (nextp = p; nextp < endp;) {
 		if (*nextp == '\\' && ! justremovedbackslash) {
 			shiftleftby1(nextp, endp);
 			endp--;
@@ -2354,7 +2354,7 @@ stripquotes(char *p)
 static void
 shiftleftby1(char *p, char *endp)
 {
-	for (; p < endp ; p++) {
+	for (; p < endp; p++) {
 		*p = p[1];
 	}
 }

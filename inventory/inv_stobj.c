@@ -909,7 +909,7 @@ stobj_getsession_bylabel(
 bool_t
 stobj_delete_mobj(int fd,
 		  invt_seshdr_t *hdr,
-		  void *arg ,
+		  void *arg,
 		  void **buf)
 {
 	/* XXX fd needs to be locked EX, not SH */
@@ -977,7 +977,7 @@ stobj_delete_mobj(int fd,
 				       mfiles[j-1].mf_nextmf = mf->mf_nextmf;
 
 				if (j == nmfiles - 1)
-				       strms[i].st_lastmfile = ;
+				       strms[i].st_lastmfile =;
 */
 			}
 
@@ -1026,7 +1026,7 @@ stobj_unpack_sessinfo(
 	/* skip the cookie */
 	p += strlen(INVTSESS_COOKIE) * sizeof(char);
 
-	/* Check the packing version number. In version 1 , this was the only version number.
+	/* Check the packing version number. In version 1, this was the only version number.
 	 * see the comment in stobj_pack_sessinfo().
 	 */
 	if (INT_GET(*(inv_version_t *) p, ARCH_CONVERT) == PACKED_INV_VERSION_1) {
@@ -1040,15 +1040,15 @@ stobj_unpack_sessinfo(
 		/* We hit a 64 bit alignment issue at this point leading to a
 		 * SIGBUS and core dump. The best way to handle it is to
 		 * bcopy the remaining part of bufp to a new malloc'ed area
-		 * which will be 64 bit aligned. This is a memory leak , but not much.
+		 * which will be 64 bit aligned. This is a memory leak, but not much.
 		 * Have to do this because xfsrestore does another round of
-		 * unpack later , so can't disturb the original data.
+		 * unpack later, so can't disturb the original data.
 		 * This is fixed in PACKED_INV_VERSION_2 by adding another (inv_version_t) to
 		 * have the INV_VERSION. This makes everything 64 bit aligned.
 		 */
 
 		tempsz = bufsz - (strlen(INVTSESS_COOKIE) * sizeof(char))
-			       - sizeof(inv_version_t) ;
+			       - sizeof(inv_version_t);
 		temp_p = calloc(1, tempsz);
 		bcopy(p, temp_p, tempsz);
 		p = temp_p;
@@ -1056,7 +1056,7 @@ stobj_unpack_sessinfo(
 	        mlog(MLOG_DEBUG | MLOG_INV,"INV: packed inventory version = 2\n");
 
 		p += sizeof(inv_version_t); /* skip the packed inventory version */
-		/* At this point , don't care about the INV_VERSION. Maybe in future */
+		/* At this point, don't care about the INV_VERSION. Maybe in future */
 		p += sizeof(inv_version_t); /* skip the inventory version */
 	} else {
 	        mlog(MLOG_NORMAL | MLOG_INV, _(
@@ -1303,7 +1303,7 @@ stobj_convert_sessinfo(inv_session_t **buf, invt_sessinfo_t *sinfo)
 	ises->s_streams = calloc(ises->s_nstreams, sizeof(inv_stream_t));
 	mf = sinfo->mfiles;
 	nstreams = (int) ises->s_nstreams;
-	for (i = 0 ; i < nstreams ; i++) {
+	for (i = 0; i < nstreams; i++) {
 		stobj_convert_strm(&ises->s_streams[i], &sinfo->strms[i]);
 		nmf = (int) ises->s_streams[i].st_nmediafiles;
 		ises->s_streams[i].st_mediafiles = calloc((uint) nmf,
@@ -1377,7 +1377,7 @@ check_for_mobj (inv_session_t *ses, invt_mobjinfo_t *mobj)
 	inv_mediafile_t *mfp;
 
 	for (i = 0; i < (int) ses->s_nstreams; i++) {
-		for (j = 0 ; j < ses->s_streams[i].st_nmediafiles ; j++) {
+		for (j = 0; j < ses->s_streams[i].st_nmediafiles; j++) {
 			mfp = &ses->s_streams[i].st_mediafiles[j];
 			if (mobj_eql(mfp, mobj))
 				return BOOL_TRUE;
@@ -1453,7 +1453,7 @@ DEBUG_sessionprint(inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 		if (prctx->depth == PR_STRMSONLY)
 			continue;
 
-		for (j = 0 ; j < ses->s_streams[i].st_nmediafiles ; j++) {
+		for (j = 0; j < ses->s_streams[i].st_nmediafiles; j++) {
 			mfp = &ses->s_streams[i].st_mediafiles[j];
 			if (moidsearch) {
 				if (! mobj_eql(mfp, mobj))

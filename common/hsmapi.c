@@ -871,7 +871,7 @@ HsmEndRestoreFile(
 	 */
 	if (*hsm_flagp) {
 		int rv;
-		rv = attr_removef(fd, DMF_ATTR_NAME , ATTR_ROOT);
+		rv = attr_removef(fd, DMF_ATTR_NAME, ATTR_ROOT);
 		if (rv) {
 			mlog(MLOG_NORMAL | MLOG_WARNING,
 			     _("error removing temp DMF attr on %s: %s\n"),

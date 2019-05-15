@@ -513,7 +513,7 @@ node_alloc(void)
 		return NH_NULL;
 	}
 #ifdef NODECHK
-	node_map_internal(nh , (void **)&p);
+	node_map_internal(nh, (void **)&p);
 	if (p == NULL)
 		abort();
 	hkpp = p + (int)node_hdrp->nh_nodehkix;

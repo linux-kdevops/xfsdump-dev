@@ -144,7 +144,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 	mediacnt = dsp->ds_drivecnt;
 	mediapp = (media_t **)calloc(mediacnt, sizeof(media_t *));
 	assert(mediapp);
-	for (mediaix = 0 ; mediaix < mediacnt ; mediaix++) {
+	for (mediaix = 0; mediaix < mediacnt; mediaix++) {
 		mediapp[mediaix] = media_alloc(dsp->ds_drivep[mediaix],
 					 	  medialabel);
 	}
@@ -156,7 +156,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 	 * media_strategy_t as well as the write headers.
 	 */
 	chosen_sp = 0;
-	for (id = 0 ; spp < epp ; spp++, id++) {
+	for (id = 0; spp < epp; spp++, id++) {
 		(*spp)->ms_id = id;
 		if (! chosen_sp) {
 			/* lend the media_t array to the strategy
@@ -164,7 +164,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 			(*spp)->ms_mediap = mediapp;
 			(*spp)->ms_dsp = dsp;
 			(*spp)->ms_mediacnt = mediacnt;
-			for (mediaix = 0 ; mediaix < mediacnt ; mediaix++) {
+			for (mediaix = 0; mediaix < mediacnt; mediaix++) {
 				media_t *mediap = mediapp[mediaix];
 				mediap->m_strategyp = *spp;
 				mediap->m_writehdrp->mh_strategyid = id;
@@ -191,7 +191,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 
 	/* give the media_t array to the chosen strategy
 	 */
-	for (mediaix = 0 ; mediaix < mediacnt ; mediaix++) {
+	for (mediaix = 0; mediaix < mediacnt; mediaix++) {
 		media_t *mediap = mediapp[mediaix];
 		mediap->m_strategyp = chosen_sp;
 		mediap->m_writehdrp->mh_strategyid = chosen_sp->ms_id;

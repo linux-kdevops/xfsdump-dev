@@ -1769,7 +1769,7 @@ tree_cb_links(xfs_ino_t ino,
 	/* loop through all hard links, attempting to restore/link
 	 */
 	path = path1;
-	for (nh = hardh ; nh != NH_NULL ; nh = link_nexth(nh)) {
+	for (nh = hardh; nh != NH_NULL; nh = link_nexth(nh)) {
 		node_t *np;
 		u_char_t flags;
 		char *reasonstr;
@@ -2811,7 +2811,7 @@ restart:
          * any selected directories and return */
 	if (cmdp == tsi_cmd_quit) {
 		mlog(MLOG_NORMAL, _("Unmark and quit\n"));
-		selsubtree(persp->p_rooth , BOOL_FALSE);
+		selsubtree(persp->p_rooth, BOOL_FALSE);
 	}
 
 	return BOOL_TRUE;
@@ -3149,7 +3149,7 @@ tsi_cmd_match(void)
 		return 0;
 	}
 
-	for (; tblp < tblendp ; tblp++) {
+	for (; tblp < tblendp; tblp++) {
 		if (! strncmp(tranp->t_inter.i_argv[0],
 				tblp->tct_pattern,
 				strlen(tranp->t_inter.i_argv[0]))) {
@@ -3187,7 +3187,7 @@ tsi_cmd_help(void *ctxp,
 				 sizeof(tsi_cmd_tbl[0]);
 
 	(* pcb )(pctxp, _("the following commands are available:\n"));
-	for (; tblp < tblendp ; tblp++) {
+	for (; tblp < tblendp; tblp++) {
 		(* pcb)(pctxp,
 			   "\t%s %s\n",
 			   tblp->tct_pattern,
@@ -3259,7 +3259,7 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 	 *	isdirpr - TRUE if named node is a directory;
 	 *	cldh - the first child in the named node's cld list.
 	 */
-	for (; ;) {
+	for (;;) {
 		size_t namelen;
 		char *strpatchp;
 		nh_t sibh;
@@ -4168,7 +4168,7 @@ hash_init(size64_t vmsz,
 
 	/* initialize the hash array to all NULL node handles
 	 */
-	for (hix = 0 ; hix < (ix_t)hashlen ; hix++) {
+	for (hix = 0; hix < (ix_t)hashlen; hix++) {
 		tranp->t_hashp[hix] = NH_NULL;
 	}
 
@@ -4374,7 +4374,7 @@ hash_iter(bool_t (* cbfp)(void *contextp, nh_t hashh), void *contextp)
 	ix_t hix;
 	size64_t hashlen = persp->p_hashsz / sizeof(nh_t);
 
-	for (hix = 0 ; hix < (ix_t)hashlen ; hix++) {
+	for (hix = 0; hix < (ix_t)hashlen; hix++) {
 		nh_t nh = tranp->t_hashp[hix];
 
 		while (nh != NH_NULL) {
@@ -4491,7 +4491,7 @@ tree_chk(void)
 
 	okaccum = BOOL_TRUE;
 
-	for (hix = 0 ; hix < (ix_t)hashlen ; hix++) {
+	for (hix = 0; hix < (ix_t)hashlen; hix++) {
 		nh_t hashh = tranp->t_hashp[hix];
 
 		mlog(MLOG_NITTY + 1 | MLOG_TREE,
@@ -4653,7 +4653,7 @@ parse(int slotcnt, char **slotbuf, char *string)
 	/* pass 1: collapse escape sequences, identifying characters which
 	 * are to be interpreted literally
 	 */
-	for (s = string, l = liter ; *s ; s++, l++) {
+	for (s = string, l = liter; *s; s++, l++) {
 		if (*s == '\\' && ! *l) {
 			fix_escape(s, l);
 		}
@@ -4662,7 +4662,7 @@ parse(int slotcnt, char **slotbuf, char *string)
 	/* pass 2: collapse quoted spans, identifying characters which
 	 * are to be interpreted literally
 	 */
-	for (s = string, l = liter ; *s ; s++, l++) {
+	for (s = string, l = liter; *s; s++, l++) {
 		if (*s == '\"' && ! *l) {
 			fix_quoted_span(s, l);
 		}
@@ -4670,7 +4670,7 @@ parse(int slotcnt, char **slotbuf, char *string)
 
 	/* pass 3: collapse white space spans into a single space
 	 */
-	for (s = string, l = liter ; *s ; s++, l++) {
+	for (s = string, l = liter; *s; s++, l++) {
 		if (is_white(*s) && ! *l) {
 			collapse_white(s, l);
 		}
@@ -4737,7 +4737,7 @@ fix_escape(char *string, char *liter)
 	endep = escape_table + (sizeof(escape_table)
 			         /
 			         sizeof(escape_table[0]));
-	for (; ep < endep ; ep++) {
+	for (; ep < endep; ep++) {
 		if (string[1] == ep->sequence) {
 			string[0] = ep->substitute;
 			liter[0] = (char)1;
@@ -4821,7 +4821,7 @@ fix_quoted_span(char *string, char *liter)
 	/* scan for the next non-literal quote, marking all
 	 * characters in between as literal
 	 */
-	for (s = string, l = liter ; *s && (*s != '\"' || *l) ; s++, l++) {
+	for (s = string, l = liter; *s && (*s != '\"' || *l); s++, l++) {
 		*l = (char)1;
 	}
 
@@ -4839,7 +4839,7 @@ collapse_white(char *string, char *liter)
 	size_t cnt;
 
 	cnt = 0;
-	for (s = string, l = liter ; is_white(*s) && ! *l ; s++, l++) {
+	for (s = string, l = liter; is_white(*s) && ! *l; s++, l++) {
 		cnt++;
 	}
 
@@ -4856,7 +4856,7 @@ distance_to_space(char *s, char *l)
 {
 	size_t cnt;
 
-	for (cnt = 0 ; *s && (! is_white(*s) || *l) ; s++, l++) {
+	for (cnt = 0; *s && (! is_white(*s) || *l); s++, l++) {
 		cnt++;
 	}
 

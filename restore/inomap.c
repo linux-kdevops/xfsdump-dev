@@ -527,11 +527,11 @@ inomap_rst_needed(xfs_ino_t firstino, xfs_ino_t lastino)
 
 	/* find the hunk/seg containing first ino or any ino beyond
 	 */
-	for (hnkp = roothnkp ; hnkp != 0 ; hnkp = hnkp->nextp) {
+	for (hnkp = roothnkp; hnkp != 0; hnkp = hnkp->nextp) {
 		if (firstino > hnkp->maxino) {
 			continue;
 		}
-		for (segp = hnkp->seg; segp < hnkp->seg + SEGPERHNK ; segp++){
+		for (segp = hnkp->seg; segp < hnkp->seg + SEGPERHNK; segp++){
 			if (hnkp == tailhnkp && segp > lastsegp) {
 				return BOOL_FALSE;
 			}
@@ -545,13 +545,13 @@ inomap_rst_needed(xfs_ino_t firstino, xfs_ino_t lastino)
 begin:
 	/* search until at least one ino is needed or until beyond last ino
 	 */
-	for (; ;) {
+	for (;;) {
 		xfs_ino_t ino;
 
 		if (segp->base > lastino) {
 			return BOOL_FALSE;
 		}
-		for (ino = segp->base ; ino < segp->base + INOPERSEG ; ino++){
+		for (ino = segp->base; ino < segp->base + INOPERSEG; ino++){
 			int state;
 			if (ino < firstino) {
 				continue;

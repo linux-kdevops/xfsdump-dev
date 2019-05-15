@@ -344,7 +344,7 @@ typedef struct stdesc stdesc_t;
 struct bytespan {
 	off64_t	offset;
 	off64_t	endoffset;
-} ;
+};
 
 typedef struct bytespan bytespan_t;
 
@@ -1902,7 +1902,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 		ix_t endix = sizeof(mcflag)
 			     /
 			     sizeof(mcflag[0]);
-		for (ix = 0 ; ix < endix ; ix++) {
+		for (ix = 0; ix < endix; ix++) {
 			mcflag[ix] = BOOL_FALSE;
 		}
 	}
@@ -2715,7 +2715,7 @@ content_statline(char **linespp[])
 
 	/* build and supply the line array
 	 */
-	for (i = 0 ; i < 1 ; i++) {
+	for (i = 0; i < 1; i++) {
 		statline[i] = &statlinebuf[i][0];
 	}
 	*linespp = statline;
@@ -2868,7 +2868,7 @@ content_mediachange_query(void)
 		_("select a drive to acknowledge media change\n");
 	choicecnt = 0;
 	maxdrvchoiceix = 0;
-	for (thrdix = 0 ; thrdix < STREAM_SIMMAX ; thrdix++) {
+	for (thrdix = 0; thrdix < STREAM_SIMMAX; thrdix++) {
 		if (mcflag[thrdix]) {
 			choicetothrdmap[choicecnt].thrdix = thrdix;
 			sprintf(choicetothrdmap[choicecnt].choicestr,
@@ -3050,12 +3050,12 @@ applydirdump(drive_t *drivep,
 				return RV_INTR;
 			}
 
-			/* if in a pipeline , call preemptchk() to
+			/* if in a pipeline, call preemptchk() to
 			 * print status reports
 			 */
 			if (pipeline)
 			{
-				mlog(MLOG_DEBUG ,
+				mlog(MLOG_DEBUG,
 					"preemptchk( )\n");
 				preemptchk();
 			}
@@ -3091,7 +3091,7 @@ applydirdump(drive_t *drivep,
 			 * tree with them. we can tell when we are done
 			 * by looking for a null dirent.
 			 */
-			for (; ;) {
+			for (;;) {
 				register direnthdr_t *dhdrp =
 						    (direnthdr_t *)direntbuf;
 				register size_t namelen;
@@ -3247,7 +3247,7 @@ eatdirdump(drive_t *drivep,
 		 * we can tell when we are done
 		 * by looking for a null dirent.
 		 */
-		for (; ;) {
+		for (;;) {
 			register direnthdr_t *dhdrp =
 					    (direnthdr_t *)direntbuf;
 			/* REFERENCED */
@@ -3448,7 +3448,7 @@ applynondirdump(drive_t *drivep,
 	strctxp->sc_ownerset = BOOL_FALSE;
 
 
-	for (; ;) {
+	for (;;) {
 		drive_ops_t *dop = drivep->d_opsp;
 		drive_mark_t drivemark;
 		bstat_t *bstatp = &fhdrp->fh_stat;
@@ -3590,12 +3590,12 @@ applynondirdump(drive_t *drivep,
 				       fhdrp->fh_offset);
 		}
 
-		/* if in a pipeline , call preemptchk() to
+		/* if in a pipeline, call preemptchk() to
 		 * print status reports
 		 */
 		if (pipeline)
 		{
-			mlog(MLOG_DEBUG ,
+			mlog(MLOG_DEBUG,
 				"preemptchk( )\n");
 			preemptchk();
 		}
@@ -3936,7 +3936,7 @@ Media_mfile_next(Media_t *Mediap,
 	/* loop searching for an acceptable media file.
 	 * change media as necessary.
 	 */
-	for (; ;) {
+	for (;;) {
 		bool_t emptypr; /* begin_read says drive empty */
 		bool_t partofdumppr;
 		bool_t hassomepr;
@@ -4791,7 +4791,7 @@ newmedia:
 		 * which may contain useful media files
 		 */
 		if (dlog_allowed()) {
-			/* If an alert program has been specified , run it.
+			/* If an alert program has been specified, run it.
 			 */
 			if (media_change_alert_program != NULL)
 				system(media_change_alert_program);
@@ -5026,7 +5026,7 @@ pi_insertfile(ix_t drivecnt,
 	/* first alloc stream descriptors if needed
 	 */
 	if (persp->s.strmheadh == DH_NULL) {
-		for (strmix = 0 ; strmix < drivecnt ; strmix++) {
+		for (strmix = 0; strmix < drivecnt; strmix++) {
 			ok = pi_allocdesc(&strmh);
 			if (! ok) {
 				pi_unlock();
@@ -5053,7 +5053,7 @@ pi_insertfile(ix_t drivecnt,
 	 * object list, up to the desired object
 	 */
 	objh = prevobjh = DH_NULL;
-	for (objix = 0 ; objix <= mediaix ; objix++) {
+	for (objix = 0; objix <= mediaix; objix++) {
 		prevobjh = objh;
 		if (objix == 0) {
 			objh = DH2S(strmh)->s_cldh;
@@ -5171,7 +5171,7 @@ pi_insertfile(ix_t drivecnt,
 	 * file list, up to the desired file
 	 */
 	fileh = DH_NULL;
-	for (fileix = 0 ; fileix <= dumpmediafileix ; fileix++) {
+	for (fileix = 0; fileix <= dumpmediafileix; fileix++) {
 		prevfileh = fileh;
 		if (fileix == 0) {
 			fileh = DH2O(objh)->o_cldh;
@@ -5516,7 +5516,7 @@ pi_transcribe(inv_session_t *sessp)
 	/* traverse inventory, transcribing into pers inv.
 	 */
 	strmcnt =  (size_t)sessp->s_nstreams;
-	for (strmix = 0 ; strmix < strmcnt ; strmix++) {
+	for (strmix = 0; strmix < strmcnt; strmix++) {
 		inv_stream_t *strmp;
 		size_t fileix;
 		size_t filecnt;
@@ -5535,7 +5535,7 @@ pi_transcribe(inv_session_t *sessp)
 		/* insert all media files from this stream. note that
 		 * the media object representation is inverted
 		 */
-		for (fileix = 0 ; fileix < filecnt ; fileix++) {
+		for (fileix = 0; fileix < filecnt; fileix++) {
 			inv_mediafile_t *filep;
 			bool_t fileszvalpr;
 
@@ -7579,7 +7579,7 @@ restore_extent_group(drive_t *drivep,
 
 	/* copy data extents from media to the file
 	 */
-	for (; ;) {
+	for (;;) {
 		/* read the extent header
 		 */
 		rv = read_extenthdr(drivep, &ehdr, ehcs);
@@ -8734,7 +8734,7 @@ restore_extattr(drive_t *drivep,
 
 	/* peel off extattrs until null hdr hit
 	 */
-	for (; ;) {
+	for (;;) {
 		size_t recsz;
 		/* REFERENCED */
 		int nread;
@@ -9274,7 +9274,7 @@ clr_mcflag(ix_t thrdix)
 {
 	lock();
 	mcflag[thrdix] = BOOL_FALSE;
-	for (thrdix = 0 ; thrdix < drivecnt ; thrdix++) {
+	for (thrdix = 0; thrdix < drivecnt; thrdix++) {
 		if (mcflag[thrdix]) {
 			unlock();
 			return;

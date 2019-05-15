@@ -311,7 +311,7 @@ static int ds_instantiate(int, char *[], drive_t *);
 static bool_t do_init(drive_t *);
 static bool_t do_sync(drive_t *);
 static int do_begin_read(drive_t *);
-static char *do_read(drive_t *, size_t , size_t *, int *);
+static char *do_read(drive_t *, size_t, size_t *, int *);
 static void do_return_read_buf(drive_t *, char *, size_t);
 static void do_get_mark(drive_t *, drive_mark_t *);
 static int do_seek_mark(drive_t *, drive_mark_t *);
@@ -320,12 +320,12 @@ static void do_get_mark(drive_t *, drive_mark_t *);
 static void do_end_read(drive_t *);
 static int do_begin_write(drive_t *);
 static void do_set_mark(drive_t *, drive_mcbfp_t, void *, drive_markrec_t *);
-static char * do_get_write_buf(drive_t *, size_t , size_t *);
+static char * do_get_write_buf(drive_t *, size_t, size_t *);
 static int do_write(drive_t *, char *, size_t);
 static size_t do_get_align_cnt(drive_t *);
 static int do_end_write(drive_t *, off64_t *);
-static int do_fsf(drive_t *, int , int *);
-static int do_bsf(drive_t *, int , int *);
+static int do_fsf(drive_t *, int, int *);
+static int do_bsf(drive_t *, int, int *);
 static int do_rewind(drive_t *);
 static int do_erase(drive_t *);
 static int do_eject_media(drive_t *);
@@ -335,8 +335,8 @@ static void do_quit(drive_t *);
 
 /* misc. local utility funcs
  */
-static int	mt_op(int , int , int);
-static int mt_blkinfo(int , struct mtblkinfo *);
+static int	mt_op(int, int, int);
+static int mt_blkinfo(int, struct mtblkinfo *);
 static bool_t mt_get_fileno(drive_t *, long *);
 static bool_t mt_get_status(drive_t *, mtstat_t *);
 static int determine_write_error(drive_t *, int, int);
@@ -1445,7 +1445,7 @@ do_next_mark(drive_t *drivep)
 	}
 
 noerrorsearch:
-	for (; ;) {
+	for (;;) {
 		rval = getrec(drivep);
 		if (rval == DRIVE_ERROR_CORRUPTION) {
 			goto resetring;
@@ -2403,7 +2403,7 @@ do_fsf(drive_t *drivep, int count, int *statp)
 		return 0;
 	}
 
-	for (i = 0 ; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		done = 0;
 		opcount = 2;
 
@@ -2559,7 +2559,7 @@ do_bsf(drive_t *drivep, int count, int *statp)
 
 	/* now loop, skipping media files
 	 */
-	for (skipped = 0 ; skipped < count ; skipped++) {
+	for (skipped = 0; skipped < count; skipped++) {
 
 		/* move to the left of the next file mark on the left.
 		 * check for BOT.
@@ -3146,7 +3146,7 @@ set_fixed_blksz(drive_t *drivep, size_t blksz)
 
 	/* give it two tries: first without rewinding, second with rewinding
 	 */
-	for (try = 1 ; try <= 2 ; try++) {
+	for (try = 1; try <= 2; try++) {
 		struct mtblkinfo mtinfo;
 
 		/* set the tape block size. requires re-open
@@ -3624,7 +3624,7 @@ tape_rec_checksum_set(drive_context_t *contextp, char *bufp)
 	INT_SET(rechdrp->ischecksum, ARCH_CONVERT, 1);
 	rechdrp->checksum = 0;
 	accum = 0;
-	for (p = beginp ; p < endp ; p++) {
+	for (p = beginp; p < endp; p++) {
 	        accum += INT_GET(*p, ARCH_CONVERT);
 	}
 	INT_SET(rechdrp->checksum, ARCH_CONVERT, (int32_t)(~accum + 1));
@@ -3641,7 +3641,7 @@ tape_rec_checksum_check(drive_context_t *contextp, char *bufp)
 
 	if (contextp->dc_recchksumpr && INT_GET(rechdrp->ischecksum, ARCH_CONVERT)) {
 		accum = 0;
-		for (p = beginp ; p < endp ; p++) {
+		for (p = beginp; p < endp; p++) {
 	       		accum += INT_GET(*p, ARCH_CONVERT);
 		}
 		return accum == 0 ? BOOL_TRUE : BOOL_FALSE;
@@ -3990,7 +3990,7 @@ retry:
 		return DRIVE_ERROR_INVAL;
 	}
 
-	/* if the overwrite option was specified , set the best blocksize
+	/* if the overwrite option was specified, set the best blocksize
 	 * we can and return.
 	 */
 	if (contextp->dc_overwritepr) {

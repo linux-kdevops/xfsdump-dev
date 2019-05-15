@@ -260,7 +260,7 @@ main(int argc, char *argv[])
     }
     else if (session_option) {
 	CheckAndPruneFstab(
-		    inventory_path, BOOL_FALSE , mntPoint, &uuid,
+		    inventory_path, BOOL_FALSE, mntPoint, &uuid,
 		    &session, (time32_t)0, r_mf_label);
     }
     else if (uuid_option || mntpnt_option) {
@@ -272,7 +272,7 @@ main(int argc, char *argv[])
 	}
 	else {
 	    CheckAndPruneFstab(
-		    inventory_path, BOOL_FALSE , mntPoint, &uuid,
+		    inventory_path, BOOL_FALSE, mntPoint, &uuid,
 		    &session, timeSecs, r_mf_label);
 	}
     }
@@ -496,9 +496,9 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
     {
 	removeflag = BOOL_FALSE;
 
-	printf("   Found entry for %s\n" , fstabentry[i].ft_mountpt);
+	printf("   Found entry for %s\n", fstabentry[i].ft_mountpt);
 
-	for (j = i +1 ; j < counter->ic_curnum ; j++) {
+	for (j = i +1; j < counter->ic_curnum; j++) {
 	    if (uuid_compare(fstabentry[i].ft_uuid, fstabentry[j].ft_uuid) == 0)
 	    {
 		printf("     duplicate fstab entry\n");

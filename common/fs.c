@@ -333,7 +333,7 @@ fs_tab_lookup_blk(char *blks)
 {
 	fs_tab_ent_t *tep;
 
-	for (tep = fs_tabp ; tep ; tep = tep->fte_nextp) {
+	for (tep = fs_tabp; tep; tep = tep->fte_nextp) {
 		struct stat64 stata;
 		bool_t aok;
 		struct stat64 statb;
@@ -361,7 +361,7 @@ fs_tab_lookup_mnt(char *mnts)
 {
 	fs_tab_ent_t *tep;
 
-	for (tep = fs_tabp ; tep ; tep = tep->fte_nextp) {
+	for (tep = fs_tabp; tep; tep = tep->fte_nextp) {
 		if (tep->fte_mnts && ! strcmp(tep->fte_mnts, mnts)) {
 			return tep;
 		}

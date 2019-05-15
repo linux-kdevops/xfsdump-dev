@@ -146,7 +146,7 @@ struct	mtget_sgi	{
 	int	mt_blkno;	/* block number of current position */
 };
 
-/* old mtget structure , still keep it around for compatibility reason */
+/* old mtget structure, still keep it around for compatibility reason */
 /* the librmt and /etc/rmt code uses it */
 struct	old_mtget	{
 	short	mt_type;	/* type of magtape device */

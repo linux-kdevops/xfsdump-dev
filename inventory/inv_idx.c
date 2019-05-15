@@ -191,7 +191,7 @@ idx_put_newentry(
 				  sizeof(invt_counter_t)) < 0)) {
 			/* XXX delete the stobj that we just created */
 
-			memset(ient->ie_filename, 0 , INV_STRLEN);
+			memset(ient->ie_filename, 0, INV_STRLEN);
 			free(idxarr);
 			return -1;
 		}
@@ -263,7 +263,7 @@ idx_create(char *fname, inv_oflag_t forwhat)
 	   the db for SEARCH_ONLY. */
 	assert(forwhat != INV_SEARCH_ONLY);
 
-	if ((fd = open (fname , INV_OFLAG(forwhat) | O_CREAT, S_IRUSR|S_IWUSR)) < 0) {
+	if ((fd = open (fname, INV_OFLAG(forwhat) | O_CREAT, S_IRUSR|S_IWUSR)) < 0) {
 		INV_PERROR (fname);
 		return INV_TOKEN_NULL;
 	}

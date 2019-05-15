@@ -138,7 +138,7 @@ mlog_init0(void)
 	 */
 	mlog_streamcnt = 1;
 
-	for(i = 0 ; i < MLOG_SS_CNT ; i++) {
+	for(i = 0; i < MLOG_SS_CNT; i++) {
 		mlog_level_ss[i] = MLOG_VERBOSE;
 	}
 }
@@ -160,12 +160,12 @@ mlog_init1(int argc, char *argv[])
 	suboptstrs = (char **)calloc(MLOG_SS_CNT + vsymcnt + 1,
 					sizeof(char *));
 	assert(suboptstrs);
-	for (soix = 0 ; soix < MLOG_SS_CNT ; soix++) {
+	for (soix = 0; soix < MLOG_SS_CNT; soix++) {
 		assert(strlen(mlog_ss_names[soix]) <= MLOG_SS_NAME_MAX);
 			/* unrelated, but opportunity to chk */
 		suboptstrs[soix] = mlog_ss_names[soix];
 	}
-	for (; soix < MLOG_SS_CNT + vsymcnt ; soix++) {
+	for (; soix < MLOG_SS_CNT + vsymcnt; soix++) {
 		suboptstrs[soix] = mlog_sym[soix - MLOG_SS_CNT].sym;
 	}
 	suboptstrs[soix] = 0;
@@ -174,7 +174,7 @@ mlog_init1(int argc, char *argv[])
 	 * subsystems where explicitly called out. those which weren't will
 	 * be given the "general" level.
 	 */
-	for (ssix = 0 ; ssix < MLOG_SS_CNT ; ssix++) {
+	for (ssix = 0; ssix < MLOG_SS_CNT; ssix++) {
 		mlog_level_ss[ssix] = -1;
 	}
 	mlog_level_ss[MLOG_SS_GEN] = MLOG_VERBOSE;
@@ -273,7 +273,7 @@ mlog_init1(int argc, char *argv[])
 
 	/* give subsystems not explicitly called out the "general" verbosity
 	 */
-	for (ssix = 0 ; ssix < MLOG_SS_CNT ; ssix++) {
+	for (ssix = 0; ssix < MLOG_SS_CNT; ssix++) {
 		if (mlog_level_ss[ssix] < 0) {
 			assert(mlog_level_ss[ssix] == -1);
 			assert(mlog_level_ss[MLOG_SS_GEN] >= 0);
@@ -350,7 +350,7 @@ mlog_override_level(int levelarg)
 	ss = (ix_t)((levelarg & MLOG_SS_MASK) >> MLOG_SS_SHIFT);
 
 	if (ss == MLOG_SS_GEN) { /* do level for all subsys */
-	    for (ss = 0 ; ss < MLOG_SS_CNT ; ss++) {
+	    for (ss = 0; ss < MLOG_SS_CNT; ss++) {
 		mlog_level_ss[ss] = level;
 	    }
 	}
@@ -792,7 +792,7 @@ mlog_sym_lookup(char *sym)
 			 +
 			 sizeof(mlog_sym) / sizeof(mlog_sym[0]);
 
-	for (; p < ep ; p++) {
+	for (; p < ep; p++) {
 		if (! strcmp(sym, p->sym)) {
 			return p->level;
 		}
@@ -827,7 +827,7 @@ fold_init(fold_t fold, char *infostr, char c)
 
 	assert(p < endp);
 	*p++ = ' ';
-	for (cnt = 0 ; cnt < predashlen && p < endp ; cnt++, p++) {
+	for (cnt = 0; cnt < predashlen && p < endp; cnt++, p++) {
 		*p = c;
 	}
 	assert(p < endp);
@@ -839,7 +839,7 @@ fold_init(fold_t fold, char *infostr, char c)
 	assert(p < endp);
 	*p++ = ' ';
 	assert(p < endp);
-	for (cnt = 0 ; cnt < postdashlen && p < endp ; cnt++, p++) {
+	for (cnt = 0; cnt < postdashlen && p < endp; cnt++, p++) {
 		*p = c;
 	}
 	assert(p <= endp);

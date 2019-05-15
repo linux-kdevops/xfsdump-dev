@@ -64,7 +64,7 @@ path_diff(char *path, char *base)
 		return 0;
 	}
 
-	for (; *base && *path == *base ; path++, base++)
+	for (; *base && *path == *base; path++, base++)
 		;
 
 	if (*path == 0) {
@@ -202,7 +202,7 @@ pem_next(pem_t *pemp)
 	/* if end of string encountered, place next next at end of string
 	 */
 	if (! nextnext) {
-		for (nextnext = pemp->pem_next ; *nextnext ; nextnext++)
+		for (nextnext = pemp->pem_next; *nextnext; nextnext++)
 			;
 	}
 
@@ -246,7 +246,7 @@ pa_free(pa_t *pap)
 {
 	int i;
 
-	for (i = 0 ; i < pap->pa_cnt ; i++) {
+	for (i = 0; i < pap->pa_cnt; i++) {
 		free((void *)pap->pa_array[i]);
 	}
 
@@ -288,7 +288,7 @@ pa_gen(pa_t *pap)
 	char *p;
 
 	sz = 0;
-	for (i = 0 ; i < pap->pa_cnt ; i++) {
+	for (i = 0; i < pap->pa_cnt; i++) {
 		sz += strlen(pap->pa_array[i]) + 1;
 	}
 	if (i == 0)
@@ -302,7 +302,7 @@ pa_gen(pa_t *pap)
 		sprintf(retp, "/");
 	} else {
 		p = retp;
-		for (i = 0 ; i < pap->pa_cnt ; i++) {
+		for (i = 0; i < pap->pa_cnt; i++) {
 			sprintf(p, "/%s", pap->pa_array[ i]);
 			p += strlen(p);
 		}

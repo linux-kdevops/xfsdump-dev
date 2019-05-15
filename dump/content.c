@@ -888,7 +888,7 @@ content_init(int argc,
 			return BOOL_FALSE;
 		}
 		strcnt =  (ix_t)sessp->s_nstreams;
-		for (strix = 0 ; strix < strcnt ; strix++) {
+		for (strix = 0; strix < strcnt; strix++) {
 			bsp = &sessp->s_streams[strix];
 			if (bsp->st_interrupted) {
 				interruptedpr = BOOL_TRUE;
@@ -908,7 +908,7 @@ content_init(int argc,
 			sc_resumerangep = (drange_t *)calloc(sc_resumerangecnt,
 								sizeof(drange_t));
 			assert(sc_resumerangep);
-			for (strmix = 0 ; strmix < sc_resumerangecnt ; strmix++) {
+			for (strmix = 0; strmix < sc_resumerangecnt; strmix++) {
 				inv_stream_t *bsp;
 				inv_stream_t *esp;
 				drange_t *p = &sc_resumerangep[strmix];
@@ -1009,7 +1009,7 @@ content_init(int argc,
 			underpartialpr = sessp->s_ispartial;
 			underinterruptedpr = BOOL_FALSE;
 			strcnt =  (ix_t)sessp->s_nstreams;
-			for (strix = 0 ; strix < strcnt ; strix++) {
+			for (strix = 0; strix < strcnt; strix++) {
 				bsp = &sessp->s_streams[strix];
 				if (bsp->st_interrupted) {
 					underinterruptedpr = BOOL_TRUE;
@@ -1054,7 +1054,7 @@ content_init(int argc,
 		sc_resumerangep = (drange_t *)calloc(sc_resumerangecnt,
 						        sizeof(drange_t));
 		assert(sc_resumerangep);
-		for (strmix = 0 ; strmix < sc_resumerangecnt ; strmix++) {
+		for (strmix = 0; strmix < sc_resumerangecnt; strmix++) {
 			inv_stream_t *bsp;
 			inv_stream_t *esp;
 			drange_t *p = &sc_resumerangep[strmix];
@@ -1578,7 +1578,7 @@ baseuuidbypass:
 	 */
 	sc_contextp = (context_t *)calloc(drivecnt, sizeof(context_t));
 	assert(sc_contextp);
-	for (strmix = 0 ; strmix < drivecnt ; strmix++) {
+	for (strmix = 0; strmix < drivecnt; strmix++) {
 		context_t *contextp = &sc_contextp[strmix];
 
 		contextp->cc_filehdrp =
@@ -1720,7 +1720,7 @@ baseuuidbypass:
 		ix_t endix = sizeof(sc_mcflag)
 			     /
 			     sizeof(sc_mcflag[0]);
-		for (ix = 0 ; ix < endix ; ix++) {
+		for (ix = 0; ix < endix; ix++) {
 			sc_mcflag[ix] = BOOL_FALSE;
 		}
 	}
@@ -1730,7 +1730,7 @@ baseuuidbypass:
 	 */
 	{
 		ix_t driveix;
-		for (driveix = 0 ; driveix < STREAM_SIMMAX ; driveix++) {
+		for (driveix = 0; driveix < STREAM_SIMMAX; driveix++) {
 			sc_stat_pds[driveix].pds_phase = PDS_NULL;
 		}
 	}
@@ -1756,7 +1756,7 @@ content_statline(char **linespp[])
 
 	/* build and supply the line array
 	 */
-	for (i = 0 ; i < STREAM_SIMMAX + 1 ; i++) {
+	for (i = 0; i < STREAM_SIMMAX + 1; i++) {
 		statline[i] = &statlinebuf[i][0];
 	}
 	*linespp = statline;
@@ -1864,7 +1864,7 @@ content_statline(char **linespp[])
 	/* optionally create stat lines for each drive
 	 */
 	statlinecnt = 1;
-	for (i = 0 ; i < drivecnt ; i++) {
+	for (i = 0; i < drivecnt; i++) {
 		pds_t *pdsp = &sc_stat_pds[i];
 		if (pdsp->pds_phase == PDS_NULL
 		     ||
@@ -1968,7 +1968,7 @@ create_inv_session(
 	sc_inv_stmtokenp = (inv_stmtoken_t *)
 				calloc(drivecnt, sizeof(inv_stmtoken_t));
 	assert(sc_inv_stmtokenp);
-	for (strmix = 0 ; strmix < drivecnt ; strmix++) {
+	for (strmix = 0; strmix < drivecnt; strmix++) {
 		drive_t *drivep = drivepp[strmix];
 		char *drvpath;
 
@@ -2195,7 +2195,7 @@ content_stream_dump(ix_t strmix)
 	 * The current startpoint will be updated each time a media mark
 	 * is committed.
 	 */
-	for (; ;) {
+	for (;;) {
 		xfs_ino_t startino;
 		bool_t stop_requested;
 		bool_t hit_eom;
@@ -2747,7 +2747,7 @@ content_mediachange_query(void)
 	querystr[querycnt++ ] = "select a drive to acknowledge media change\n";
 	choicecnt = 0;
 	maxdrvchoiceix = 0;
-	for (thrdix = 0 ; thrdix < STREAM_SIMMAX ; thrdix++) {
+	for (thrdix = 0; thrdix < STREAM_SIMMAX; thrdix++) {
 		if (sc_mcflag[thrdix]) {
 			choicetothrdmap[choicecnt].thrdix = thrdix;
 			sprintf(choicetothrdmap[choicecnt].choicestr,
@@ -3024,7 +3024,7 @@ dump_dir(ix_t strmix,
 	/* dump dirents - lots of buffering done here, to achieve OS-
 	 * independence. if proves to be to much overhead, can streamline.
 	 */
-	for (gdcnt = 1, rv = RV_OK ; rv == RV_OK ; gdcnt++) {
+	for (gdcnt = 1, rv = RV_OK; rv == RV_OK; gdcnt++) {
 		struct dirent *p;
 		int nread;
 		register size_t reclen;
@@ -3295,7 +3295,7 @@ dump_extattr_list(drive_t *drivep,
 	 */
 	dumpbufp = contextp->cc_extattrdumpbufp;
 	endp = dumpbufp;
-	for (nameix = 0 ; nameix < listlen ;) {
+	for (nameix = 0; nameix < listlen;) {
 		ix_t rtrvix;
 		size_t rtrvcnt;
 
@@ -3382,7 +3382,7 @@ dump_extattr_list(drive_t *drivep,
 				return RV_OK;
 			}
 
-			for (rtrvix = 0 ; rtrvix < rtrvcnt ; rtrvix++) {
+			for (rtrvix = 0; rtrvix < rtrvcnt; rtrvix++) {
 				attr_multiop_t *opp;
 				opp = &contextp->cc_extattrrtrvarrayp[rtrvix];
 				if (opp->am_error) {
@@ -3976,7 +3976,7 @@ dump_file_reg(drive_t *drivep,
 		size_t drangecnt = sc_resumerangecnt;
 		size_t drangeix;
 
-		for (drangeix = 0 ; drangeix < drangecnt ; drangeix++) {
+		for (drangeix = 0; drangeix < drangecnt; drangeix++) {
 			drange_t *rp = &drangep[drangeix];
 			if (statp->bs_ino == rp->dr_begin.sp_ino) {
 				register time32_t mtime = statp->bs_mtime.tv_sec;
@@ -4051,7 +4051,7 @@ dump_file_reg(drive_t *drivep,
 	cmpltflg = BOOL_FALSE;
 
 	rv = RV_OK;
-	for (; ;) {
+	for (;;) {
 		off64_t bytecnt = 0;
 		off64_t bc;
 
@@ -4377,7 +4377,7 @@ dump_extent_group(drive_t *drivep,
 	bytecnt = 0;
 	assert((nextoffset & (BBSIZE - 1)) == 0);
 
-	for (; ;) {
+	for (;;) {
 		off64_t offset;
 		off64_t extsz;
 
@@ -4829,7 +4829,7 @@ dump_extent_group(drive_t *drivep,
 				     ((s.f_flag & ST_LOCAL) != 0))
 				   mlog(MLOG_NORMAL, _(
 		"can't read ino %llu at offset %d (act=%d req=%d) rt=%d\n"),
-		statp->bs_ino, new_off, actualsz , reqsz, isrealtime);
+		statp->bs_ino, new_off, actualsz, reqsz, isrealtime);
 #endif /* HIDDEN */
 
 				nread = 0;
@@ -5240,7 +5240,7 @@ dump_session_inv(drive_t *drivep,
 	 * until we are successful or until the media layer
 	 * tells us to give up.
 	 */
-	for (done = BOOL_FALSE ; ! done ;) {
+	for (done = BOOL_FALSE; ! done;) {
 		uuid_t mediaid;
 		char medialabel[GLOBAL_HDR_STRING_SZ];
 		bool_t partial;
@@ -5390,7 +5390,7 @@ dump_terminator(drive_t *drivep, context_t *contextp, media_hdr_t *mwhdrp)
 	 * until we are successful or until the media layer
 	 * tells us to give up.
 	 */
-	for (done = BOOL_FALSE ; ! done ;) {
+	for (done = BOOL_FALSE; ! done;) {
 		bool_t partial;
 		rv_t rv;
 
@@ -5626,7 +5626,7 @@ position:
 	 * be concatenated but not jumbled. a dump stream must be virtually
 	 * contiguous.
 	 */
-	for (; ;) {
+	for (;;) {
 		/* check if a stop has been requested
 		 */
 		if (intr_allowed && cldmgr_stop_requested()) {
@@ -5963,7 +5963,7 @@ changemedia:
 		return RV_QUIT; /* this return value will cause approp. msg */
 	}
 
-	/* If an alert program has been specified , run it
+	/* If an alert program has been specified, run it
 	 */
 	if (media_change_alert_program != NULL)
 	   system(media_change_alert_program);
@@ -6549,7 +6549,7 @@ clr_mcflag(ix_t thrdix)
 {
 	lock();
 	sc_mcflag[thrdix] = BOOL_FALSE;
-	for (thrdix = 0 ; thrdix < drivecnt ; thrdix++) {
+	for (thrdix = 0; thrdix < drivecnt; thrdix++) {
 		if (sc_mcflag[thrdix]) {
 			unlock();
 			return;
@@ -6565,7 +6565,7 @@ check_complete_flags(void)
 	ix_t strmix;
 	bool_t completepr = BOOL_TRUE;
 
-	for (strmix = 0 ; strmix < drivecnt ; strmix++) {
+	for (strmix = 0; strmix < drivecnt; strmix++) {
 		context_t *contextp = &sc_contextp[strmix];
 		if (! contextp->cc_completepr) {
 			completepr = BOOL_FALSE;

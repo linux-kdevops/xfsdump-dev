@@ -88,7 +88,7 @@ dlog_init(int argc, char *argv[])
 	}
 #ifdef RESTORE
 	/* look to see if restore source coming in on
-	 * stdin. If so , try to open /dev/tty for dialogs.
+	 * stdin. If so, try to open /dev/tty for dialogs.
 	 */
 	if (optind < argc && ! strcmp(argv[optind ], "-")) {
 		dlog_ttyfd = open("/dev/tty", O_RDWR);
@@ -150,7 +150,7 @@ dlog_begin(char *preamblestr[], size_t preamblecnt)
 	size_t ix;
 
 	mlog_lock();
-	for (ix = 0 ; ix < preamblecnt ; ix++) {
+	for (ix = 0; ix < preamblecnt; ix++) {
 		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      preamblestr[ix]);
 	}
@@ -161,7 +161,7 @@ dlog_end(char *postamblestr[], size_t postamblecnt)
 {
 	size_t ix;
 
-	for (ix = 0 ; ix < postamblecnt ; ix++) {
+	for (ix = 0; ix < postamblecnt; ix++) {
 		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      postamblestr[ix]);
 	}
@@ -193,14 +193,14 @@ dlog_multi_query(char *querystr[],
 
 	/* display query description strings
 	 */
-	for (ix = 0 ; ix < querycnt ; ix++) {
+	for (ix = 0; ix < querycnt; ix++) {
 		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      querystr[ix]);
 	}
 
 	/* display the choices: NOTE: display is 1-based, code intfs 0-based!
 	 */
-	for (ix = 0 ; ix < choicecnt ; ix++) {
+	for (ix = 0; ix < choicecnt; ix++) {
 		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      "%u: %s",
 		      ix + 1,
@@ -231,7 +231,7 @@ dlog_multi_query(char *querystr[],
 	/* read the tty until we get a proper answer or are interrupted
 	 */
 	prepromptstr = "";
-	for (; ;) {
+	for (;;) {
 		ix_t exceptionix;
 		bool_t ok;
 
@@ -275,7 +275,7 @@ dlog_multi_ack(char *ackstr[], size_t ackcnt)
 {
 	size_t ix;
 
-	for (ix = 0 ; ix < ackcnt ; ix++) {
+	for (ix = 0; ix < ackcnt; ix++) {
 		mlog(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE,
 		      ackstr[ix]);
 	}

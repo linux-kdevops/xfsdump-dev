@@ -1114,7 +1114,7 @@ calcdixcum(dix_t dix)
 
 	nibcnt = (sizeof(dah_t) / HDLSUMCNT) - 1;
 	sum = 0;
-	for (nibix = 0 ; nibix < nibcnt ; nibix++) {
+	for (nibix = 0; nibix < nibcnt; nibix++) {
 		sum += (uint16_t)(dix & HDLSUMLOMASK);
 		dix >>= HDLSUMCNT;
 	}

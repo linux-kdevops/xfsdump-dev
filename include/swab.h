@@ -61,13 +61,13 @@
  * provide defaults when no architecture-specific optimization is detected
  */
 #ifndef __arch__swab16
-#  define __arch__swab16(x) ({ __u16 __tmp = (x) ; ___swab16(__tmp); })
+#  define __arch__swab16(x) ({ __u16 __tmp = (x); ___swab16(__tmp); })
 #endif
 #ifndef __arch__swab32
-#  define __arch__swab32(x) ({ __u32 __tmp = (x) ; ___swab32(__tmp); })
+#  define __arch__swab32(x) ({ __u32 __tmp = (x); ___swab32(__tmp); })
 #endif
 #ifndef __arch__swab64
-#  define __arch__swab64(x) ({ __u64 __tmp = (x) ; ___swab64(__tmp); })
+#  define __arch__swab64(x) ({ __u64 __tmp = (x); ___swab64(__tmp); })
 #endif
 
 #ifndef __arch__swab16p
