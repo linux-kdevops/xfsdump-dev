@@ -78,8 +78,8 @@ extern void dlog_multi_ack(char *ackstr[], size_t ackcnt);
  * received, sigquitix if SIGQUIT received. if any of the exception indices
  * are set to IXMAX by the caller, those events will be ignored.
  */
-typedef void (* dlog_pcbp_t)(void *pctxp, char *s, ...);
-typedef void (* dlog_ucbp_t)(void *uctxp, dlog_pcbp_t pcb, void *pctxp);
+typedef void (*dlog_pcbp_t)(void *pctxp, char *s, ...);
+typedef void (*dlog_ucbp_t)(void *uctxp, dlog_pcbp_t pcb, void *pctxp);
 extern ix_t dlog_string_query(dlog_ucbp_t ucb, /* user's print func */
 			       void *uctxp,	/* user's context for above */
 			       char *bufp,	/* typed string returned in */

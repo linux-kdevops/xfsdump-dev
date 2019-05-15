@@ -287,7 +287,7 @@ static nh_t link_nexth(nh_t nh);
 static nh_t link_matchh(nh_t hardh, nh_t parh, char *name);
 static void link_in(nh_t nh);
 static void link_out(nh_t nh);
-static void link_headiter(bool_t (* cbfp)(void *contextp, nh_t hardh),
+static void link_headiter(bool_t (*cbfp)(void *contextp, nh_t hardh),
 			   void *contextp);
 static void link_iter_init(link_iter_context_t *link_iter_contextp,
 			    nh_t hardheadh);
@@ -302,7 +302,7 @@ static inline size_t hash_val(xfs_ino_t ino, size_t hashmask);
 static void hash_in(nh_t nh);
 static void hash_out(nh_t nh);
 static nh_t hash_find(xfs_ino_t ino, gen_t gen);
-static void hash_iter(bool_t (* cbfp)(void *contextp, nh_t hashh),
+static void hash_iter(bool_t (*cbfp)(void *contextp, nh_t hashh),
 		       void *contextp);
 static void setdirattr(dah_t dah, char *path);
 static bool_t tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
@@ -360,11 +360,11 @@ tree_init(char *hkdir,
 
 	/* sanity checks
 	 */
-	assert(! (PERSSZ % pgsz));
+	assert(!(PERSSZ % pgsz));
 	assert(sizeof(persp) <= PERSSZ);
 	assert(sizeof(node_t) <= NODESZ);
-	assert(! persp);
-	assert(! tranp);
+	assert(!persp);
+	assert(!tranp);
 
 	/* allocate transient state
 	 */
@@ -396,7 +396,7 @@ tree_init(char *hkdir,
 	/* create an orphanage, if it already exists, complain.
 	 * not needed if just a table-of-contents restore.
 	 */
-	if (! tranp->t_toconlypr) {
+	if (!tranp->t_toconlypr) {
 		rval = mkdir(tranp->t_orphdir, S_IRWXU);
 		if (rval) {
 			if (errno == EEXIST) {
@@ -434,7 +434,7 @@ tree_init(char *hkdir,
 
 	/* mmap the persistent state
 	 */
-	assert(! (PERSSZ % pgsz));
+	assert(!(PERSSZ % pgsz));
 	persp = (treepers_t *) mmap_autogrow(
 				     PERSSZ,
 				     tranp->t_persfd,
@@ -451,7 +451,7 @@ tree_init(char *hkdir,
 	 * persistent state file.
 	 */
 	ok = hash_init(vmsz / HASHSZ_PERVM, dircnt, nondircnt, perspath);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -469,7 +469,7 @@ tree_init(char *hkdir,
 		        sizeof(size64_t), /* node alignment */
 		        vmsz - (size64_t)nodeoff,
 			dircnt + nondircnt);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -548,11 +548,11 @@ tree_sync(char *hkdir,
 
 	/* sanity checks
 	 */
-	assert(! (PERSSZ % pgsz));
+	assert(!(PERSSZ % pgsz));
 	assert(sizeof(persp) <= PERSSZ);
 	assert(sizeof(node_t) <= NODESZ);
-	assert(! persp);
-	assert(! tranp);
+	assert(!persp);
+	assert(!tranp);
 
 	/* allocate transient state
 	 */
@@ -609,7 +609,7 @@ tree_sync(char *hkdir,
 
 	/* mmap the persistent state
 	 */
-	assert(! (PERSSZ % pgsz));
+	assert(!(PERSSZ % pgsz));
 	persp = (treepers_t *) mmap_autogrow(
 				     PERSSZ,
 				     tranp->t_persfd,
@@ -640,7 +640,7 @@ tree_sync(char *hkdir,
 	 * persistent state file.
 	 */
 	ok = hash_sync(perspath);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -649,7 +649,7 @@ tree_sync(char *hkdir,
 	assert(persp->p_hashsz <= (size64_t)(OFF64MAX - (off64_t)PERSSZ));
 	nodeoff = (off64_t)PERSSZ + (off64_t)persp->p_hashsz;
 	ok = node_sync(tranp->t_persfd, nodeoff);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -729,7 +729,7 @@ tree_marknoref_recurse(nh_t parh)
 void
 tree_markallsubtree(bool_t sensepr)
 {
-	if (! sensepr) {
+	if (!sensepr) {
 		persp->p_ignoreorphpr = BOOL_TRUE;
 	}
 	selsubtree(persp->p_rooth, sensepr);
@@ -761,7 +761,7 @@ tree_begindir(filehdr_t *fhdrp, dah_t *dahp)
 	if (hardh != NH_NULL) {
 		node_t *hardp;
 		hardp = Node_map(hardh);
-		if (! (hardp->n_flags & NF_ISDIR)) {
+		if (!(hardp->n_flags & NF_ISDIR)) {
 			/* case 1: previously seen as dirent, now know is dir
 			 */
 			mlog(MLOG_TRACE | MLOG_TREE,
@@ -770,11 +770,11 @@ tree_begindir(filehdr_t *fhdrp, dah_t *dahp)
 			      ino,
 			      gen,
 			      fhdrp->fh_stat.bs_gen);
-			if (! tranp->t_toconlypr) {
+			if (!tranp->t_toconlypr) {
 				assert(hardp->n_dah == DAH_NULL);
 				hardp->n_dah = dirattr_add(fhdrp);
 			}
-		} else if (! tranp->t_toconlypr && hardp->n_dah == DAH_NULL) {
+		} else if (!tranp->t_toconlypr && hardp->n_dah == DAH_NULL) {
 			/* case 2: node is a dir, but had thrown away dirattr
 			 */
 			mlog(MLOG_TRACE | MLOG_TREE,
@@ -807,7 +807,7 @@ tree_begindir(filehdr_t *fhdrp, dah_t *dahp)
 		      ino,
 		      gen,
 		      fhdrp->fh_stat.bs_gen);
-		if (! tranp->t_toconlypr) {
+		if (!tranp->t_toconlypr) {
 			dah = dirattr_add(fhdrp);
 		} else {
 			dah = DAH_NULL;
@@ -976,7 +976,7 @@ tree_addent(nh_t parh, xfs_ino_t ino, gen_t gen, char *name, size_t namelen)
 				assert(namebuflen > 0);
 				if (hardp->n_parh == parh
 				     &&
-				     ! strcmp(tranp->t_namebuf, name)) {
+				     !strcmp(tranp->t_namebuf, name)) {
 					/* dir seen as entry again
 					 */
 					if (hardp->n_lnkh != NH_NULL) {
@@ -1151,7 +1151,7 @@ tree_subtree_parse(bool_t sensepr, char *path)
 			   &ino,
 			   &isdirpr,
 			   &isselpr);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -1200,7 +1200,7 @@ tree_post(char *path1, char *path2)
 
 	/* eliminate unreferenced dirents
 	 */
-	if (! persp->p_fullpr) {
+	if (!persp->p_fullpr) {
 		mlog(MLOG_DEBUG | MLOG_TREE,
 		      "eliminating unreferenced directory entries\n");
 		rootp = Node_map(persp->p_rooth);
@@ -1211,7 +1211,7 @@ tree_post(char *path1, char *path2)
 					 BOOL_TRUE,
 					 path1,
 					 path2);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -1224,7 +1224,7 @@ tree_post(char *path1, char *path2)
 	cldh = rootp->n_cldh;
 	Node_unmap(persp->p_rooth, &rootp);
 	ok = mkdirs_recurse(persp->p_rooth, cldh, path1);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -1234,14 +1234,14 @@ tree_post(char *path1, char *path2)
 
 	/* rename directories
 	 */
-	if (! persp->p_fullpr) {
+	if (!persp->p_fullpr) {
 		mlog(MLOG_DEBUG | MLOG_TREE,
 		      "performing directory renames\n");
 		orphp = Node_map(persp->p_orphh);
 		cldh = orphp->n_cldh;
 		Node_unmap(persp->p_orphh, &orphp);
 		ok = rename_dirs(cldh, path1, path2);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -1252,11 +1252,11 @@ tree_post(char *path1, char *path2)
 
 	/* process hard links
 	 */
-	if (! persp->p_fullpr) {
+	if (!persp->p_fullpr) {
 		mlog(MLOG_DEBUG | MLOG_TREE,
 		      "processing hard links\n");
 		ok = proc_hardlinks(path1, path2);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -1318,7 +1318,7 @@ noref_elim_recurse(nh_t parh,
 						 path1,
 						 path2);
 						/* RECURSION */
-			if (! ok) {
+			if (!ok) {
 				return BOOL_FALSE;
 			}
 
@@ -1327,13 +1327,13 @@ noref_elim_recurse(nh_t parh,
 				continue;
 			}
 
-			if (! isrefpr) {
+			if (!isrefpr) {
 				nrh_t nrh;
 
-				assert(! isrenamepr);
+				assert(!isrenamepr);
 				if (isrealpr) {
 					ok = Node2path(cldh, path1, _("rmdir"));
-					if (! ok) {
+					if (!ok) {
 						cldh = nextcldh;
 						continue;
 					}
@@ -1370,7 +1370,7 @@ noref_elim_recurse(nh_t parh,
 				ok = Node2path(cldh,
 						path1,
 						_("tmp dir rename src"));
-				if (! ok) {
+				if (!ok) {
 					cldh = nextcldh;
 					continue;
 				}
@@ -1380,7 +1380,7 @@ noref_elim_recurse(nh_t parh,
 				ok = Node2path(cldh,
 						path2,
 						_("tmp dir rename dst"));
-				if (! ok) {
+				if (!ok) {
 					/* REFERENCED */
 					nrh_t dummynrh;
 					dummynrh = disown(cldh);
@@ -1440,8 +1440,8 @@ noref_elim_recurse(nh_t parh,
 			}
 
 			mustorphpr = BOOL_FALSE;
-			canunlinkpr = ! isrefpr && ! isrealpr;
-			if (! isrefpr && isrealpr) {
+			canunlinkpr = !isrefpr && !isrealpr;
+			if (!isrefpr && isrealpr) {
 				nh_t hardh;
 				bool_t neededpr;
 				hardh = link_hardh(ino, gen);
@@ -1468,7 +1468,7 @@ noref_elim_recurse(nh_t parh,
 					if (hardh != cldh && hardisrealpr) {
 						break;
 					}
-					if (hardisrefpr && ! hardisrealpr) {
+					if (hardisrefpr && !hardisrealpr) {
 						neededpr = BOOL_TRUE;
 					}
 					hardh = nexthardh;
@@ -1484,11 +1484,11 @@ noref_elim_recurse(nh_t parh,
 			if (mustorphpr) {
 				/* rename file to orphanage */
 				nrh_t nrh;
-				assert(! canunlinkpr);
+				assert(!canunlinkpr);
 				ok = Node2path(cldh,
 						path1,
 						_("tmp nondir rename src"));
-				if (! ok) {
+				if (!ok) {
 					cldh = nextcldh;
 					continue;
 				}
@@ -1498,7 +1498,7 @@ noref_elim_recurse(nh_t parh,
 				ok = Node2path(cldh,
 						path2,
 						_("tmp nondir rename dst"));
-				if (! ok) {
+				if (!ok) {
 					/* REFERENCED */
 					nrh_t dummynrh;
 					dummynrh = disown(cldh);
@@ -1536,10 +1536,10 @@ noref_elim_recurse(nh_t parh,
 				/* REFERENCED */
 				nrh_t nrh;
 
-				assert(! mustorphpr);
+				assert(!mustorphpr);
 				if (isrealpr) {
 					ok = Node2path(cldh, path1, _("rmdir"));
-					if (! ok) {
+					if (!ok) {
 						cldh = nextcldh;
 						continue;
 					}
@@ -1600,10 +1600,10 @@ mkdirs_recurse(nh_t parh, nh_t cldh, char *path)
 
 		/* if needed, create a directory and update real flag
 		 */
-		if (isdirpr && ! isrealpr && isrefpr && isselpr) {
+		if (isdirpr && !isrealpr && isrefpr && isselpr) {
 			int rval;
 
-			if (! Node2path(cldh, path, _("makedir"))) {
+			if (!Node2path(cldh, path, _("makedir"))) {
 				cldh = nextcldh;
 				continue;
 			}
@@ -1635,7 +1635,7 @@ mkdirs_recurse(nh_t parh, nh_t cldh, char *path)
 			bool_t ok;
 			ok = mkdirs_recurse(cldh, grandcldh, path);
 							/* RECURSION */
-			if (! ok) {
+			if (!ok) {
 				return BOOL_FALSE;
 			}
 		}
@@ -1685,7 +1685,7 @@ rename_dirs(nh_t cldh,
 			newnrh = renamep->n_nrh;
 			Node_unmap(renameh, &renamep);
 			ok = Node2path(cldh, path1, _("rename dir"));
-			if (! ok) {
+			if (!ok) {
 				cldh = nextcldh;
 				continue;
 			}
@@ -1693,7 +1693,7 @@ rename_dirs(nh_t cldh,
 			assert(dummynrh == NRH_NULL);
 			adopt(newparh, cldh, newnrh);
 			ok = Node2path(cldh, path2, _("rename dir"));
-			if (! ok) {
+			if (!ok) {
 				dummynrh = disown(cldh);
 				assert(dummynrh == newnrh);
 				adopt(persp->p_orphh, cldh, NRH_NULL);
@@ -1744,7 +1744,7 @@ tree_cb_links(xfs_ino_t ino,
 	       gen_t gen,
 	       int32_t ctime,
 	       int32_t mtime,
-	       bool_t (* funcp)(void *contextp,
+	       bool_t (*funcp)(void *contextp,
 				   bool_t linkpr,
 				   char *path1,
 				   char *path2),
@@ -1783,13 +1783,13 @@ tree_cb_links(xfs_ino_t ino,
 		/* build a pathname
 		 */
 		ok = Node2path(nh, path, _("restore"));
-		if (! ok) {
+		if (!ok) {
 			continue;
 		}
 
 		/* skip if not in selected subtree
 		 */
-		if (! (flags & NF_SUBTREE)) {
+		if (!(flags & NF_SUBTREE)) {
 			mlog((MLOG_NITTY + 1) | MLOG_TREE,
 			      "skipping %s (ino %llu gen %u): %s\n",
 			      path,
@@ -1817,9 +1817,9 @@ tree_cb_links(xfs_ino_t ino,
 		 * so we won't check again. in fact, can't check again
 		 * since restore changes the answer.
 		 */
-		if (! (flags & NF_WRITTEN)) {
+		if (!(flags & NF_WRITTEN)) {
 			bool_t exists;
-			if (! content_overwrite_ok(path,
+			if (!content_overwrite_ok(path,
 						     ctime,
 						     mtime,
 						     &reasonstr,
@@ -1842,7 +1842,7 @@ tree_cb_links(xfs_ino_t ino,
 				 * that may have been set since the dump was
 				 * taken.
 				 */
-				if (! tranp->t_toconlypr && exists) {
+				if (!tranp->t_toconlypr && exists) {
 					rval = unlink(path);
 					if (rval && errno != ENOENT) {
 						mlog(MLOG_NORMAL |
@@ -1876,8 +1876,8 @@ tree_cb_links(xfs_ino_t ino,
 			      ino,
 			      gen);
 		}
-		ok = (* funcp)(contextp, path == path2, path1, path2);
-		if (! ok) {
+		ok = (*funcp)(contextp, path == path2, path1, path2);
+		if (!ok) {
 			return RV_NOTOK;
 		}
 
@@ -1929,13 +1929,13 @@ tree_cb_links(xfs_ino_t ino,
 				      "discarding %llu %u\n",
 				      ino,
 				      gen);
-				ok = (* funcp)(contextp, BOOL_FALSE, 0, 0);
-				if (! ok) {
+				ok = (*funcp)(contextp, BOOL_FALSE, 0, 0);
+				if (!ok) {
 					return RV_NOTOK;
 				}
 			} else {
 
-				if (! tranp->t_toconlypr) {
+				if (!tranp->t_toconlypr) {
 					char *dir;
 					char tmp[PATH_MAX];
 
@@ -1947,9 +1947,9 @@ tree_cb_links(xfs_ino_t ino,
 				mlog (MLOG_VERBOSE | MLOG_NOTE | MLOG_TREE, _(
 				      "ino %llu salvaging file,"
 				      " placing in %s\n"), ino, path1);
-				ok = (* funcp)(contextp, path == path2,
+				ok = (*funcp)(contextp, path == path2,
 					path1, path2);
-				if (! ok) {
+				if (!ok) {
 					return RV_NOTOK;
 				}
 			}
@@ -1974,7 +1974,7 @@ tree_cb_links(xfs_ino_t ino,
 			adopt(persp->p_orphh, nh, NRH_NULL);
 			ok = Node2path(nh, path1, _("orphan"));
 			assert(ok);
-			(void)(* funcp)(contextp, BOOL_FALSE, path1,path2);
+			(void)(*funcp)(contextp, BOOL_FALSE, path1,path2);
 		}
 	}
 	return RV_OK;
@@ -2013,7 +2013,7 @@ tree_adjref_recurse(nh_t cldh,
 	{
 		node_t *cldp;
 		cldp = Node_map(cldh);
-		if (! pardumpedpr && parrefedpr) {
+		if (!pardumpedpr && parrefedpr) {
 			cldp->n_flags |= NF_REFED;
 		}
 		clddumpedpr = (int)cldp->n_flags & NF_DUMPEDDIR;
@@ -2035,12 +2035,12 @@ tree_adjref_recurse(nh_t cldh,
 
 static bool_t tree_extattr_recurse(nh_t parh,
 				    nh_t cldh,
-				    bool_t (* cbfunc)(char *path,
+				    bool_t (*cbfunc)(char *path,
 							 dah_t dah),
 				    char *path);
 
 bool_t
-tree_extattr(bool_t (* cbfunc)(char *path, dah_t dah), char *path)
+tree_extattr(bool_t (*cbfunc)(char *path, dah_t dah), char *path)
 {
 	node_t *rootp;
 	nh_t cldh;
@@ -2057,7 +2057,7 @@ tree_extattr(bool_t (* cbfunc)(char *path, dah_t dah), char *path)
 static bool_t
 tree_extattr_recurse(nh_t parh,
 		      nh_t cldh,
-		      bool_t (* cbfunc)(char *path, dah_t dah),
+		      bool_t (*cbfunc)(char *path, dah_t dah),
 		      char *path)
 {
 	node_t *parp;
@@ -2091,7 +2091,7 @@ tree_extattr_recurse(nh_t parh,
 						   cbfunc,
 						   path);
 							/* RECURSION */
-			if (! ok) {
+			if (!ok) {
 				return BOOL_FALSE;
 			}
 		}
@@ -2106,14 +2106,14 @@ tree_extattr_recurse(nh_t parh,
 	parp = Node_map(parh);
 	dah = parp->n_dah;
 	Node_unmap(parh, &parp);
-	if (! Node2path(parh, path, _("set dir extattr"))) {
+	if (!Node2path(parh, path, _("set dir extattr"))) {
 		mlog (MLOG_NORMAL | MLOG_WARNING | MLOG_TREE,  _(
 		      "tree_extattr_recurse: Could not convert node to "
 		      "path for %s\n"), path);
 		return BOOL_TRUE;
 	}
 	if (dah != DAH_NULL) {
-		ok = (* cbfunc)(path, dah);
+		ok = (*cbfunc)(path, dah);
 	} else {
 		ok = BOOL_TRUE;
 	}
@@ -2214,7 +2214,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 
 		/* if unrefed, unreal, free node etc. (sel doesn't matter)
 		 */
-		if (! isrealpr && ! isrefpr) {
+		if (!isrealpr && !isrefpr) {
 			mlog(MLOG_NITTY | MLOG_TREE,
 			      "freeing node %x: not real, not referenced\n",
 			      nh);
@@ -2227,7 +2227,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 
 		/* not real, refed, but not selected, can't help
 		 */
-		if (! isrealpr &&   isrefpr && ! isselpr) {
+		if (!isrealpr &&   isrefpr && !isselpr) {
 			mlog(MLOG_NITTY | MLOG_TREE,
 			      "skipping node %x: not selected\n",
 			      nh);
@@ -2237,7 +2237,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 
 		/* if unreal, refed, sel, add to dst list,
 		 */
-		if (! isrealpr &&   isrefpr &&   isselpr) {
+		if (!isrealpr &&   isrefpr &&   isselpr) {
 			mlog(MLOG_NITTY | MLOG_TREE,
 			      "making node %x dst: "
 			      "not real, refed, sel\n",
@@ -2251,7 +2251,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 
 		/* if real, unrefed, sel, add to src list
 		 */
-		if (isrealpr && ! isrefpr &&   isselpr) {
+		if (isrealpr && !isrefpr &&   isselpr) {
 			mlog(MLOG_NITTY | MLOG_TREE,
 			      "making node %x src: real, not refed, sel\n",
 			      nh);
@@ -2301,13 +2301,13 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 		/* build pathname to dst
 		 */
 		ok = Node2path(dsth, phcbp->path2, _("rename to"));
-		if (! ok) {
+		if (!ok) {
 			link_in(dsth);
 			continue;
 		}
 
 		successpr = BOOL_FALSE;
-		while (! successpr && rnsrcheadh != NH_NULL) {
+		while (!successpr && rnsrcheadh != NH_NULL) {
 			nh_t srch;
 			nrh_t nrh;
 			node_t *srcp;
@@ -2321,7 +2321,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 			/* build a path to src
 			 */
 			ok = Node2path(srch, phcbp->path1, _("rename from"));
-			if (! ok) {
+			if (!ok) {
 				link_in(srch);
 				continue;
 			}
@@ -2358,10 +2358,10 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 
 		/* tes@sgi.com: note: loop of one iteration only
 		 */
-		while (! successpr && lnsrch != NH_NULL) {
+		while (!successpr && lnsrch != NH_NULL) {
 			ok = Node2path(lnsrch, phcbp->path1, _("link"));
 
-			if (! ok) {
+			if (!ok) {
 				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_TREE, _(
 				      "unable to use %s "
 				      "as a hard link source\n"),
@@ -2392,7 +2392,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 			successpr = BOOL_TRUE;
 		}
 
-		if (! successpr) {
+		if (!successpr) {
 			mlog(MLOG_NITTY | MLOG_TREE,
 			      "no link src for node %x\n",
 			      dsth);
@@ -2421,7 +2421,7 @@ proc_hardlinks_cb(void *contextp, nh_t hardheadh)
 		Node_unmap(srch, &srcp);
 
 		ok = Node2path(srch, phcbp->path1, _("unlink"));
-		if (! ok) {
+		if (!ok) {
 			link_in(srch);
 			continue;
 		}
@@ -2501,7 +2501,7 @@ tree_setattr_recurse(nh_t parh, char *path)
 		if (isdirpr && isselpr && isrealpr) {
 			bool_t ok;
 			ok = tree_setattr_recurse(cldh, path); /* RECURSION */
-			if (! ok) {
+			if (!ok) {
 				Node_unmap(cldh, &cldp);
 				return BOOL_FALSE;
 			}
@@ -2793,7 +2793,7 @@ restart:
 
 		tsi_cmd_parse(buf);
 		cmdp = tsi_cmd_match();
-		if (! cmdp) {
+		if (!cmdp) {
 			cmdp = tsi_cmd_help;
 		}
 	} while (cmdp != tsi_cmd_quit && cmdp != tsi_cmd_extract);
@@ -2833,14 +2833,14 @@ tsi_cmd_pwd(void *ctxp,
 	/* special case root
 	 */
 	if (tranp->t_inter.i_cwdh == persp->p_rooth) {
-		(* pcb )(pctxp, "cwd is fs root\n");
+		(*pcb )(pctxp, "cwd is fs root\n");
 		return;
 	}
 
 	/* ascend tree recursively, print path on way back
 	 */
 	tsi_cmd_pwd_recurse(ctxp, pcb, pctxp, tranp->t_inter.i_cwdh);
-	(* pcb )(pctxp, "\n");
+	(*pcb )(pctxp, "\n");
 }
 
 static void
@@ -2864,14 +2864,14 @@ tsi_cmd_pwd_recurse(void *ctxp,
 	if (parh != persp->p_rooth) {
 		tsi_cmd_pwd_recurse(ctxp, pcb, pctxp, parh);
 			/* RECURSION */
-		(* pcb )(pctxp, "/");
+		(*pcb )(pctxp, "/");
 	}
 	assert(nrh != NRH_NULL);
 	namelen = namreg_get(nrh,
 			      tranp->t_inter.i_name,
 			      sizeof(tranp->t_inter.i_name));
 	assert(namelen > 0);
-	(* pcb)(pctxp, tranp->t_inter.i_name);
+	(*pcb)(pctxp, tranp->t_inter.i_name);
 }
 
 /* ARGSUSED */
@@ -2905,14 +2905,14 @@ tsi_cmd_ls(void *ctxp,
 			   &ino,
 			   &isdirpr,
 			   &isselpr);
-	if (! ok) {
+	if (!ok) {
 		return;
 	}
 
 	/* if named is not a dir, just display named
 	 */
-	if (! isdirpr) {
-		(* pcb)(pctxp,
+	if (!isdirpr) {
+		(*pcb)(pctxp,
 			   "    %s %10llu %s%s\n",
 			   isselpr ? "*" : " ",
 			   ino,
@@ -2943,7 +2943,7 @@ tsi_cmd_ls(void *ctxp,
 					      tranp->t_inter.i_name,
 					      sizeof(tranp->t_inter.i_name));
 			assert(namelen > 0);
-			(* pcb)(pctxp,
+			(*pcb)(pctxp,
 				   "    %s %10llu %s%s\n",
 				   isselpr ? "*" : " ",
 				   ino,
@@ -2985,15 +2985,15 @@ tsi_cmd_cd(void *ctxp,
 			   &ino,
 			   &isdirpr,
 			   &isselpr);
-	if (! ok) {
+	if (!ok) {
 		return;
 	}
 
 	/* if named is not a dir, complain
 	 */
-	if (! isdirpr) {
+	if (!isdirpr) {
 		assert(arg);
-		(* pcb)(pctxp,
+		(*pcb)(pctxp,
 			   _("%s is not a directory\n"),
 			   arg);
 
@@ -3036,7 +3036,7 @@ tsi_cmd_add(void *ctxp,
 			   &ino,
 			   &isdirpr,
 			   &isselpr);
-	if (! ok) {
+	if (!ok) {
 		return;
 	}
 
@@ -3074,7 +3074,7 @@ tsi_cmd_delete(void *ctxp,
 			   &ino,
 			   &isdirpr,
 			   &isselpr);
-	if (! ok) {
+	if (!ok) {
 		return;
 	}
 
@@ -3104,7 +3104,7 @@ tsi_cmd_parse(char *buf)
 {
 	int wordcnt;
 
-	if (! buf) {
+	if (!buf) {
 		tranp->t_inter.i_argc = 0;
 		return;
 	}
@@ -3150,7 +3150,7 @@ tsi_cmd_match(void)
 	}
 
 	for (; tblp < tblendp; tblp++) {
-		if (! strncmp(tranp->t_inter.i_argv[0],
+		if (!strncmp(tranp->t_inter.i_argv[0],
 				tblp->tct_pattern,
 				strlen(tranp->t_inter.i_argv[0]))) {
 			break;
@@ -3186,9 +3186,9 @@ tsi_cmd_help(void *ctxp,
 				 /
 				 sizeof(tsi_cmd_tbl[0]);
 
-	(* pcb )(pctxp, _("the following commands are available:\n"));
+	(*pcb )(pctxp, _("the following commands are available:\n"));
 	for (; tblp < tblendp; tblp++) {
-		(* pcb)(pctxp,
+		(*pcb)(pctxp,
 			   "\t%s %s\n",
 			   tblp->tct_pattern,
 			   tblp->tct_help);
@@ -3266,7 +3266,7 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 
 		/* if no path arg, break
 		 */
-		if (! path) {
+		if (!path) {
 			break;
 		}
 
@@ -3279,7 +3279,7 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 
 		/* if empty path arg, break
 		 */
-		if (! strlen(path)) {
+		if (!strlen(path)) {
 			break;
 		}
 
@@ -3302,9 +3302,9 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 
 		/* be sure the named node is a dir
 		 */
-		if (! isdirpr) {
+		if (!isdirpr) {
 			if (pcb) {
-				(* pcb)(pctxp, _(
+				(*pcb)(pctxp, _(
 					   "parent of %s is not a directory\n"),
 					   arg);
 			}
@@ -3313,7 +3313,7 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 
 		/* special case "."
 		 */
-		if (! strcmp(nbuf, ".")) {
+		if (!strcmp(nbuf, ".")) {
 			if (strpatchp) {
 				*strpatchp = '/';
 			}
@@ -3322,10 +3322,10 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 
 		/* special case ".."
 		 */
-		if (! strcmp(nbuf, "..")) {
+		if (!strcmp(nbuf, "..")) {
 			if (parh == NH_NULL) {
 				if (pcb) {
-					(* pcb)(pctxp, _(
+					(*pcb)(pctxp, _(
 						   "%s above root\n"),
 						   arg);
 				}
@@ -3368,7 +3368,7 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 						     tranp->t_inter.i_name,
 					       sizeof(tranp->t_inter.i_name));
 				assert(siblen > 0);
-				if (! strcmp(nbuf, tranp->t_inter.i_name)) {
+				if (!strcmp(nbuf, tranp->t_inter.i_name)) {
 					break;
 				}
 			}
@@ -3379,7 +3379,7 @@ tsi_walkpath(char *arg, nh_t rooth, nh_t cwdh,
 		 */
 		if (sibh == NH_NULL) {
 			if (pcb) {
-				(* pcb)(pctxp, _(
+				(*pcb)(pctxp, _(
 					   "%s not found\n"),
 					   arg);
 			}
@@ -3751,7 +3751,7 @@ selsubtree(nh_t nh, bool_t sensepr)
 				}
 				cldh = nextcldh;
 			}
-			if (! atleastonechildselpr) {
+			if (!atleastonechildselpr) {
 				parp->n_flags &= ~NF_SUBTREE;
 				/* DBG could break out here (remember to unmap!)
 				 */
@@ -3787,7 +3787,7 @@ selsubtree_recurse_down(nh_t nh, bool_t sensepr)
 		gen = np->n_gen;
 		isdirpr = (np->n_flags & NF_ISDIR);
 		Node_unmap(nh, &np);
-		if (! isdirpr) {
+		if (!isdirpr) {
 			if (sensepr) {
 				inomap_rst_add(ino);
 			} else {
@@ -3810,7 +3810,7 @@ selsubtree_recurse_down(nh_t nh, bool_t sensepr)
 						break;
 					}
 				}
-				if (! neededpr) {
+				if (!neededpr) {
 					inomap_rst_del(ino);
 				}
 			}
@@ -3875,7 +3875,7 @@ link_matchh(nh_t hardh, nh_t parh, char *name)
 					      tranp->t_namebuf,
 					      sizeof(tranp->t_namebuf));
 			assert(namelen > 0);
-			if (! strcmp(name, tranp->t_namebuf)) {
+			if (!strcmp(name, tranp->t_namebuf)) {
 				Node_unmap(hardh, &np);
 				break;
 			}
@@ -3999,7 +3999,7 @@ link_out(nh_t nh)
  * iteration aborted if callback returns FALSE
  */
 static void
-link_headiter(bool_t (* cbfp)(void *contextp, nh_t hardh), void *contextp)
+link_headiter(bool_t (*cbfp)(void *contextp, nh_t hardh), void *contextp)
 {
 	hash_iter(cbfp, contextp);
 }
@@ -4152,8 +4152,8 @@ hash_init(size64_t vmsz,
 	/* map the hash array just after the persistent state header
 	 */
 	assert(persp->p_hashsz <= SIZEMAX);
-	assert(! (persp->p_hashsz % (size64_t)pgsz));
-	assert(! (PERSSZ % pgsz));
+	assert(!(persp->p_hashsz % (size64_t)pgsz));
+	assert(!(PERSSZ % pgsz));
 	tranp->t_hashp = (nh_t *) mmap_autogrow(
 					    (size_t)persp->p_hashsz,
 					    tranp->t_persfd,
@@ -4193,13 +4193,13 @@ hash_sync(char *perspath)
 	/* retrieve the hash size from the persistent state
 	 */
 	hashsz = persp->p_hashsz;
-	assert(! (hashsz % sizeof(nh_t)));
+	assert(!(hashsz % sizeof(nh_t)));
 
 	/* map the hash array just after the persistent state header
 	 */
 	assert(hashsz <= SIZEMAX);
-	assert(! (hashsz % (size64_t)pgsz));
-	assert(! (PERSSZ % pgsz));
+	assert(!(hashsz % (size64_t)pgsz));
+	assert(!(PERSSZ % pgsz));
 	tranp->t_hashp = (nh_t *) mmap_autogrow(
 					    (size_t)hashsz,
 					    tranp->t_persfd,
@@ -4369,7 +4369,7 @@ hash_find(xfs_ino_t ino, gen_t gen)
  * must figure next node prior to calling callback.
  */
 static void
-hash_iter(bool_t (* cbfp)(void *contextp, nh_t hashh), void *contextp)
+hash_iter(bool_t (*cbfp)(void *contextp, nh_t hashh), void *contextp)
 {
 	ix_t hix;
 	size64_t hashlen = persp->p_hashsz / sizeof(nh_t);
@@ -4386,8 +4386,8 @@ hash_iter(bool_t (* cbfp)(void *contextp, nh_t hashh), void *contextp)
 			nexth = np->n_hashh;
 			Node_unmap(nh, &np);
 
-			ok = (* cbfp)(contextp, nh);
-			if (! ok) {
+			ok = (*cbfp)(contextp, nh);
+			if (!ok) {
 				return;
 			}
 
@@ -4429,7 +4429,7 @@ Node_chk(nh_t nh, nh_t *nexthashhp, nh_t *nextlnkhp)
 	n = *np;
 	Node_unmap(nh, &np);
 
-	if (! nexthashhp && n.n_hashh != NH_NULL) {
+	if (!nexthashhp && n.n_hashh != NH_NULL) {
 		mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_TREE, _(
 		      "nh 0x%x np 0x%x hash link not null\n"),
 		      nh,
@@ -4501,13 +4501,13 @@ tree_chk(void)
 			nh_t lnkh;
 
 			ok = Node_chk(hashh, &hashh, &lnkh);
-			if (! ok) {
+			if (!ok) {
 				okaccum = BOOL_FALSE;
 			}
 
 			while (lnkh != NH_NULL) {
 				ok = Node_chk(lnkh, 0, &lnkh);
-				if (! ok) {
+				if (!ok) {
 					okaccum = BOOL_FALSE;
 				}
 			}
@@ -4515,7 +4515,7 @@ tree_chk(void)
 	}
 
 	ok = tree_chk2();
-	if (! ok) {
+	if (!ok) {
 		okaccum = BOOL_FALSE;
 	}
 
@@ -4610,7 +4610,7 @@ tree_chk2_recurse(nh_t cldh, nh_t parh)
 			      parh);
 		}
 		ok = tree_chk2_recurse(grandcldh, cldh);
-		if (! ok) {
+		if (!ok) {
 			okaccum = BOOL_FALSE;
 		}
 
@@ -4646,7 +4646,7 @@ parse(int slotcnt, char **slotbuf, char *string)
 	 * characters which are to be interpreted literally.
 	 */
 	liter = (char *)calloc(1, strlen(string) + 1);
-	if (! liter) {
+	if (!liter) {
 		return -1;
 	}
 
@@ -4654,7 +4654,7 @@ parse(int slotcnt, char **slotbuf, char *string)
 	 * are to be interpreted literally
 	 */
 	for (s = string, l = liter; *s; s++, l++) {
-		if (*s == '\\' && ! *l) {
+		if (*s == '\\' && !*l) {
 			fix_escape(s, l);
 		}
 	}
@@ -4671,7 +4671,7 @@ parse(int slotcnt, char **slotbuf, char *string)
 	/* pass 3: collapse white space spans into a single space
 	 */
 	for (s = string, l = liter; *s; s++, l++) {
-		if (is_white(*s) && ! *l) {
+		if (is_white(*s) && !*l) {
 			collapse_white(s, l);
 		}
 	}
@@ -4839,7 +4839,7 @@ collapse_white(char *string, char *liter)
 	size_t cnt;
 
 	cnt = 0;
-	for (s = string, l = liter; is_white(*s) && ! *l; s++, l++) {
+	for (s = string, l = liter; is_white(*s) && !*l; s++, l++) {
 		cnt++;
 	}
 
@@ -4856,7 +4856,7 @@ distance_to_space(char *s, char *l)
 {
 	size_t cnt;
 
-	for (cnt = 0; *s && (! is_white(*s) || *l); s++, l++) {
+	for (cnt = 0; *s && (!is_white(*s) || *l); s++, l++) {
 		cnt++;
 	}
 

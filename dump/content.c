@@ -599,7 +599,7 @@ content_init(int argc,
 	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		switch (c) {
 		case GETOPT_LEVEL:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -618,7 +618,7 @@ content_init(int argc,
 			}
 			break;
 		case GETOPT_SUBTREE:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -636,7 +636,7 @@ content_init(int argc,
 			subtreecnt++;
 			break;
 		case GETOPT_MAXDUMPFILESIZE:
-			if (! optarg || optarg [0] == '-') {
+			if (!optarg || optarg [0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -671,7 +671,7 @@ content_init(int argc,
 			sc_preerasepr = BOOL_TRUE;
 			break;
 		case GETOPT_ALERTPROG:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 					"-%c argument missing\n"),
 				    c);
@@ -687,7 +687,7 @@ content_init(int argc,
 			sc_dumpasoffline = BOOL_TRUE;
 			break;
 		case GETOPT_BASED:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -720,7 +720,7 @@ content_init(int argc,
 	 * dash ('-') with no option letter. This must appear between
 	 * all lettered arguments and the source file system pathname.
 	 */
-	if (optind < argc && ! strcmp(argv[optind ], "-")) {
+	if (optind < argc && !strcmp(argv[optind ], "-")) {
 		optind++;
 	}
 
@@ -769,7 +769,7 @@ content_init(int argc,
 	 * system ID (uuid). returns BOOL_FALSE if the last
 	 * argument doesn't look like a file system.
 	 */
-	if (! fs_info(fstype,
+	if (!fs_info(fstype,
 			sizeof(fstype),
 			FS_DEFAULT,
 			fsdevice,
@@ -790,7 +790,7 @@ content_init(int argc,
 	 * to mount an unmounted file system on a temporary mount point,
 	 * if it is not currently mounted.
 	 */
-	if (! fs_mounted(fstype, fsdevice, mntpnt, &fsid)) {
+	if (!fs_mounted(fstype, fsdevice, mntpnt, &fsid)) {
 		mlog(MLOG_NORMAL | MLOG_ERROR, _(
 		      "%s must be mounted to be dumped\n"),
 		      srcname);
@@ -880,7 +880,7 @@ content_init(int argc,
 		interruptedpr = BOOL_FALSE;
 
 		ok = inv_get_session_byuuid(&fsid, &baseuuid, &sessp);
-		if (! ok) {
+		if (!ok) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not find specified base dump (%s) "
 			      "in inventory\n"),
@@ -994,7 +994,7 @@ content_init(int argc,
 						    inv_idbt,
 						    (u_char_t)sc_level,
 						    &sessp);
-		if (! ok) {
+		if (!ok) {
 			sessp = 0;
 		}
 
@@ -1036,7 +1036,7 @@ content_init(int argc,
 						   &sessp);
 		ok1 = inv_close(inv_idbt);
 		assert(ok1);
-		if (! ok) {
+		if (!ok) {
 			sessp = 0;
 		}
 		inv_idbt = INV_TOKEN_NULL;
@@ -1107,13 +1107,13 @@ baseuuidbypass:
 
 	/* now determine the incremental and resume bases, if any.
 	 */
-	if (samefoundpr && ! sameinterruptedpr) {
+	if (samefoundpr && !sameinterruptedpr) {
 		free((void *)sc_resumerangep);
 		sc_resumerangep = 0;
 		samefoundpr = BOOL_FALSE;
 	}
-	if (samefoundpr && ! resumereqpr) {
-		if (! underfoundpr || undertime <= sametime) {
+	if (samefoundpr && !resumereqpr) {
+		if (!underfoundpr || undertime <= sametime) {
 			mlog(MLOG_VERBOSE | MLOG_WARNING, _(
 			      "most recent level %d dump "
 			      "was interrupted, "
@@ -1141,7 +1141,7 @@ baseuuidbypass:
 					      sc_level);
 					return BOOL_FALSE;
 				}
-				if (subtreecnt && ! underpartialpr) {
+				if (subtreecnt && !underpartialpr) {
 					mlog(MLOG_NORMAL | MLOG_WARNING, _(
 					      "level %u incremental "
 					      "subtree dump "
@@ -1150,7 +1150,7 @@ baseuuidbypass:
 					      sc_level,
 					      underlevel);
 				}
-				if (! subtreecnt && underpartialpr) {
+				if (!subtreecnt && underpartialpr) {
 					mlog(MLOG_NORMAL | MLOG_WARNING, _(
 					      "level %u incremental "
 					      "non-subtree dump "
@@ -1168,7 +1168,7 @@ baseuuidbypass:
 				free((void *)sc_resumerangep);
 				sc_resumerangep = 0;
 			} else {
-				if (subtreecnt && ! samepartialpr) {
+				if (subtreecnt && !samepartialpr) {
 					mlog(MLOG_NORMAL | MLOG_WARNING, _(
 					      "level %u incremental "
 					      "subtree dump "
@@ -1177,7 +1177,7 @@ baseuuidbypass:
 					      sc_level,
 					      sc_level);
 				}
-				if (! subtreecnt && samepartialpr) {
+				if (!subtreecnt && samepartialpr) {
 					mlog(MLOG_NORMAL | MLOG_WARNING, _(
 					      "level %u incremental "
 					      "non-subtree dump "
@@ -1207,7 +1207,7 @@ baseuuidbypass:
 				      sc_level);
 				return BOOL_FALSE;
 			}
-			if (subtreecnt && ! underpartialpr) {
+			if (subtreecnt && !underpartialpr) {
 				mlog(MLOG_NORMAL | MLOG_WARNING, _(
 				      "level %u incremental "
 				      "subtree dump "
@@ -1216,7 +1216,7 @@ baseuuidbypass:
 				      sc_level,
 				      underlevel);
 			}
-			if (! subtreecnt && underpartialpr) {
+			if (!subtreecnt && underpartialpr) {
 				mlog(MLOG_NORMAL | MLOG_WARNING, _(
 				      "level %u incremental "
 				      "non-subtree dump "
@@ -1230,12 +1230,12 @@ baseuuidbypass:
 			sc_incrbaselevel = underlevel;
 			uuid_copy(sc_incrbaseid, underid);
 			sc_resumepr = BOOL_FALSE;
-			assert(! sc_resumerangep);
+			assert(!sc_resumerangep);
 		}
 	} else {
 		if (samefoundpr) {
 			assert(sametime);
-			if (subtreecnt && ! samepartialpr) {
+			if (subtreecnt && !samepartialpr) {
 				mlog(MLOG_NORMAL | MLOG_WARNING, _(
 				      "level %u "
 				      "subtree dump "
@@ -1244,7 +1244,7 @@ baseuuidbypass:
 				      sc_level,
 				      sc_level);
 			}
-			if (! subtreecnt && samepartialpr) {
+			if (!subtreecnt && samepartialpr) {
 				mlog(MLOG_NORMAL | MLOG_WARNING, _(
 				      "level %u "
 				      "non-subtree dump "
@@ -1261,7 +1261,7 @@ baseuuidbypass:
 		} else {
 			sc_incrpr = BOOL_FALSE;
 			sc_resumepr = BOOL_FALSE;
-			assert(! sc_resumerangep);
+			assert(!sc_resumerangep);
 			if (sc_level > 0) {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "cannot find earlier dump "
@@ -1285,7 +1285,7 @@ baseuuidbypass:
 
 	/* reject if resume (-R) specified, but base was not interrupted
 	 */
-	if (! sc_resumepr && resumereqpr) {
+	if (!sc_resumepr && resumereqpr) {
 		mlog(MLOG_NORMAL | MLOG_ERROR, _(
 		      "resume (-R) option inappropriate: "
 		      "no interrupted level %d dump to resume\n"),
@@ -1425,7 +1425,7 @@ baseuuidbypass:
 	 * functions.
 	 */
 	sc_fshandlep = jdm_getfshandle(mntpnt);
-	if (! sc_fshandlep) {
+	if (!sc_fshandlep) {
 		mlog(MLOG_NORMAL, _(
 		      "unable to construct a file system handle for %s: %s\n"),
 		      mntpnt,
@@ -1478,7 +1478,7 @@ baseuuidbypass:
 			   &sc_stat_inomapdone);
 	free((void *)subtreep);
 	subtreep = 0;
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -1663,7 +1663,7 @@ baseuuidbypass:
 					usage();
 					return BOOL_FALSE;
 				}
-				if (! optarg || optarg[0] == '-') {
+				if (!optarg || optarg[0] == '-') {
 					mlog(MLOG_NORMAL, _(
 					      "-%c argument missing\n"),
 					      c);
@@ -1764,7 +1764,7 @@ content_statline(char **linespp[])
 
 	/* if start time not initialized, return no strings
 	 */
-	if (! sc_stat_starttime) {
+	if (!sc_stat_starttime) {
 		return 0;
 	}
 
@@ -1929,7 +1929,7 @@ create_inv_session(
 
 	/* create a cleanup handler to close the inventory on exit. */
 	rval = atexit(inv_cleanup);
-	assert(! rval);
+	assert(!rval);
 
 	sc_inv_idbtoken = inv_open((inv_predicate_t)INV_BY_UUID,
 					INV_SEARCH_N_MOD,
@@ -2014,7 +2014,7 @@ mark_set(drive_t *drivep, xfs_ino_t ino, off64_t offset, int32_t flags)
 	markp->startpt.sp_ino = ino;
 	markp->startpt.sp_offset = offset;
 	markp->startpt.sp_flags = flags;
-	(* dop->do_set_mark)(drivep,
+	(*dop->do_set_mark)(drivep,
 				mark_callback,
 				(void *)drivep->d_index,
 				(drive_markrec_t *)markp);
@@ -2372,7 +2372,7 @@ content_stream_dump(ix_t strmix)
 		 * non-directory file is fully committed to media,
 		 * the starting point for the next media file will be advanced.
 		 */
-		if (! all_nondirs_committed) {
+		if (!all_nondirs_committed) {
 			mlog(MLOG_VERBOSE, _(
 			      "dumping non-directory files\n"));
 			sc_stat_pds[strmix].pds_phase = PDS_NONDIR;
@@ -2447,7 +2447,7 @@ decision_more:
 		 * media file in the stream. don't bother if we hit
 		 * EOM.
 		 */
-		if (! hit_eom) {
+		if (!hit_eom) {
 			rv = dump_filehdr(drivep,
 					   contextp,
 					   0,
@@ -2540,7 +2540,7 @@ decision_more:
 		if (inv_stmt != INV_TOKEN_NULL) {
 			bool_t ok;
 
-			if (! all_dirs_committed) {
+			if (!all_dirs_committed) {
 				mlog(MLOG_DEBUG,
 				      "giving inventory "
 				      "partial dirdump media file\n");
@@ -2589,9 +2589,9 @@ decision_more:
 						ncommitted,
 					        all_dirs_committed
 						&&
-						! empty_mediafile,
+						!empty_mediafile,
 						BOOL_FALSE);
-			if (! ok) {
+			if (!ok) {
 				mlog(MLOG_NORMAL, _(
 				      "inventory media file put failed\n"));
 			}
@@ -2790,16 +2790,16 @@ update_cc_Media_useterminatorpr(drive_t *drivep, context_t *contextp)
 	int dcaps = drivep->d_capabilities;
 
 	contextp->cc_Media_useterminatorpr = BOOL_TRUE;
-	if (! (dcaps & DRIVE_CAP_FILES)) {
+	if (!(dcaps & DRIVE_CAP_FILES)) {
 		contextp->cc_Media_useterminatorpr = BOOL_FALSE;
 	}
-	if (! (dcaps & DRIVE_CAP_OVERWRITE)) {
+	if (!(dcaps & DRIVE_CAP_OVERWRITE)) {
 		contextp->cc_Media_useterminatorpr = BOOL_FALSE;
 	}
-	if (! (dcaps & DRIVE_CAP_BSF)) {
+	if (!(dcaps & DRIVE_CAP_BSF)) {
 		contextp->cc_Media_useterminatorpr = BOOL_FALSE;
 	}
-	if (! (dcaps & DRIVE_CAP_APPEND)) {
+	if (!(dcaps & DRIVE_CAP_APPEND)) {
 		contextp->cc_Media_useterminatorpr = BOOL_FALSE;
 	}
 }
@@ -3754,7 +3754,7 @@ dump_file(void *arg1,
 	/* skip if at or beyond next startpoint. return non-zero to
 	 * abort iteration.
 	 */
-	if (! (endptp->sp_flags & STARTPT_FLAGS_END)) {
+	if (!(endptp->sp_flags & STARTPT_FLAGS_END)) {
 		if (endptp->sp_offset == 0) {
 			if (statp->bs_ino >= endptp->sp_ino) {
 				if (statp->bs_ino > contextp->cc_stat_lastino) {
@@ -4309,7 +4309,7 @@ init_extent_group_context(jdm_fshandle_t *fshandlep,
 	 * after this check but before all reads have completed.
 	 * This change just closes the window a bit.
 	 */
-	if ((statp->bs_mode & S_ISGID) && (! (statp->bs_mode&S_IXOTH))) {
+	if ((statp->bs_mode & S_ISGID) && (!(statp->bs_mode&S_IXOTH))) {
 		fl.l_type = F_RDLCK;
 		fl.l_whence = SEEK_SET;
 		fl.l_start = (off_t)0;
@@ -4588,7 +4588,7 @@ dump_extent_group(drive_t *drivep,
 		 * but does not contain any data above the current
 		 * offset, go to the next one and rescan.
 		 */
-		if (! sosig || offset < stopoffset) {
+		if (!sosig || offset < stopoffset) {
 			if (offset + extsz <= nextoffset) {
 				mlog(MLOG_NITTY,
 				      "extent ends before nextoffset\n");
@@ -4717,7 +4717,7 @@ dump_extent_group(drive_t *drivep,
 		if (sosig && (extsz > stopoffset - offset)) {
 			extsz = stopoffset - offset;
 			assert(extsz >= 0);
-			assert(! (extsz & (off64_t)(BBSIZE - 1)));
+			assert(!(extsz & (off64_t)(BBSIZE - 1)));
 			mlog(MLOG_NITTY,
 			      "adjusted top of extent "
 			      "to adhere to stop offset: "
@@ -4734,7 +4734,7 @@ dump_extent_group(drive_t *drivep,
 		 */
 		if (isrealtime || extsz >= PGALIGNTHRESH * PGSZ) {
 			size_t cnt_to_align;
-			cnt_to_align = (* dop->do_get_align_cnt)(drivep);
+			cnt_to_align = (*dop->do_get_align_cnt)(drivep);
 			if ((size_t)cnt_to_align < 2*sizeof(extenthdr_t)) {
 				cnt_to_align += PGSZ;
 			}
@@ -4807,7 +4807,7 @@ dump_extent_group(drive_t *drivep,
 				INTGENMAX
 				:
 				(size_t)extsz;
-			bufp = (* dop->do_get_write_buf)(drivep,
+			bufp = (*dop->do_get_write_buf)(drivep,
 							    reqsz,
 							    &actualsz);
 			assert(actualsz <= reqsz);
@@ -4853,7 +4853,7 @@ dump_extent_group(drive_t *drivep,
 					actualsz - (size_t)nread);
 			}
 
-			rval = (* dop->do_write)(drivep,
+			rval = (*dop->do_write)(drivep,
 						    bufp,
 						    actualsz);
 			switch (rval) {
@@ -5225,7 +5225,7 @@ dump_session_inv(drive_t *drivep,
 	inv_sbufp = 0;
 	inv_sbufsz = 0;
 	ok = inv_get_sessioninfo(sc_inv_sestoken, (void *)&inv_sbufp, &inv_sbufsz);
-	if (! ok) {
+	if (!ok) {
 		mlog(MLOG_NORMAL | MLOG_WARNING, _(
 		      "unable to get session inventory to dump\n"));
 		return BOOL_TRUE;
@@ -5240,7 +5240,7 @@ dump_session_inv(drive_t *drivep,
 	 * until we are successful or until the media layer
 	 * tells us to give up.
 	 */
-	for (done = BOOL_FALSE; ! done;) {
+	for (done = BOOL_FALSE; !done;) {
 		uuid_t mediaid;
 		char medialabel[GLOBAL_HDR_STRING_SZ];
 		bool_t partial;
@@ -5351,9 +5351,9 @@ dump_session_inv(drive_t *drivep,
 						(xfs_ino_t)0,
 						(off64_t)0,
 						ncommitted,
-						! partial,
+						!partial,
 						BOOL_TRUE);
-			if (! ok) {
+			if (!ok) {
 				mlog(MLOG_NORMAL, _(
 				      "inventory session media file "
 				      "put failed\n"));
@@ -5361,7 +5361,7 @@ dump_session_inv(drive_t *drivep,
 			}
 		}
 
-		done = ! partial;
+		done = !partial;
 	}
 
 	return BOOL_TRUE;
@@ -5375,7 +5375,7 @@ dump_terminator(drive_t *drivep, context_t *contextp, media_hdr_t *mwhdrp)
 
 	/* if the drive doesn't support use of stream terminators, don't bother
 	 */
-	if (! contextp->cc_Media_useterminatorpr) {
+	if (!contextp->cc_Media_useterminatorpr) {
 		return;
 	}
 
@@ -5390,7 +5390,7 @@ dump_terminator(drive_t *drivep, context_t *contextp, media_hdr_t *mwhdrp)
 	 * until we are successful or until the media layer
 	 * tells us to give up.
 	 */
-	for (done = BOOL_FALSE; ! done;) {
+	for (done = BOOL_FALSE; !done;) {
 		bool_t partial;
 		rv_t rv;
 
@@ -5454,7 +5454,7 @@ dump_terminator(drive_t *drivep, context_t *contextp, media_hdr_t *mwhdrp)
 			      ncommitted);
 		}
 
-		done = ! partial;
+		done = !partial;
 	}
 }
 
@@ -5511,7 +5511,7 @@ inv_cleanup(void)
 		      inv_stmtp++,
 		      contextp++) {
 			bool_t interrupted;
-			interrupted = ! contextp->cc_completepr;
+			interrupted = !contextp->cc_completepr;
 			if (*inv_stmtp == INV_TOKEN_NULL) {
 				continue;
 			}
@@ -5635,7 +5635,7 @@ position:
 
 		/* do a begin_read to see the disposition of the drive/media.
 		 */
-		rval = (* dop->do_begin_read)(drivep);
+		rval = (*dop->do_begin_read)(drivep);
 
 		/* update cc_Media_useterminatorpr after every begin_read,
 		 * since begin_read will cause some unknown drive params
@@ -5679,7 +5679,7 @@ position:
 			 * media object a virgin.
 			 * also, check for erase option.
 			 */
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 
 			switch(Media_erasechk(drivep,
 						dcaps,
@@ -5699,7 +5699,7 @@ position:
 				      "must supply a blank media object\n"));
 				goto changemedia;
 			}
-			if (! (dcaps & DRIVE_CAP_APPEND)) {
+			if (!(dcaps & DRIVE_CAP_APPEND)) {
 				mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_MEDIA, _(
 				      "media contains valid xfsdump "
 				      "but does not support append\n"));
@@ -5712,7 +5712,7 @@ position:
 				assert(contextp->cc_Media_useterminatorpr);
 				assert(dcaps & DRIVE_CAP_BSF); /* redundant */
 				status = 0;
-				rval = (* dop->do_bsf)(drivep, 0, &status);
+				rval = (*dop->do_bsf)(drivep, 0, &status);
 				assert(rval == 0);
 				if (status == DRIVE_ERROR_DEVICE) {
 					mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_MEDIA, _(
@@ -5753,12 +5753,12 @@ position:
 				if (intr_allowed && cldmgr_stop_requested()) {
 					return RV_INTR;
 				}
-				if (! ok) {
+				if (!ok) {
 					goto changemedia;
 				}
 			}
 
-			if (! (dcaps & DRIVE_CAP_OVERWRITE)) {
+			if (!(dcaps & DRIVE_CAP_OVERWRITE)) {
 				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 				      "unable to overwrite\n"));
 				goto changemedia;
@@ -5768,7 +5768,7 @@ position:
 				      "repositioning to overwrite\n"));
 				assert(dcaps & DRIVE_CAP_BSF);
 				status = 0;
-				rval = (* dop->do_bsf)(drivep, 0, &status);
+				rval = (*dop->do_bsf)(drivep, 0, &status);
 				assert(rval == 0);
 				if (status == DRIVE_ERROR_DEVICE) {
 					return RV_DRIVE;
@@ -5792,7 +5792,7 @@ position:
 				if (intr_allowed && cldmgr_stop_requested()) {
 					return RV_INTR;
 				}
-				if (! ok) {
+				if (!ok) {
 					goto changemedia;
 				}
 			}
@@ -5889,7 +5889,7 @@ position:
 				      "assuming corrupted media\n"));
 				mlog_exit_hint(RV_CORRUPT);
 				goto changemedia;
-			} else if (! (dcaps & DRIVE_CAP_OVERWRITE)) {
+			} else if (!(dcaps & DRIVE_CAP_OVERWRITE)) {
 				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA,_(
 				      "encountered corrupt or foreign data: "
 				      "unable to overwrite: "
@@ -5904,7 +5904,7 @@ position:
 				mlog_exit_hint(RV_CORRUPT);
 				assert(dcaps & DRIVE_CAP_BSF);
 				status = 0;
-				rval = (* dop->do_bsf)(drivep, 0, &status);
+				rval = (*dop->do_bsf)(drivep, 0, &status);
 				assert(rval == 0);
 				if (status == DRIVE_ERROR_DEVICE) {
 					return RV_DRIVE;
@@ -5928,7 +5928,7 @@ position:
 erasemedia:
 	mlog(MLOG_VERBOSE | MLOG_WARNING | MLOG_MEDIA, _(
 	      "erasing media\n"));
-	rval = (* dop->do_erase)(drivep);
+	rval = (*dop->do_erase)(drivep);
 	if (rval) {
 		return RV_DRIVE;
 	}
@@ -5941,7 +5941,7 @@ erasemedia:
 changemedia:
 	/* if the drive does not support media change, quit.
 	 */
-	if (! (dcaps & DRIVE_CAP_REMOVABLE)) {
+	if (!(dcaps & DRIVE_CAP_REMOVABLE)) {
 		return RV_ERROR;
 	}
 
@@ -5950,7 +5950,7 @@ changemedia:
 	assert(mediapresentpr != BOOL_UNKNOWN);
 	if (mediapresentpr == BOOL_TRUE) {
 		if (dcaps & DRIVE_CAP_EJECT) {
-			rval = (* dop->do_eject_media)(drivep);
+			rval = (*dop->do_eject_media)(drivep);
 			if (rval) {
 				return RV_DRIVE;
 			}
@@ -5959,7 +5959,7 @@ changemedia:
 
 	/* if dialogs not allowed, we are done.
 	 */
-	if (! dlog_allowed()) {
+	if (!dlog_allowed()) {
 		return RV_QUIT; /* this return value will cause approp. msg */
 	}
 
@@ -5971,7 +5971,7 @@ changemedia:
 	/* if media change prompt declined or times out,
 	 * we are done
 	 */
-	if (drivecnt > 1 && ! stdoutpiped) {
+	if (drivecnt > 1 && !stdoutpiped) {
 		ix_t thrdix = drivep->d_index;
 		assert(sistr);
 		mlog(MLOG_NORMAL | MLOG_NOTE | MLOG_MEDIA, _(
@@ -5993,7 +5993,7 @@ changemedia:
 	if (intr_allowed && cldmgr_stop_requested()) {
 		return RV_INTR;
 	}
-	if (! ok) {
+	if (!ok) {
 		return RV_QUIT;
 	}
 
@@ -6038,13 +6038,13 @@ write:
 			mwhdrp->mh_mediafileix++;
 		} else {
 			mwhdrp->mh_mediafileix = mrhdrp->mh_mediafileix;
-			if (! MEDIA_TERMINATOR_CHK(mrhdrp)) {
+			if (!MEDIA_TERMINATOR_CHK(mrhdrp)) {
 				mwhdrp->mh_mediafileix++;
 			}
 		}
 	}
 
-	if (! mediawrittentopr) {
+	if (!mediawrittentopr) {
 		mwhdrp->mh_mediaix++; /* pre-initialized to -1 */
 	}
 
@@ -6067,7 +6067,7 @@ write:
 
 	/* update the media object previous id and label
 	 */
-	if (! mediawrittentopr && mwhdrp->mh_dumpfileix != 0) {
+	if (!mediawrittentopr && mwhdrp->mh_dumpfileix != 0) {
 		uuid_copy(mwhdrp->mh_prevmediaid, mwhdrp->mh_mediaid);
 		(void)strncpyterm(mwhdrp->mh_prevmedialabel,
 				     mwhdrp->mh_medialabel,
@@ -6076,17 +6076,17 @@ write:
 
 	/* update the media object current id and label
 	 */
-	if (! mediawrittentopr) {
+	if (!mediawrittentopr) {
 		if (mwhdrp->mh_mediafileix == 0) {
 			char labelbuf[GLOBAL_HDR_STRING_SZ];
 
 			uuid_generate(mwhdrp->mh_mediaid);
 
-			if (! cmdlinemedialabel
+			if (!cmdlinemedialabel
 			     &&
-			     ! drivep->d_isnamedpipepr
+			     !drivep->d_isnamedpipepr
 			     &&
-			     ! drivep->d_isunnamedpipepr
+			     !drivep->d_isunnamedpipepr
 			     &&
 			     dlog_allowed()) {
 				cmdlinemedialabel = Media_prompt_label(drivep,
@@ -6104,7 +6104,7 @@ write:
 				(void)memset((void *)mwhdrp->mh_medialabel,
 						     0,
 					       sizeof(mwhdrp->mh_medialabel));
-				if (! pipeline) {
+				if (!pipeline) {
 					mlog(MLOG_VERBOSE
 					      |
 					      MLOG_WARNING
@@ -6114,7 +6114,7 @@ write:
 				}
 			}
 		} else {
-			assert(! virginmediapr);
+			assert(!virginmediapr);
 			uuid_copy(mwhdrp->mh_mediaid, mrhdrp->mh_mediaid);
 			(void)strncpyterm(mwhdrp->mh_medialabel,
 					     mrhdrp->mh_medialabel,
@@ -6129,7 +6129,7 @@ write:
 	if (intr_allowed && cldmgr_stop_requested()) {
 		return RV_INTR;
 	}
-	rval = (* dop->do_begin_write)(drivep);
+	rval = (*dop->do_begin_write)(drivep);
 	switch(rval) {
 	case 0:
 		return RV_OK;
@@ -6170,7 +6170,7 @@ Media_mfile_end(drive_t *drivep,
 	 */
 	rval = (dop->do_end_write)(drivep, ncommittedp);
 	if (hit_eom) {
-		assert(! rval);
+		assert(!rval);
 		contextp->cc_Media_begin_entrystate = BES_ENDEOM;
 		return RV_EOM;
 	}
@@ -6444,7 +6444,7 @@ Media_prompt_label_cb(void *uctxp, dlog_pcbp_t pcb, void *pctxp)
 
 	/* query: ask for a label
 	 */
-	(* pcb)(pctxp,
+	(*pcb)(pctxp,
 		   "please enter label for media in "
 		   "drive %u",
 		   drivep->d_index);
@@ -6567,7 +6567,7 @@ check_complete_flags(void)
 
 	for (strmix = 0; strmix < drivecnt; strmix++) {
 		context_t *contextp = &sc_contextp[strmix];
-		if (! contextp->cc_completepr) {
+		if (!contextp->cc_completepr) {
 			completepr = BOOL_FALSE;
 			break;
 		}

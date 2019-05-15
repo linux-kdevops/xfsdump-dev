@@ -760,7 +760,7 @@ CheckAndPruneStObjFile(bool_t checkonly,
 	if (StObjhdr->sh_pruned)
 	    prunedcount++;
 
-	if (! StObjhdr->sh_pruned) {
+	if (!StObjhdr->sh_pruned) {
 	    printf("            Session %d: %s %s",
 		   sescount++,
 		   StObjses->s_mountpt,

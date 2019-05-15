@@ -131,7 +131,7 @@ drive_init1(int argc, char *argv[])
 	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		switch (c) {
 		case GETOPT_DUMPDEST:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL,
 				      _("-%c argument missing\n"),
 				      c);
@@ -152,7 +152,7 @@ drive_init1(int argc, char *argv[])
 	 * a single dash ('-') with no option letter. This must appear
 	 * between all lettered arguments and the file system pathname.
 	 */
-	if (optind < argc && ! strcmp(argv[optind ], "-")) {
+	if (optind < argc && !strcmp(argv[optind ], "-")) {
 		if (driveix > 0) {
 			mlog(MLOG_NORMAL,
 #ifdef DUMP
@@ -211,10 +211,10 @@ drive_init1(int argc, char *argv[])
 		for (six = 0; six < scnt; six++) {
 			drive_strategy_t *sp = strategypp[six];
 			int score;
-			score = (* sp->ds_match)(argc,
+			score = (*sp->ds_match)(argc,
 						    argv,
 						    drivep);
-			if (! bestsp || score > bestscore) {
+			if (!bestsp || score > bestscore) {
 				bestsp = sp;
 				bestscore = score;
 			}
@@ -226,10 +226,10 @@ drive_init1(int argc, char *argv[])
 		mlog(MLOG_VERBOSE,
 		      _("using %s strategy\n"),
 		      bestsp->ds_description);
-		ok = (* bestsp->ds_instantiate)(argc,
+		ok = (*bestsp->ds_instantiate)(argc,
 						   argv,
 						   drivep);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -256,8 +256,8 @@ drive_init2(int argc,
 		bool_t ok;
 
 		drive_allochdrs(drivep, gwhdrtemplatep, driveix);
-		ok = (* drivep->d_opsp->do_init)(drivep);
-		if (! ok) {
+		ok = (*drivep->d_opsp->do_init)(drivep);
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -278,8 +278,8 @@ drive_init3(void)
 		drive_t *drivep = drivepp[driveix];
 		bool_t ok;
 
-		ok = (* drivep->d_opsp->do_sync)(drivep);
-		if (! ok) {
+		ok = (*drivep->d_opsp->do_sync)(drivep);
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 	}
@@ -304,7 +304,7 @@ drive_mark_commit(drive_t *drivep, off64_t ncommitted)
 	;
 	) {
 		drivep->d_markrecheadp = dmp->dm_nextp;
-		(* dmp->dm_cbfuncp)(dmp->dm_cbcontextp, dmp, BOOL_TRUE);
+		(*dmp->dm_cbfuncp)(dmp->dm_cbcontextp, dmp, BOOL_TRUE);
 		dmp = drivep->d_markrecheadp;
 	}
 }
@@ -324,7 +324,7 @@ drive_mark_discard(drive_t *drivep)
 	;
 	drivep->d_markrecheadp = dmp->dm_nextp, dmp = dmp->dm_nextp) {
 
-		(* dmp->dm_cbfuncp)(dmp->dm_cbcontextp, dmp, BOOL_FALSE);
+		(*dmp->dm_cbfuncp)(dmp->dm_cbcontextp, dmp, BOOL_FALSE);
 	}
 }
 
@@ -340,7 +340,7 @@ drive_display_metrics(void)
 		drive_t *drivep = drivepp[driveix];
 		drive_ops_t *dop = drivep->d_opsp;
 		if (dop->do_display_metrics) {
-			(* dop->do_display_metrics)(drivep);
+			(*dop->do_display_metrics)(drivep);
 		}
 	}
 }
@@ -371,9 +371,9 @@ drive_alloc(char *pathname, ix_t driveix)
 
 	/* set pipe flags
 	 */
-	if (! strcmp(pathname, "stdio")) {
+	if (!strcmp(pathname, "stdio")) {
 		drivep->d_isunnamedpipepr = BOOL_TRUE;
-	} else if (! stat64(pathname, &statbuf)
+	} else if (!stat64(pathname, &statbuf)
 		    &&
 		    (statbuf.st_mode & S_IFMT) == S_IFIFO) {
 		drivep->d_isnamedpipepr = BOOL_TRUE;

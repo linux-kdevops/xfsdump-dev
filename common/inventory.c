@@ -241,7 +241,7 @@ inv_writesession_open(
 	assert (tok != INV_TOKEN_NULL);
 	assert (sesid && fsid && mntpt && devpath);
 
-	if (! (tok->d_update_flag & FSTAB_UPDATED)) {
+	if (!(tok->d_update_flag & FSTAB_UPDATED)) {
 		if (put_fstab_entry(fsid, mntpt, devpath) < 0) {
 			printf ("put_fstab_entry :(\n");
 			return INV_TOKEN_NULL;

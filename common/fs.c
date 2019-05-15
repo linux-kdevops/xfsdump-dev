@@ -339,16 +339,16 @@ fs_tab_lookup_blk(char *blks)
 		struct stat64 statb;
 		bool_t bok;
 
-		if (! tep->fte_blks) {
+		if (!tep->fte_blks) {
 			continue;
 		}
 
-		if (! strcmp(tep->fte_blks, blks)) {
+		if (!strcmp(tep->fte_blks, blks)) {
 			return tep;
 		}
 
-		aok = ! stat64(blks, &stata);
-		bok = ! stat64(tep->fte_blks, &statb);
+		aok = !stat64(blks, &stata);
+		bok = !stat64(tep->fte_blks, &statb);
 		if (aok && bok && stata.st_rdev == statb.st_rdev) {
 			return tep;
 		}
@@ -362,7 +362,7 @@ fs_tab_lookup_mnt(char *mnts)
 	fs_tab_ent_t *tep;
 
 	for (tep = fs_tabp; tep; tep = tep->fte_nextp) {
-		if (tep->fte_mnts && ! strcmp(tep->fte_mnts, mnts)) {
+		if (tep->fte_mnts && !strcmp(tep->fte_mnts, mnts)) {
 			return tep;
 		}
 	}

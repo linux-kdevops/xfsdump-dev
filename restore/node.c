@@ -211,7 +211,7 @@ node_unmap_internal(nh_t nh, void **pp, bool_t freepr)
 	nodegen = HKPGETGEN(hkp);
 	assert(nodegen == hdlgen);
 	nodeunq = HKPGETUNQ(hkp);
-	if (! freepr) {
+	if (!freepr) {
 		assert(nodeunq != NODEUNQFREE);
 		assert(nodeunq == NODEUNQALCD);
 	} else {
@@ -337,9 +337,9 @@ node_init(int fd,
 	/* map the abstraction header
 	 */
 	assert((NODE_HDRSZ & pgmask) == 0);
-	assert(! (NODE_HDRSZ % pgsz));
+	assert(!(NODE_HDRSZ % pgsz));
 	assert(off <= OFF64MAX);
-	assert(! (off % (off64_t)pgsz));
+	assert(!(off % (off64_t)pgsz));
 	node_hdrp = (node_hdr_t *)mmap_autogrow(
 					    NODE_HDRSZ,
 					    fd,
@@ -405,7 +405,7 @@ node_sync(int fd, off64_t off)
 	 */
 	assert((NODE_HDRSZ & pgmask) == 0);
 	assert(off <= (off64_t)OFF64MAX);
-	assert(! (off % (off64_t)pgsz));
+	assert(!(off % (off64_t)pgsz));
 	node_hdrp = (node_hdr_t *)mmap_autogrow(
 					    NODE_HDRSZ,
 					    fd,

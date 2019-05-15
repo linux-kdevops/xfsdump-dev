@@ -920,10 +920,10 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 */
 	assert(sizeof(pers_desc_t) <= PERS_DESCSZ);
 	assert(PERS_DESCSZ <= pgsz);
-	assert(! (pgsz % PERS_DESCSZ));
+	assert(!(pgsz % PERS_DESCSZ));
 	assert(sizeof(extattrhdr_t) == EXTATTRHDR_SZ);
 
-	assert(! (perssz % pgsz));
+	assert(!(perssz % pgsz));
 
 	assert(SYNC_INIT == 0);
 
@@ -981,7 +981,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			existpr = BOOL_TRUE;
 			break;
 		case GETOPT_NEWER:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -1007,7 +1007,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			ownerpr = BOOL_TRUE;
 			break;
 		case GETOPT_WORKSPACE:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -1017,7 +1017,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			if (optarg[0] != '/') {
 				tranp->t_hkdir = path_reltoabs(optarg,
 								homedir);
-				if (! tranp->t_hkdir) {
+				if (!tranp->t_hkdir) {
 					mlog(MLOG_NORMAL | MLOG_ERROR, _(
 					      "-%c argument %s is an "
 					      "invalid pathname\n"),
@@ -1068,7 +1068,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 				usage();
 				return BOOL_FALSE;
 			}
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -1097,7 +1097,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 				usage();
 				return BOOL_FALSE;
 			}
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "-%c argument missing\n"),
 				      c);
@@ -1115,7 +1115,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			break;
 		case GETOPT_SUBTREE:
 		case GETOPT_NOSUBTREE:
-			if (! optarg
+			if (!optarg
 			     ||
 			     optarg[0] == 0
 			     ||
@@ -1134,7 +1134,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 				return BOOL_FALSE;
 			}
 			stcnt++;
-			if (! firststsenseprvalpr) {
+			if (!firststsenseprvalpr) {
 				if (c == GETOPT_SUBTREE) {
 					firststsensepr = BOOL_TRUE;
 				} else {
@@ -1150,7 +1150,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			stsz &= ~(STDESCALIGN - 1);
 			break;
 		case GETOPT_INTERACTIVE:
-			if (! dlog_allowed()) {
+			if (!dlog_allowed()) {
 				mlog(MLOG_NORMAL, _(
 				      "-%c unavailable: no /dev/tty\n"),
 				      GETOPT_INTERACTIVE);
@@ -1165,7 +1165,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			restoredmpr = BOOL_TRUE;
 			break;
 		case GETOPT_ALERTPROG:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 					"-%c argument missing\n"),
 					c);
@@ -1222,7 +1222,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 * appear between the last lettered argument and the destination
 	 * directory pathname.
 	 */
-	if (optind < argc && ! strcmp(argv[optind ], "-")) {
+	if (optind < argc && !strcmp(argv[optind ], "-")) {
 		optind++;
 	}
 
@@ -1230,14 +1230,14 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 * required if table-of-contents display, or if a resumed restore
 	 * or a delta restore.
 	 */
-	if (! tranp->t_toconlypr) {
+	if (!tranp->t_toconlypr) {
 		if (optind >= argc) {
 			dstdir = 0;
 		} else {
 			if (argv[optind][0] != '/') {
 				dstdir = path_reltoabs(argv[optind],
 							homedir);
-				if (! dstdir) {
+				if (!dstdir) {
 					mlog(MLOG_NORMAL | MLOG_ERROR, _(
 					      "destination directory %s "
 					      "invalid pathname\n"),
@@ -1292,11 +1292,11 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 * if this is toconly, modify the housekeeping dir's name with
 	 * the pid.
 	 */
-	if (! tranp->t_hkdir) {
+	if (!tranp->t_hkdir) {
 		if (tranp->t_toconlypr) {
 			tranp->t_hkdir = homedir;
 		} else {
-			if (! dstdir) {
+			if (!dstdir) {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "destination directory "
 				      "not specified\n"));
@@ -1335,7 +1335,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 
 	/* build a full pathname to pers. state file
 	 */
-	assert(! perspath);
+	assert(!perspath);
 	perspath = open_pathalloc(tranp->t_hkdir, persname, 0);
 
 	/* open, creating if non-existent
@@ -1367,7 +1367,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 
 	/* but first setup or verify the on-disk format information
 	 */
-	if (! persp->a.valpr) {
+	if (!persp->a.valpr) {
 		/* this is the first restore session
 		 */
 		persp->v.housekeeping_magic = HOUSEKEEPING_MAGIC;
@@ -1407,8 +1407,8 @@ content_init(int argc, char *argv[], size64_t vmsz)
 		}
 	}
 
-	if (! persp->a.valpr) {
-		if (! dstdir) {
+	if (!persp->a.valpr) {
+		if (!dstdir) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "destination directory not specified\n"));
 			usage();
@@ -1438,8 +1438,8 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			usage();
 			return BOOL_FALSE;
 		}
-	} else if (! persp->s.valpr) {
-		if (! cumpr) {
+	} else if (!persp->s.valpr) {
+		if (!cumpr) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "must rm -rf %s prior to noncumulative restore\n"),
 			      tranp->t_hkdir);
@@ -1505,7 +1505,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			return BOOL_FALSE;
 		}
 	} else {
-		if (! resumepr && ! sesscpltpr) {
+		if (!resumepr && !sesscpltpr) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "-%c option required to resume "
 			      "or "
@@ -1580,7 +1580,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			      GETOPT_SETDM);
 			return BOOL_FALSE;
 		}
-		if (! restoreextattrpr &&
+		if (!restoreextattrpr &&
 		       persp->a.restoreextattrpr != restoreextattrpr) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			     "-%c cannot reset flag from previous restore\n"),
@@ -1616,15 +1616,15 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			return BOOL_FALSE;
 		}
 		ok = dirattr_init(tranp->t_hkdir, BOOL_TRUE, (uint64_t)0);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 		ok = namreg_init(tranp->t_hkdir, BOOL_TRUE, (uint64_t)0);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 		ok = inomap_sync_pers(tranp->t_hkdir);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 
@@ -1642,7 +1642,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 				tranp->t_toconlypr,
 				fullpr,
 				persp->a.dstdirisxfspr);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 		rv = finalize(path1, path2);
@@ -1664,13 +1664,13 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	/* for the three cases, calculate old and new mapping params
 	 * and wipe partial state
 	 */
-	if (! persp->a.valpr) {
+	if (!persp->a.valpr) {
 		stpgcnt = 0;
 		newstpgcnt = (stsz + pgmask) / pgsz;
 		descpgcnt = 0;
 		memset((void *)&persp->a, 0,
 			sizeof(pers_t) - offsetofmember(pers_t, a));
-	} else if (! persp->s.valpr) {
+	} else if (!persp->s.valpr) {
 		stpgcnt = persp->a.stpgcnt;
 		newstpgcnt = stpgcnt;
 		descpgcnt = 0;
@@ -1689,13 +1689,13 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	/* unmap temp mapping of hdr, truncate, and remap hdr/subtrees
 	 */
 	rval = munmap((void *)persp, perssz);
-	assert(! rval);
+	assert(!rval);
 	rval = ftruncate(tranp->t_persfd, (off_t)perssz
 					   +
 					   (off_t)(stpgcnt + descpgcnt)
 					   *
 					   (off_t)pgsz);
-	assert(! rval);
+	assert(!rval);
 	stpgcnt = newstpgcnt;
 	persp = (pers_t *) mmap_autogrow(perssz + stpgcnt * pgsz,
 				   tranp->t_persfd, 0);
@@ -1710,7 +1710,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	/* if first restore session, record cmd line args and subtrees
 	 * and start time.
 	 */
-	if (! persp->a.valpr) {
+	if (!persp->a.valpr) {
 		stdesc_t *stdescp;
 
 		strcpy(persp->a.dstdir, dstdir);
@@ -1735,7 +1735,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 			persp->a.newertime = newertime;
 		}
 		persp->a.restoredmpr = restoredmpr;
-		if (! persp->a.dstdirisxfspr) {
+		if (!persp->a.dstdirisxfspr) {
 			restoreextattrpr = BOOL_FALSE;
 		}
 		persp->a.restoreextattrpr = restoreextattrpr;
@@ -1778,7 +1778,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 * we don't intend to restore extended attributes
 	 */
 	ok = extattr_init(drivecnt);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -1807,7 +1807,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 * referenced ONLY via the macros provided; the descriptors will be
 	 * occasionally remapped, causing the ptr to change.
 	 */
-	assert(! descp);
+	assert(!descp);
 	if (descpgcnt) {
 		descp = (pers_desc_t *) mmap_autogrow(descpgcnt * pgsz,
 						tranp->t_persfd,
@@ -1842,7 +1842,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 */
 	if (persp->a.valpr && persp->s.valpr) {
 		ok = dirattr_init(tranp->t_hkdir, BOOL_TRUE, (uint64_t)0);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 		tranp->t_dirattrinitdonepr = BOOL_TRUE;
@@ -1854,7 +1854,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 */
 	if (persp->a.valpr) {
 		ok = namreg_init(tranp->t_hkdir, BOOL_TRUE, (uint64_t)0);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 		tranp->t_namreginitdonepr = BOOL_TRUE;
@@ -1865,7 +1865,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 	 * determine if full init needed instead.
 	 */
 	ok = inomap_sync_pers(tranp->t_hkdir);
-	if (! ok) {
+	if (!ok) {
 		return BOOL_FALSE;
 	}
 
@@ -1889,7 +1889,7 @@ content_init(int argc, char *argv[], size64_t vmsz)
 				tranp->t_toconlypr,
 				fullpr,
 				persp->a.dstdirisxfspr);
-		if (! ok) {
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 		tranp->t_treeinitdonepr = BOOL_TRUE;
@@ -2108,7 +2108,7 @@ content_stream_restore(ix_t thrdix)
 						    scrhdrp);
 			}
 		} else if (tranp->t_reqdumplabvalpr) {
-			if (! strncmp(tranp->t_reqdumplab,
+			if (!strncmp(tranp->t_reqdumplab,
 					grhdrp->gh_dumplabel,
 					sizeof(grhdrp->gh_dumplabel))) {
 				matchpr = BOOL_TRUE;
@@ -2158,20 +2158,20 @@ content_stream_restore(ix_t thrdix)
 			Media_end(Mediap);
 			return mlog_exit(EXIT_NORMAL, RV_INTR);
 		}
-		if (! matchpr) {
+		if (!matchpr) {
 			Media_end(Mediap);
 			uuid_copy(lastdumprejectedid, grhdrp->gh_dumpid);
 			tranp->t_sync2 = SYNC_INIT;
-			if (! dlog_allowed()
+			if (!dlog_allowed()
 			     ||
-			     (! (dcaps & DRIVE_CAP_FILES)
+			     (!(dcaps & DRIVE_CAP_FILES)
 			       &&
-			       ! (dcaps & DRIVE_CAP_REMOVABLE))) {
+			       !(dcaps & DRIVE_CAP_REMOVABLE))) {
 				return mlog_exit(EXIT_NORMAL, RV_QUIT);
 			}
 			continue;
 		}
-		if (! dumpcompat(resumepr, level, *baseidp, BOOL_TRUE)) {
+		if (!dumpcompat(resumepr, level, *baseidp, BOOL_TRUE)) {
 			Media_end(Mediap);
 			return mlog_exit(EXIT_ERROR, RV_COMPAT);
 		}
@@ -2182,9 +2182,9 @@ content_stream_restore(ix_t thrdix)
 
 		/* don't look at the online inventory if the input is piped
 		 */
-		if (! drivep->d_isnamedpipepr
+		if (!drivep->d_isnamedpipepr
 		     &&
-		     ! drivep->d_isunnamedpipepr) {
+		     !drivep->d_isunnamedpipepr) {
 			ok = inv_get_session_byuuid(NULL,
 						    &grhdrp->gh_dumpid,
 						    &sessp);
@@ -2310,7 +2310,7 @@ content_stream_restore(ix_t thrdix)
 		}
 		tranp->t_sync3 = SYNC_BUSY;
 		unlock();
-		if (! tranp->t_dirattrinitdonepr) {
+		if (!tranp->t_dirattrinitdonepr) {
 			mlog(MLOG_TRACE,
 			      "initializing directory attributes registry\n");
 			mlog(MLOG_NITTY,
@@ -2319,14 +2319,14 @@ content_stream_restore(ix_t thrdix)
 			ok = dirattr_init(tranp->t_hkdir,
 					   BOOL_FALSE,
 					   scrhdrp->cih_inomap_dircnt);
-			if (! ok) {
+			if (!ok) {
 				Media_end(Mediap);
 				return mlog_exit(EXIT_ERROR, RV_ERROR);
 			}
 			tranp->t_dirattrinitdonepr = BOOL_TRUE;
 		}
 
-		if (! tranp->t_namreginitdonepr) {
+		if (!tranp->t_namreginitdonepr) {
 			mlog(MLOG_TRACE,
 			      "initializing directory entry name registry\n");
 			ok = namreg_init(tranp->t_hkdir,
@@ -2334,21 +2334,21 @@ content_stream_restore(ix_t thrdix)
 					  scrhdrp->cih_inomap_dircnt
 					  +
 					  scrhdrp->cih_inomap_nondircnt);
-			if (! ok) {
+			if (!ok) {
 				Media_end(Mediap);
 				return mlog_exit(EXIT_ERROR, RV_ERROR);
 			}
 			tranp->t_namreginitdonepr = BOOL_TRUE;
 		}
 
-		if (! tranp->t_treeinitdonepr) {
+		if (!tranp->t_treeinitdonepr) {
 			bool_t fullpr;
 
 			fullpr = (scrhdrp->cih_level
 				   ==
 				   0)
 				 &&
-				 ! (scrhdrp->cih_dumpattr
+				 !(scrhdrp->cih_dumpattr
 				    &
 				    CIH_DUMPATTR_RESUME);
 
@@ -2369,7 +2369,7 @@ content_stream_restore(ix_t thrdix)
 					persp->a.dstdirisxfspr,
 					grhdrp->gh_version,
 					tranp->t_truncategenpr);
-			if (! ok) {
+			if (!ok) {
 				Media_end(Mediap);
 				return mlog_exit(EXIT_ERROR, RV_ERROR);
 			}
@@ -2377,7 +2377,7 @@ content_stream_restore(ix_t thrdix)
 
 		} else {
 			ok = tree_check_dump_format(grhdrp->gh_version);
-			if (! ok) {
+			if (!ok) {
 				Media_end(Mediap);
 				return mlog_exit(EXIT_ERROR, RV_ERROR);
 			}
@@ -2621,11 +2621,11 @@ content_complete(void)
 	bool_t completepr;
 	time_t elapsed;
 
-	if (! persp) {
+	if (!persp) {
 		completepr = BOOL_TRUE;
-	} else if (! persp->a.valpr) {
+	} else if (!persp->a.valpr) {
 		completepr =  BOOL_TRUE;
-	} else if (! persp->s.valpr) {
+	} else if (!persp->s.valpr) {
 		completepr =  BOOL_TRUE;
 	} else {
 		completepr = BOOL_FALSE;
@@ -2688,7 +2688,7 @@ content_complete(void)
 		persp->s.accumtime = elapsed;
 	}
 
-	if (! persp->a.valpr) {
+	if (!persp->a.valpr) {
 		wipepersstate();
 		persp = 0;
 	}
@@ -2720,7 +2720,7 @@ content_statline(char **linespp[])
 	}
 	*linespp = statline;
 
-	if (! persp->s.stat_valpr) {
+	if (!persp->s.stat_valpr) {
 		return 0;
 	}
 
@@ -2735,8 +2735,8 @@ content_statline(char **linespp[])
 	now = time(0);
 	tmp = localtime(&now);
 
-	if (! persp->s.dirdonepr) {
-		if (! tranp->t_dircnt) {
+	if (!persp->s.dirdonepr) {
+		if (!tranp->t_dircnt) {
 			return 0;
 		}
 
@@ -2979,7 +2979,7 @@ applydirdump(drive_t *drivep,
 	       :
 	       BOOL_FALSE;
 
-	if (! persp->s.marknorefdonepr) {
+	if (!persp->s.marknorefdonepr) {
 		tree_marknoref();
 		persp->s.marknorefdonepr = BOOL_TRUE;
 	}
@@ -2991,7 +2991,7 @@ applydirdump(drive_t *drivep,
 		      "was not applied\n"));
 	}
 
-	if (! persp->s.dirdonepr) {
+	if (!persp->s.dirdonepr) {
 		rv_t rv;
 		dah_t dah;
 
@@ -3291,18 +3291,18 @@ treepost(char *path1, char *path2)
 	 */
 	mlog(MLOG_DEBUG | MLOG_TREE,
 	      "checking tree for consistency\n");
-	if (! tree_chk()) {
+	if (!tree_chk()) {
 		return RV_CORE;
 	}
 #endif /* TREE_CHK */
 
 	/* adjust ref flags based on what dirs were dumped
 	 */
-	if (! persp->s.adjrefdonepr) {
+	if (!persp->s.adjrefdonepr) {
 		mlog(MLOG_DEBUG | MLOG_TREE,
 		      "adjusting dirent ref flags\n");
 		ok = tree_adjref();
-		if (! ok) {
+		if (!ok) {
 			return RV_INTR;
 		}
 		persp->s.adjrefdonepr = BOOL_TRUE;
@@ -3312,7 +3312,7 @@ treepost(char *path1, char *path2)
 	 * so only inos selected by subtree or interactive cmds will
 	 * be present in inomap.
 	 */
-	if (! persp->s.inomapsanitizedonepr) {
+	if (!persp->s.inomapsanitizedonepr) {
 		if (persp->a.interpr
 		     ||
 		     (persp->a.firststsenseprvalpr
@@ -3325,7 +3325,7 @@ treepost(char *path1, char *path2)
 
 	/* apply subtree selections
 	 */
-	if (! persp->s.stdonepr) {
+	if (!persp->s.stdonepr) {
 		ix_t stix;
 		stdesc_t *stdescp;
 
@@ -3338,7 +3338,7 @@ treepost(char *path1, char *path2)
 		 */
 		if ((persp->a.interpr
 		       &&
-		       (! persp->a.firststsenseprvalpr
+		       (!persp->a.firststsenseprvalpr
 		         ||
 		         persp->a.firststsensepr))
 		     ||
@@ -3363,7 +3363,7 @@ treepost(char *path1, char *path2)
 						stdescp->std_nextoff)) {
 			ok = tree_subtree_parse(stdescp->std_sensepr,
 						 stdescp->std_path);
-			if (! ok) {
+			if (!ok) {
 				mlog(MLOG_NORMAL | MLOG_ERROR, _(
 				      "subtree argument %s invalid\n"),
 				      stdescp->std_path);
@@ -3375,10 +3375,10 @@ treepost(char *path1, char *path2)
 
 	/* next engage interactive subtree selection
 	 */
-	if (! persp->s.interdonepr) {
+	if (!persp->s.interdonepr) {
 		if (persp->a.interpr) {
 			ok = tree_subtree_inter();
-			if (! ok) {
+			if (!ok) {
 				return RV_INTR;
 			}
 		}
@@ -3387,12 +3387,12 @@ treepost(char *path1, char *path2)
 
 	ok = tree_post(path1, path2);
 
-	if (! ok) {
+	if (!ok) {
 		return RV_INTR;
 	}
 
 	ok = tree_extattr(restore_dir_extattr_cb, path1);
-	if (! ok) {
+	if (!ok) {
 		return RV_INTR;
 	}
 
@@ -3502,7 +3502,7 @@ applynondirdump(drive_t *drivep,
 			rv = RV_OK;
 			goto applynondirdump_out;
 		case RV_CORRUPT:
-			rval = (* dop->do_next_mark)(drivep);
+			rval = (*dop->do_next_mark)(drivep);
 			if (rval) {
 				mlog(MLOG_NORMAL | MLOG_WARNING, _(
 				      "unable to resync media file: "
@@ -3521,7 +3521,7 @@ applynondirdump(drive_t *drivep,
 		 */
 		if (((bstatp->bs_mode & S_IFMT) == S_IFREG)
 		     &&
-		     ! (fhdrp->fh_flags & FILEHDR_FLAGS_EXTATTR)
+		     !(fhdrp->fh_flags & FILEHDR_FLAGS_EXTATTR)
 		     &&
 		     fhdrp->fh_offset == 0) {
 			egrp_t cur_egrp;
@@ -3545,7 +3545,7 @@ applynondirdump(drive_t *drivep,
 		do {
 			/* get a mark for the next read, in case we restart here
 			 */
-			(* dop->do_get_mark)(drivep, &drivemark);
+			(*dop->do_get_mark)(drivep, &drivemark);
 
 			/* read the file header.
 			 */
@@ -3557,7 +3557,7 @@ applynondirdump(drive_t *drivep,
 				rv = RV_OK;
 				goto applynondirdump_out;
 			case RV_CORRUPT:
-				rval = (* dop->do_next_mark)(drivep);
+				rval = (*dop->do_next_mark)(drivep);
 				if (rval) {
 					mlog(MLOG_NORMAL | MLOG_WARNING, _(
 					      "unable to resync media file: "
@@ -3583,7 +3583,7 @@ applynondirdump(drive_t *drivep,
 
 		/* checkpoint into persistent state if not a null file hdr
 		 */
-		if (! (fhdrp->fh_flags & FILEHDR_FLAGS_NULL)) {
+		if (!(fhdrp->fh_flags & FILEHDR_FLAGS_NULL)) {
 			pi_checkpoint(fileh,
 				       &drivemark,
 				       fhdrp->fh_stat.bs_ino,
@@ -3618,13 +3618,13 @@ finalize(char *path1, char *path2)
 {
 	bool_t ok;
 
-	if (! tranp->t_toconlypr) {
+	if (!tranp->t_toconlypr) {
 
 		/* restore directory attributes
 		 */
-		if (! persp->s.dirattrdonepr) {;
+		if (!persp->s.dirattrdonepr) {;
 			ok = tree_setattr(path1);
-			if (! ok) {
+			if (!ok) {
 				return RV_INTR;
 			}
 			persp->s.dirattrdonepr = BOOL_TRUE;
@@ -3632,9 +3632,9 @@ finalize(char *path1, char *path2)
 
 		/* remove orphanage if empty
 		 */
-		if (! persp->s.orphdeltriedpr) {;
+		if (!persp->s.orphdeltriedpr) {;
 			ok = tree_delorph();
-			if (! ok) {
+			if (!ok) {
 				return RV_INTR;
 			}
 			persp->s.orphdeltriedpr = BOOL_TRUE;
@@ -3642,7 +3642,7 @@ finalize(char *path1, char *path2)
 
 		/* delete the persistent ino map
 		 */
-		if (! persp->s.inomapdelpr) {
+		if (!persp->s.inomapdelpr) {
 			inomap_del_pers(tranp->t_hkdir);
 			persp->s.inomapdelpr = BOOL_TRUE;
 		}
@@ -3669,19 +3669,19 @@ finalize(char *path1, char *path2)
 static void
 toconly_cleanup(void)
 {
-	if (! tranp) {
+	if (!tranp) {
 		return;
 	}
 
-	if (! tranp->t_toconlypr) {
+	if (!tranp->t_toconlypr) {
 		return;
 	}
 
-	if (! tranp->t_hkdir) {
+	if (!tranp->t_hkdir) {
 		return;
 	}
 
-	if (! strlen(tranp->t_hkdir)) {
+	if (!strlen(tranp->t_hkdir)) {
 		return;
 	}
 
@@ -3695,17 +3695,17 @@ wipepersstate(void)
 	struct dirent64 *direntp;
 	char pathname[MAXPATHLEN];
 	dirp = opendir(tranp->t_hkdir);
-	if (! dirp) {
+	if (!dirp) {
 		return;
 	}
 
 	while ((direntp = readdir64(dirp)) != 0) {
 		/* REFERENCED */
 		int len;
-		if (! strcmp(direntp->d_name, ".")) {
+		if (!strcmp(direntp->d_name, ".")) {
 			continue;
 		}
-		if (! strcmp(direntp->d_name, "..")) {
+		if (!strcmp(direntp->d_name, "..")) {
 			continue;
 		}
 		len = sprintf(pathname,
@@ -3717,7 +3717,7 @@ wipepersstate(void)
 		(void)unlink(pathname);
 		closedir(dirp);
 		dirp = opendir(tranp->t_hkdir);
-		if (! dirp) {
+		if (!dirp) {
 			return;
 		}
 	}
@@ -3738,7 +3738,7 @@ Inv_validate_cmdline(void)
 	bool_t ok;
 	bool_t rok;
 
-	assert(! persp->s.valpr);
+	assert(!persp->s.valpr);
 
 	ok = BOOL_FALSE;
 	sessp = 0;
@@ -3753,7 +3753,7 @@ Inv_validate_cmdline(void)
 
 		uuid_clear(baseid);
                 askinvforbaseof(baseid, sessp);
-		if (! dumpcompat(sessp->s_isresumed,
+		if (!dumpcompat(sessp->s_isresumed,
 				   (ix_t)(sessp->s_level),
 				   baseid,
 				   BOOL_TRUE)) {
@@ -3926,7 +3926,7 @@ Media_mfile_next(Media_t *Mediap,
 		     Mediap->M_pos == POS_INDIR
 		     ||
 		     Mediap->M_pos == POS_ATNONDIR) {
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			fileh = DH_NULL;
 		}
@@ -4026,12 +4026,12 @@ Media_mfile_next(Media_t *Mediap,
 		 * has finished the job.
 		 */
 		if (Mediap->M_pos == POS_END) {
-			if (! (dcaps & DRIVE_CAP_REWIND)) {
+			if (!(dcaps & DRIVE_CAP_REWIND)) {
 				goto newmedia;
 			}
 			mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 			      "rewinding\n"));
-			(* drivep->d_opsp->do_rewind)(drivep);
+			(*drivep->d_opsp->do_rewind)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			if (cldmgr_stop_requested()) {
 				return RV_INTR;
@@ -4050,7 +4050,7 @@ Media_mfile_next(Media_t *Mediap,
 		 * bail if catastrophic. also, tell pi about EOD/EOM
 		 * if appropriate.
 		 */
-		rval = (* drivep->d_opsp->do_begin_read)(drivep);
+		rval = (*drivep->d_opsp->do_begin_read)(drivep);
 		switch (rval) {
 		case 0:
 			mlog_lock();
@@ -4138,7 +4138,7 @@ validate:
 		     Mediap->M_pos == POS_INDIR
 		     ||
 		     Mediap->M_pos == POS_ATNONDIR) {
-			if (! Mediap->M_flmfixvalpr) {
+			if (!Mediap->M_flmfixvalpr) {
 				Mediap->M_fmfix = mrhdrp->mh_mediafileix;
 				Mediap->M_mfixpurp = purp;
 				Mediap->M_flmfixvalpr = BOOL_TRUE;
@@ -4154,7 +4154,7 @@ validate:
 			     Mediap->M_pos == POS_INDIR
 			     ||
 			     Mediap->M_pos == POS_ATNONDIR) {
-				(* dop->do_end_read)(drivep);
+				(*dop->do_end_read)(drivep);
 				Mediap->M_pos = POS_UNKN;
 				fileh = DH_NULL;
 			}
@@ -4263,7 +4263,7 @@ validate:
 		 * dump, we know we have hit the end of the stream. tell the
 		 * persistent inventory.
 		 */
-		 if (! partofdumppr
+		 if (!partofdumppr
 		      &&
 		      Mediap->M_fsfixvalpr
 		      &&
@@ -4278,7 +4278,7 @@ validate:
 		 * object was part of the dump, we know we have hit the end of
 		 * the stream. check if we are done.
 		 */
-		 if (! partofdumppr
+		 if (!partofdumppr
 		      &&
 		      purp == PURP_NONDIR
 		      &&
@@ -4286,7 +4286,7 @@ validate:
 		      &&
 		      Mediap->M_lmfix > Mediap->M_fsfix) {
 			if (pi_alldone()) {
-				(* dop->do_end_read)(drivep);
+				(*dop->do_end_read)(drivep);
 				Mediap->M_pos = POS_UNKN;
 				fileh = DH_NULL;
 				return RV_NOMORE;
@@ -4297,18 +4297,18 @@ validate:
 		 * and preceeding media files on this object were, decide if
 		 * we need to rewind and look at the beginning of the object.
 		 */
-		if (! partofdumppr
+		if (!partofdumppr
 		     &&
 		     Mediap->M_fsfixvalpr
 		     &&
 		     Mediap->M_fmfix <= Mediap->M_fsfix) {
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			fileh = DH_NULL;
 			if (dcaps & DRIVE_CAP_REWIND) {
 				mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 				  "rewinding\n"));
-				(* drivep->d_opsp->do_rewind)(drivep);
+				(*drivep->d_opsp->do_rewind)(drivep);
 				continue;
 			} else {
 				goto newmedia;
@@ -4318,8 +4318,8 @@ validate:
 		/* if this media file is not part of the desired dump session,
 		 * and the above conditions were not met, then keep looking
 		 */
-		if (! partofdumppr) {
-			(* dop->do_end_read)(drivep);
+		if (!partofdumppr) {
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			fileh = DH_NULL;
 			continue;
@@ -4328,7 +4328,7 @@ validate:
 		/* record the index within this media object of the first
 		 * media file in the dump stream
 		 */
-		if (! Mediap->M_fsfixvalpr) {
+		if (!Mediap->M_fsfixvalpr) {
 			Mediap->M_fsfix =
 				     mrhdrp->mh_mediafileix
 				     -
@@ -4363,7 +4363,7 @@ validate:
 		/* if purp is nondir, we may be done.
 		 */
 		if (purp == PURP_NONDIR && pi_alldone()) {
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			return RV_NOMORE;
 		}
@@ -4376,7 +4376,7 @@ validate:
 			     Mediap->M_fmfix <= Mediap->M_fsfix
 			     &&
 			     Mediap->M_lmfix < Mediap->M_fmfix) {
-				(* dop->do_end_read)(drivep);
+				(*dop->do_end_read)(drivep);
 				Mediap->M_pos = POS_UNKN;
 				fileh = DH_NULL;
 				goto newmedia;
@@ -4386,7 +4386,7 @@ validate:
 			     Mediap->M_pmfix < Mediap->M_fmfix
 			     &&
 			     Mediap->M_lmfix > Mediap->M_fmfix) {
-				(* dop->do_end_read)(drivep);
+				(*dop->do_end_read)(drivep);
 				Mediap->M_pos = POS_UNKN;
 				fileh = DH_NULL;
 				goto newmedia;
@@ -4404,7 +4404,7 @@ validate:
 		     scrhdrp->cih_mediafiletype
 		     ==
 		     CIH_MEDIAFILETYPE_INVENTORY) {
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			fileh = DH_NULL;
 			if (pi_know_no_more_on_object(purp,
@@ -4418,7 +4418,7 @@ validate:
 				pi_note_underhead(objh, DH_NULL);
 				mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 					"rewinding\n"));
-				(* drivep->d_opsp->do_rewind)(drivep);
+				(*drivep->d_opsp->do_rewind)(drivep);
 				continue;
 			}
 			goto newmedia;
@@ -4433,7 +4433,7 @@ validate:
 		     (Mediap->M_pos != POS_ATHDR
 		       ||
 		       DH2F(fileh)->f_dirtriedpr)) {
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			fileh = DH_NULL;
 			if (pi_know_no_more_beyond_on_object(purp,
@@ -4451,7 +4451,7 @@ validate:
 					pi_note_underhead(objh, DH_NULL);
 					mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 						"rewinding\n"));
-					(* drivep->d_opsp->do_rewind)(drivep);
+					(*drivep->d_opsp->do_rewind)(drivep);
 					continue;
 				}
 				goto newmedia;
@@ -4493,12 +4493,12 @@ validate:
 		     ||
 		     DH2F(fileh)->f_nondirskippr
 		     ||
-		     ! hassomepr) {
-			if (! DH2F(fileh)->f_nondirskippr) {
+		     !hassomepr) {
+			if (!DH2F(fileh)->f_nondirskippr) {
 				DH2F(fileh)->f_nondirdonepr = BOOL_TRUE;
 			}
 			pi_unlock();
-			(* dop->do_end_read)(drivep);
+			(*dop->do_end_read)(drivep);
 			Mediap->M_pos = POS_UNKN;
 			fileh = DH_NULL;
 			if (pi_know_no_more_beyond_on_object(purp,
@@ -4516,7 +4516,7 @@ validate:
 					pi_note_underhead(objh, DH_NULL);
 					mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 						"rewinding\n"));
-					(* drivep->d_opsp->do_rewind)(drivep);
+					(*drivep->d_opsp->do_rewind)(drivep);
 					continue;
 				}
 				goto newmedia;
@@ -4564,9 +4564,9 @@ validate:
 			    mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 				  "seeking past portion of media file "
 				  "already restored\n"));
-			    rval = (* dop->do_seek_mark)(drivep,
+			    rval = (*dop->do_seek_mark)(drivep,
 							    &chkpnt);
-			    if (! rval) {
+			    if (!rval) {
 				    rv_t rv;
 				    rv = read_filehdr(drivep,
 						       fhdrp,
@@ -4583,8 +4583,8 @@ validate:
 			    mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 				  "seeking past media file "
 				  "directory dump\n"));
-			    rval = (* dop->do_next_mark)(drivep);
-			    if (! rval) {
+			    rval = (*dop->do_next_mark)(drivep);
+			    if (!rval) {
 				    rv_t rv;
 				    rv = read_filehdr(drivep,
 						       fhdrp,
@@ -4638,7 +4638,7 @@ validate:
 
 		/* if no error during fine positioning, return.
 		 */
-		if (! rval) {
+		if (!rval) {
 			if (filehp) {
 				assert(fileh != DH_NULL);
 				*filehp = fileh;
@@ -4650,7 +4650,7 @@ validate:
 		 * media files on this object? if so, continue; if not, get
 		 * more media.
 		 */
-		(* dop->do_end_read)(drivep);
+		(*dop->do_end_read)(drivep);
 		Mediap->M_pos = POS_UNKN;
 		fileh = DH_NULL;
 		assert(purp == PURP_NONDIR);
@@ -4669,7 +4669,7 @@ validate:
 				pi_note_underhead(objh, DH_NULL);
 				mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 					"rewinding\n"));
-				(* drivep->d_opsp->do_rewind)(drivep);
+				(*drivep->d_opsp->do_rewind)(drivep);
 				continue;
 			}
 			goto newmedia;
@@ -4701,7 +4701,7 @@ newmedia:
 
 		/* if media not removable, just return
 		 */
-		if ((* dop->do_get_device_class)(drivep)
+		if ((*dop->do_get_device_class)(drivep)
 		     ==
 		     DEVICE_NONREMOVABLE)
 		{
@@ -4744,7 +4744,7 @@ newmedia:
 			assert(0);
 		}
 
-		if (! bagp && ! knownholespr && ! maybeholespr) {
+		if (!bagp && !knownholespr && !maybeholespr) {
 			/* if PURP_DIR, this may be a problem
 			 */
 			if (purp == PURP_NONDIR) {
@@ -4754,7 +4754,7 @@ newmedia:
 
 		/* eject media if drive not already empty
 		 */
-		if (! emptypr) {
+		if (!emptypr) {
 			int dcaps = drivep->d_capabilities;
 			if (purp == PURP_SEARCH) {
 				if (Mediap->M_pos == POS_USELESS) {
@@ -4770,7 +4770,7 @@ newmedia:
 				}
 			}
 			if (dcaps & DRIVE_CAP_EJECT) {
-				(* dop->do_eject_media)(drivep);
+				(*dop->do_eject_media)(drivep);
 			}
 		}
 
@@ -4796,7 +4796,7 @@ newmedia:
 			if (media_change_alert_program != NULL)
 				system(media_change_alert_program);
 
-			if (drivecnt > 1 && ! stdoutpiped) {
+			if (drivecnt > 1 && !stdoutpiped) {
 				ix_t thrdix = drivep->d_index;
 				if (bagp) {
 					pi_neededobjs_free(bagp);
@@ -4839,7 +4839,7 @@ newmedia:
 		if (cldmgr_stop_requested()) {
 			return RV_INTR;
 		}
-		if (! ok) {
+		if (!ok) {
 			return RV_QUIT;
 		}
 	}
@@ -4863,7 +4863,7 @@ Media_end(Media_t *Mediap)
 	     Mediap->M_pos == POS_INDIR
 	     ||
 	     Mediap->M_pos == POS_ATNONDIR) {
-		(* dop->do_end_read)(drivep);
+		(*dop->do_end_read)(drivep);
 		Mediap->M_pos = POS_UNKN;
 	}
 }
@@ -4937,7 +4937,7 @@ pi_allocdesc(dh_t *deschp)
 			assert(olddescpgcnt > 0);
 			rval = munmap((void *)descp,
 				       olddescpgcnt * pgsz);
-			assert(! rval);
+			assert(!rval);
 			descp = 0;
 		} else {
 			assert(olddescpgcnt == 0);
@@ -5028,7 +5028,7 @@ pi_insertfile(ix_t drivecnt,
 	if (persp->s.strmheadh == DH_NULL) {
 		for (strmix = 0; strmix < drivecnt; strmix++) {
 			ok = pi_allocdesc(&strmh);
-			if (! ok) {
+			if (!ok) {
 				pi_unlock();
 				return DH_NULL;
 			}
@@ -5062,7 +5062,7 @@ pi_insertfile(ix_t drivecnt,
 		}
 		if (objh == DH_NULL) {
 			ok = pi_allocdesc(&objh);
-			if (! ok) {
+			if (!ok) {
 				pi_unlock();
 				return DH_NULL;
 			}
@@ -5161,7 +5161,7 @@ pi_insertfile(ix_t drivecnt,
 
 	/* if don't know dump stream media file index, can't add any media files
 	 */
-	if (! dmfixvalpr) {
+	if (!dmfixvalpr) {
 		pi_unlock();
 		pi_show(" after pi_insertfile no media file ix");
 		return DH_NULL;
@@ -5180,7 +5180,7 @@ pi_insertfile(ix_t drivecnt,
 		}
 		if (fileh == DH_NULL) {
 			ok = pi_allocdesc(&fileh);
-			if (! ok) {
+			if (!ok) {
 				pi_unlock();
 				return DH_NULL;
 			}
@@ -5195,9 +5195,9 @@ pi_insertfile(ix_t drivecnt,
 
 	/* update the media file fields not yet valid
 	 */
-	if (egrpvalpr && ! DH2F(fileh)->f_valpr) {
-		assert(! (DH2F(fileh)->f_flags & PF_INV));
-		assert(! (DH2F(fileh)->f_flags & PF_TERM));
+	if (egrpvalpr && !DH2F(fileh)->f_valpr) {
+		assert(!(DH2F(fileh)->f_flags & PF_INV));
+		assert(!(DH2F(fileh)->f_flags & PF_TERM));
 		DH2F(fileh)->f_firstegrp.eg_ino = startino;
 		DH2F(fileh)->f_firstegrp.eg_off = startoffset;
 		DH2F(fileh)->f_curegrp = DH2F(fileh)->f_firstegrp;
@@ -5236,7 +5236,7 @@ pi_addfile(Media_t *Mediap,
 {
 	dh_t fileh;
 
-	if (! persp->s.stat_valpr) {
+	if (!persp->s.stat_valpr) {
 		persp->s.stat_inocnt = scrhdrp->cih_inomap_nondircnt;
 		persp->s.stat_inodone = 0;
 		assert(scrhdrp->cih_inomap_datasz <= OFF64MAX);
@@ -5335,7 +5335,7 @@ pi_addfile(Media_t *Mediap,
 					       BOOL_FALSE,
 					       (off64_t)0);
 		}
-		if (! (drivep->d_capabilities & DRIVE_CAP_FILES)) {
+		if (!(drivep->d_capabilities & DRIVE_CAP_FILES)) {
 			/* if drive does not support multiple files,
 			 * we know this is end of object and stream
 			 */
@@ -5399,7 +5399,7 @@ pi_addfile(Media_t *Mediap,
 					       BOOL_FALSE,
 					       (off64_t)0);
 		}
-		if (! persp->s.fullinvpr
+		if (!persp->s.fullinvpr
 		     &&
 		     Mediap->M_pos == POS_ATHDR) {
 			size_t bufszincr;
@@ -5427,7 +5427,7 @@ pi_addfile(Media_t *Mediap,
 			 */
 			Mediap->M_pos = POS_ATNONDIR;
 			donepr = BOOL_FALSE;
-			while (! donepr) {
+			while (!donepr) {
 				int nread;
 				drive_ops_t *dop = drivep->d_opsp;
 				int rval = 0;
@@ -5461,7 +5461,7 @@ pi_addfile(Media_t *Mediap,
 			 * desc.
 			 */
 			sessp = 0;
-			if (! buflen) {
+			if (!buflen) {
 				ok = BOOL_FALSE;
 			} else {
 			    /* extract the session information from the buffer */
@@ -5472,16 +5472,16 @@ pi_addfile(Media_t *Mediap,
 				ok = BOOL_TRUE;
 			    }
 			}
-			if (! ok || ! sessp) {
+			if (!ok || !sessp) {
 				mlog(MLOG_DEBUG | MLOG_WARNING | MLOG_MEDIA, _(
 				      "on-media session "
 				      "inventory corrupt\n"));
 			} else {
 				/* if root, update online inventory.
 				 */
-				if (! geteuid()
+				if (!geteuid()
 				     &&
-				     ! tranp->t_noinvupdatepr) {
+				     !tranp->t_noinvupdatepr) {
 					mlog(MLOG_VERBOSE | MLOG_MEDIA, _(
 					      "incorporating on-media session "
 					      "inventory into online "
@@ -5869,8 +5869,8 @@ pi_scanfileendino(dh_t fileh)
 			if (DH2F(nexth)->f_valpr) {
 			    xfs_ino_t ino;
 
-			    assert(! (DH2F(nexth)->f_flags & PF_INV));
-			    assert(! (DH2F(nexth)->f_flags & PF_TERM));
+			    assert(!(DH2F(nexth)->f_flags & PF_INV));
+			    assert(!(DH2F(nexth)->f_flags & PF_TERM));
 			    if (DH2F(nexth)->f_firstegrp.eg_off) {
 				ino =  DH2F(nexth)->f_firstegrp.eg_ino;
 				return ino;
@@ -5926,17 +5926,17 @@ pi_bracketneededegrps(dh_t thisfileh, egrp_t *first_egrp, egrp_t *next_egrp)
 		      fileh != DH_NULL
 		      ;
 		      fileh = DH2F(fileh)->f_nexth) {
-		    if (! thisfoundpr) {
+		    if (!thisfoundpr) {
 			if (fileh == thisfileh) {
 			    thisfoundpr = BOOL_TRUE;
 			} else if (DH2F(fileh)->f_valpr) {
-			    assert(! (DH2F(fileh)->f_flags & PF_INV));
-			    assert(! (DH2F(fileh)->f_flags & PF_TERM));
+			    assert(!(DH2F(fileh)->f_flags & PF_INV));
+			    assert(!(DH2F(fileh)->f_flags & PF_TERM));
 			    prech = fileh;
 			}
 		    } else if (DH2F(fileh)->f_valpr) {
-			assert(! (DH2F(fileh)->f_flags & PF_INV));
-			assert(! (DH2F(fileh)->f_flags & PF_TERM));
+			assert(!(DH2F(fileh)->f_flags & PF_INV));
+			assert(!(DH2F(fileh)->f_flags & PF_TERM));
 			assert(follh == DH_NULL);
 			follh = fileh;
 			goto done;
@@ -6032,25 +6032,25 @@ pi_iter_nextfileh(pi_iter_t *iterp,
 		   bool_t *objmissingprp,
 		   bool_t *filemissingprp)
 {
-	assert(! iterp->donepr);
+	assert(!iterp->donepr);
 
 	if (persp->s.strmheadh == DH_NULL) {
 		iterp->donepr = BOOL_TRUE;
 		return DH_NULL;
 	}
 
-	if (! iterp->initializedpr) {
+	if (!iterp->initializedpr) {
 		assert(persp->s.strmheadh != DH_NULL);
 		iterp->strmh = persp->s.strmheadh;
 		iterp->objh = DH2S(iterp->strmh)->s_cldh;
 		if (iterp->objh == DH_NULL) {
-			if (! DH2S(iterp->strmh)->s_lastobjknwnpr) {
+			if (!DH2S(iterp->strmh)->s_lastobjknwnpr) {
 				*objmissingprp = BOOL_TRUE;
 			}
 		} else {
 			iterp->fileh = DH2O(iterp->objh)->o_cldh;
 			if (iterp->fileh == DH_NULL) {
-				if (! DH2O(iterp->objh)->o_lmfknwnpr) {
+				if (!DH2O(iterp->objh)->o_lmfknwnpr) {
 					*filemissingprp = BOOL_TRUE;
 				}
 			}
@@ -6058,7 +6058,7 @@ pi_iter_nextfileh(pi_iter_t *iterp,
 
 		while (iterp->fileh == DH_NULL) {
 			while (iterp->objh == DH_NULL) {
-				if (! DH2S(iterp->strmh)->s_lastobjknwnpr) {
+				if (!DH2S(iterp->strmh)->s_lastobjknwnpr) {
 					*objmissingprp = BOOL_TRUE;
 				}
 				iterp->strmh = DH2S(iterp->strmh)->s_nexth;
@@ -6070,7 +6070,7 @@ pi_iter_nextfileh(pi_iter_t *iterp,
 			}
 			iterp->fileh = DH2O(iterp->objh)->o_cldh;
 			if (iterp->fileh == DH_NULL) {
-				if (! DH2O(iterp->objh)->o_lmfknwnpr) {
+				if (!DH2O(iterp->objh)->o_lmfknwnpr) {
 					*filemissingprp = BOOL_TRUE;
 				}
 				iterp->objh = DH2O(iterp->objh)->o_nexth;
@@ -6082,12 +6082,12 @@ pi_iter_nextfileh(pi_iter_t *iterp,
 
 	iterp->fileh = DH2F(iterp->fileh)->f_nexth;
 	while (iterp->fileh == DH_NULL) {
-		if (! DH2O(iterp->objh)->o_lmfknwnpr) {
+		if (!DH2O(iterp->objh)->o_lmfknwnpr) {
 			*filemissingprp = BOOL_TRUE;
 		}
 		iterp->objh = DH2O(iterp->objh)->o_nexth;
 		while (iterp->objh == DH_NULL) {
-			if (! DH2S(iterp->strmh)->s_lastobjknwnpr) {
+			if (!DH2S(iterp->strmh)->s_lastobjknwnpr) {
 				*objmissingprp = BOOL_TRUE;
 			}
 			iterp->strmh = DH2S(iterp->strmh)->s_nexth;
@@ -6200,13 +6200,13 @@ pi_neededobjs_nondir_alloc(bool_t *knownholesprp,
 			headh = pi_iter_nextfileh(headiterp,
 						   &dummyobjmissingpr,
 						   &dummyfilemissingpr);
-		} while (headh != DH_NULL && ! DH2F(headh)->f_valpr);
+		} while (headh != DH_NULL && !DH2F(headh)->f_valpr);
 		if (headh == DH_NULL) {
 			headegrp.eg_ino = INO64MAX;
 			headegrp.eg_off = OFF64MAX;
 		} else {
-			assert(! (DH2F(headh)->f_flags & PF_INV));
-			assert(! (DH2F(headh)->f_flags & PF_TERM));
+			assert(!(DH2F(headh)->f_flags & PF_INV));
+			assert(!(DH2F(headh)->f_flags & PF_TERM));
 			headegrp = DH2F(headh)->f_firstegrp;
 		}
 
@@ -6228,15 +6228,15 @@ pi_neededobjs_nondir_alloc(bool_t *knownholesprp,
 		     */
 		    if (markskippr
 			 &&
-			 ! foundgappr
+			 !foundgappr
 			 &&
 			 tailh != DH_NULL
 			 &&
-			 ! (DH2F(tailh)->f_flags & PF_INV)
+			 !(DH2F(tailh)->f_flags & PF_INV)
 			 &&
-			 ! (DH2F(tailh)->f_flags & PF_TERM)
+			 !(DH2F(tailh)->f_flags & PF_TERM)
 			 &&
-			 ! DH2F(tailh)->f_nondirskippr) {
+			 !DH2F(tailh)->f_nondirskippr) {
 			    DH2F(tailh)->f_nondirskippr = BOOL_TRUE;
 		    }
 
@@ -6246,17 +6246,17 @@ pi_neededobjs_nondir_alloc(bool_t *knownholesprp,
 			 &&
 			 tailh != DH_NULL
 			 &&
-			 ! (DH2F(tailh)->f_flags & PF_INV)
+			 !(DH2F(tailh)->f_flags & PF_INV)
 			 &&
-			 ! (DH2F(tailh)->f_flags & PF_TERM)
+			 !(DH2F(tailh)->f_flags & PF_TERM)
 			 &&
-			 ! DH2F(tailh)->f_nondirdonepr
+			 !DH2F(tailh)->f_nondirdonepr
 			 &&
-			 ! DH2F(tailh)->f_nondirskippr) {
+			 !DH2F(tailh)->f_nondirskippr) {
 
 			    dh_t objh = DH2F(tailh)->f_parh;
 
-			    if (! DH2O(objh)->o_indrivepr
+			    if (!DH2O(objh)->o_indrivepr
 				 ||
 				 showobjindrivepr) {
 				if (DH2O(objh)->o_idlabvalpr) {
@@ -6332,9 +6332,9 @@ pi_neededobjs_dir_alloc(bool_t *knownholesprp, bool_t *maybeholesprp)
 					     &maybeobjmissingpr,
 					     &maybefilemissingpr))
 		!= DH_NULL) {
-		if (! DH2F(fileh)->f_dirtriedpr) {
+		if (!DH2F(fileh)->f_dirtriedpr) {
 			dh_t objh = DH2F(fileh)->f_parh;
-			if (! DH2O(objh)->o_indrivepr) {
+			if (!DH2O(objh)->o_indrivepr) {
 				if (DH2O(objh)->o_idlabvalpr) {
 					if (objh != lastobjaddedh) {
 						addobj(bagp,
@@ -6584,7 +6584,7 @@ pi_know_no_more_on_object(purp_t purp, ix_t strmix, ix_t objix)
 
 	/* if don't know last media file on object, return FALSE
 	 */
-	if (! DH2O(objh)->o_lmfknwnpr) {
+	if (!DH2O(objh)->o_lmfknwnpr) {
 		pi_unlock();
 		return BOOL_FALSE;
 	}
@@ -6604,14 +6604,14 @@ pi_know_no_more_on_object(purp_t purp, ix_t strmix, ix_t objix)
 			continue;
 		}
 		if (purp == PURP_DIR) {
-			if (! DH2F(fileh)->f_dirtriedpr) {
+			if (!DH2F(fileh)->f_dirtriedpr) {
 				pi_unlock();
 				return BOOL_FALSE;
 			}
 		} else {
-			if (! DH2F(fileh)->f_nondirskippr
+			if (!DH2F(fileh)->f_nondirskippr
 			     &&
-			     ! DH2F(fileh)->f_nondirdonepr) {
+			     !DH2F(fileh)->f_nondirdonepr) {
 				pi_unlock();
 				return BOOL_FALSE;
 			}
@@ -6663,7 +6663,7 @@ pi_know_no_more_beyond_on_object(purp_t purp,
 
 	/* if don't know last media file on object, return FALSE
 	 */
-	if (! DH2O(objh)->o_lmfknwnpr) {
+	if (!DH2O(objh)->o_lmfknwnpr) {
 		pi_unlock();
 		return BOOL_FALSE;
 	}
@@ -6688,14 +6688,14 @@ pi_know_no_more_beyond_on_object(purp_t purp,
 			continue;
 		}
 		if (purp == PURP_DIR) {
-			if (! DH2F(fileh)->f_dirtriedpr) {
+			if (!DH2F(fileh)->f_dirtriedpr) {
 				pi_unlock();
 				return BOOL_FALSE;
 			}
 		} else {
-			if (! DH2F(fileh)->f_nondirdonepr
+			if (!DH2F(fileh)->f_nondirdonepr
 			     &&
-			     ! DH2F(fileh)->f_nondirskippr) {
+			     !DH2F(fileh)->f_nondirskippr) {
 				pi_unlock();
 				return BOOL_FALSE;
 			}
@@ -6730,7 +6730,7 @@ gapneeded(egrp_t *firstegrpp, egrp_t *lastegrpp)
 		endino = lastegrpp->eg_ino - 1;
 	}
 
-	if (! inomap_rst_needed(firstegrpp->eg_ino, endino)) {
+	if (!inomap_rst_needed(firstegrpp->eg_ino, endino)) {
 		return BOOL_FALSE;
 	}
 
@@ -6801,7 +6801,7 @@ askinvforbaseof(uuid_t baseid, inv_session_t *sessp)
 
 	/* don't look for base if level 0 and not resumed
 	 */
-	if (level == 0 && ! resumedpr) {
+	if (level == 0 && !resumedpr) {
 		return BOOL_TRUE;
 	}
 
@@ -6829,7 +6829,7 @@ askinvforbaseof(uuid_t baseid, inv_session_t *sessp)
 						     (u_char_t)level,
 						     &basesessp);
 	}
-	if (! ok) {
+	if (!ok) {
 		mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 		      "unable to find base dump in inventory "
 		      "to validate dump\n"));
@@ -7278,7 +7278,7 @@ restore_file_cb(void *cp, bool_t linkpr, char *path1, char *path2)
 		return BOOL_FALSE;
 	}
 
-	if (! linkpr) {
+	if (!linkpr) {
 		if (path1) {
 			/* cache the path for use in restoring attributes
 			 * and extended attributes
@@ -7334,7 +7334,7 @@ restore_file_cb(void *cp, bool_t linkpr, char *path1, char *path2)
 			      bstatp->bs_mode);
 			return BOOL_FALSE;
 		}
-	} else if (! tranp->t_toconlypr) {
+	} else if (!tranp->t_toconlypr) {
 		assert(path1);
 		assert(path2);
 		mlog(MLOG_TRACE,
@@ -7451,7 +7451,7 @@ restore_reg(drive_t *drivep,
 		return BOOL_TRUE;
 
 	if (fhdrp->fh_offset) {
-		if (! tranp->t_toconlypr) {
+		if (!tranp->t_toconlypr) {
 			mlog(MLOG_TRACE,
 			      "restoring regular file ino %llu %s"
 			      " (offset %lld)\n",
@@ -7465,7 +7465,7 @@ restore_reg(drive_t *drivep,
 			      fhdrp->fh_offset);
 		}
 	} else {
-		if (! tranp->t_toconlypr) {
+		if (!tranp->t_toconlypr) {
 			mlog(MLOG_TRACE,
 			      "restoring regular file ino %llu %s\n",
 			      bstatp->bs_ino,
@@ -7783,7 +7783,7 @@ restore_spec(filehdr_t *fhdrp, rv_t *rvp, char *path)
 	char *printstr;
 	int rval;
 
-	if (! path) {
+	if (!path) {
 		return BOOL_TRUE;
 	}
 
@@ -7814,7 +7814,7 @@ restore_spec(filehdr_t *fhdrp, rv_t *rvp, char *path)
 		return BOOL_TRUE;
 	}
 
-	if (! tranp->t_toconlypr) {
+	if (!tranp->t_toconlypr) {
 		mlog(MLOG_TRACE,
 		      "restoring %s ino %llu %s\n",
 		      printstr,
@@ -7826,7 +7826,7 @@ restore_spec(filehdr_t *fhdrp, rv_t *rvp, char *path)
 		      path);
 	}
 
-	if (! tranp->t_toconlypr) {
+	if (!tranp->t_toconlypr) {
 		if ((bstatp->bs_mode & S_IFMT) == S_IFSOCK) {
 			int sockfd;
 			struct sockaddr_un addr;
@@ -7955,7 +7955,7 @@ restore_symlink(drive_t *drivep,
 	mode_t oldumask;
 
 	if (path) {
-		if (! tranp->t_toconlypr) {
+		if (!tranp->t_toconlypr) {
 			mlog(MLOG_TRACE,
 			      "restoring symbolic link ino %llu %s\n",
 			      bstatp->bs_ino,
@@ -8013,7 +8013,7 @@ restore_symlink(drive_t *drivep,
 		return BOOL_FALSE;
 	}
 	assert((off64_t)nread == ehdr.eh_sz);
-	if (! scratch) {
+	if (!scratch) {
 		if (path) {
 			mlog(MLOG_VERBOSE | MLOG_WARNING, _(
 			      "unable to create symlink ino %llu "
@@ -8024,7 +8024,7 @@ restore_symlink(drive_t *drivep,
 		return BOOL_TRUE;
 	}
 	scratchpath[nread] = 0;
-	if (! tranp->t_toconlypr && path) {
+	if (!tranp->t_toconlypr && path) {
 		/* create the symbolic link
 		 */
 		/* NOTE: There is no direct way to set mode for
@@ -8125,7 +8125,7 @@ read_filehdr(drive_t *drivep, filehdr_t *fhdrp, bool_t fhcs)
 	      bstatp->bs_mode);
 
 	if (fhcs) {
-		if (! (fhdrp->fh_flags & FILEHDR_FLAGS_CHECKSUM)) {
+		if (!(fhdrp->fh_flags & FILEHDR_FLAGS_CHECKSUM)) {
 			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "corrupt file header\n"));
 			return RV_CORRUPT;
@@ -8184,7 +8184,7 @@ read_extenthdr(drive_t *drivep, extenthdr_t *ehdrp, bool_t ehcs)
 	      ehdrp->eh_flags);
 
 	if (ehcs) {
-		if (! (ehdrp->eh_flags & EXTENTHDR_FLAGS_CHECKSUM)) {
+		if (!(ehdrp->eh_flags & EXTENTHDR_FLAGS_CHECKSUM)) {
 			mlog(MLOG_NORMAL | MLOG_WARNING, _(
 			      "corrupt extent header\n"));
 			return RV_CORRUPT;
@@ -8293,7 +8293,7 @@ read_dirent(drive_t *drivep,
 	 */
 	assert((size_t)dhdrp->dh_sz <= direntbufsz);
 	assert((size_t)dhdrp->dh_sz >= sizeof(direnthdr_t));
-	assert(! ((size_t)dhdrp->dh_sz & (DIRENTHDR_ALIGN - 1)));
+	assert(!((size_t)dhdrp->dh_sz & (DIRENTHDR_ALIGN - 1)));
 	if ((size_t)dhdrp->dh_sz > sizeof(direnthdr_t)) {
 		size_t remsz = (size_t)dhdrp->dh_sz - sizeof(direnthdr_t);
 		nread = read_buf(namep,
@@ -8494,7 +8494,7 @@ restore_extent(filehdr_t *fhdrp,
 		size_t ntowrite;
 
 		req_bufsz = (size_t)min((off64_t)INTGENMAX, sz);
-		bufp = (* dop->do_read)(drivep, req_bufsz, &sup_bufsz, &rval);
+		bufp = (*dop->do_read)(drivep, req_bufsz, &sup_bufsz, &rval);
 		if (rval) {
 			rv_t rv;
 			char *reasonstr;
@@ -8639,7 +8639,7 @@ restore_extent(filehdr_t *fhdrp,
 		} else {
 			nwritten = 0;
 		}
-		(* dop->do_return_read_buf)(drivep, bufp, sup_bufsz);
+		(*dop->do_return_read_buf)(drivep, bufp, sup_bufsz);
 		if ((size_t)nwritten != ntowrite) {
 			if (nwritten < 0) {
 				mlog(MLOG_NORMAL, _(
@@ -8679,7 +8679,7 @@ static size_t extattrbufsz = 0; /* size of each extattr buffer */
 static bool_t
 extattr_init(size_t drivecnt)
 {
-	assert(! extattrbufp);
+	assert(!extattrbufp);
 	extattrbufsz = EXTATTRHDR_SZ		/* dump hdr */
 		       +
 		       NAME_MAX			/* attribute name */
@@ -8729,7 +8729,7 @@ restore_extattr(drive_t *drivep,
 
 	assert(extattrbufp);
 
-	if (! isdirpr)
+	if (!isdirpr)
 		isfilerestored = partial_check(bstatp->bs_ino,  bstatp->bs_size);
 
 	/* peel off extattrs until null hdr hit
@@ -8777,7 +8777,7 @@ restore_extattr(drive_t *drivep,
 		}
 		assert(nread == (int)(recsz - EXTATTRHDR_SZ));
 
-		if (! persp->a.restoreextattrpr && ! persp->a.restoredmpr) {
+		if (!persp->a.restoreextattrpr && !persp->a.restoredmpr) {
 			continue;
 		}
 
@@ -8790,7 +8790,7 @@ restore_extattr(drive_t *drivep,
 		 * extended attributes.
 		 */
 		if (isdirpr) {
-			assert(! path);
+			assert(!path);
 			if (dah != DAH_NULL) {
 				dirattr_addextattr(dah, ahdrp);
 			}
@@ -9033,7 +9033,7 @@ partial_reg(ix_t d_index,
 	}
 
 	/* If not found, find a free one, fill it in and return */
-	if (! isptr) {
+	if (!isptr) {
 		mlog(MLOG_NITTY | MLOG_NOLOCK,
 			"partial_reg: no entry found for %llu\n", ino);
 		/* find a free one */
@@ -9136,7 +9136,7 @@ partial_check (xfs_ino_t ino, off64_t fsize)
 	}
 
 	/* If not found, return okay */
-	if (! isptr) {
+	if (!isptr) {
 		pi_unlock();
 		return BOOL_TRUE;
 	}
@@ -9379,7 +9379,7 @@ pi_show_nomloglock(void)
 				mlog(MLOG_NORMAL | MLOG_BARE | MLOG_NOLOCK | MLOG_MEDIA,
 				      _("    label is blank\n"));
 				}
-				if (! uuid_is_null(DH2O(objh)->o_id)) {
+				if (!uuid_is_null(DH2O(objh)->o_id)) {
 				    char media_string_uuid[UUID_STR_LEN + 1];
 				    uuid_unparse(DH2O(objh)->o_id,
 						    media_string_uuid);
@@ -9489,13 +9489,13 @@ pi_show_nomloglock(void)
 					  _("        now reading\n"));
 			    }
 			}
-			if (! DH2O(objh)->o_lmfknwnpr) {
+			if (!DH2O(objh)->o_lmfknwnpr) {
 				mlog(MLOG_NORMAL | MLOG_BARE | MLOG_NOLOCK | MLOG_MEDIA,
 				      _("\n        may be additional "
 				      "unidentified media files\n"));
 			}
 		}
-		if (! DH2S(strmh)->s_lastobjknwnpr) {
+		if (!DH2S(strmh)->s_lastobjknwnpr) {
 			mlog(MLOG_NORMAL | MLOG_BARE | MLOG_NOLOCK | MLOG_MEDIA,
 			      _("\n    may be "
 			      "additional unidentified media objects\n\n"));
@@ -9703,7 +9703,7 @@ display_needed_objects(purp_t purp,
 		}
 	}
 
-	if (! bagp && ! knownholespr && ! maybeholespr) {
+	if (!bagp && !knownholespr && !maybeholespr) {
 		mlog(MLOG_NORMAL | MLOG_BARE | MLOG_NOLOCK,
 		      _("no additional media objects needed\n"));
 	}

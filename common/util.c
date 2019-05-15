@@ -58,7 +58,7 @@ write_buf(char *bufp,
 		} else {
 			(void)memset((void *)mbufp, 0, mbufsz);
 		}
-		rval = (* write_funcp)(contextp, mbufp, mbufsz);
+		rval = (*write_funcp)(contextp, mbufp, mbufsz);
 		if (rval) {
 			return rval;
 		}
@@ -86,7 +86,7 @@ read_buf(char *bufp,
 	nread = 0;
 	*statp = 0;
 	while (bufsz) {
-		mbufp = (* read_funcp)(contextp, bufsz, &mbufsz, statp);
+		mbufp = (*read_funcp)(contextp, bufsz, &mbufsz, statp);
 		if (*statp) {
 			break;
 		}
@@ -97,7 +97,7 @@ read_buf(char *bufp,
 		}
 		bufsz -= mbufsz;
 		nread += (int)mbufsz;
-		(* return_read_buf_funcp)(contextp, mbufp, mbufsz);
+		(*return_read_buf_funcp)(contextp, mbufp, mbufsz);
 	}
 
 	return nread;
@@ -202,15 +202,15 @@ bigstat_iter(jdm_fshandle_t *fshandlep,
 			}
 
 			if ((p->bs_mode & S_IFMT) == S_IFDIR) {
-				if (! (selector & BIGSTAT_ITER_DIR)){
+				if (!(selector & BIGSTAT_ITER_DIR)){
 					continue;
 				}
 			} else {
-				if (! (selector & BIGSTAT_ITER_NONDIR)){
+				if (!(selector & BIGSTAT_ITER_NONDIR)){
 					continue;
 				}
 			}
-			rval = (* fp)(cb_arg1, fshandlep, fsfd, p);
+			rval = (*fp)(cb_arg1, fshandlep, fsfd, p);
 			if (rval) {
 				*statp = rval;
 				return 0;
@@ -272,7 +272,7 @@ bigstat_one(int fsfd,
 #define INOGRPLEN	256
 int
 inogrp_iter(int fsfd,
-	     int (* fp)(void *arg1,
+	     int (*fp)(void *arg1,
 				int fsfd,
 				xfs_inogrp_t *inogrp),
 	     void * arg1,
@@ -311,7 +311,7 @@ inogrp_iter(int fsfd,
 		for (p = igrp, endp = igrp + inogrpcnt; p < endp; p++) {
 			int rval;
 
-			rval = (* fp)(arg1, fsfd, p);
+			rval = (*fp)(arg1, fsfd, p);
 			if (rval) {
 				*statp = rval;
 				free(igrp);
@@ -376,7 +376,7 @@ diriter(jdm_fshandle_t *fshandlep,
 		      statp->bs_ino,
 		      strerror(errno));
 		*cbrvalp = 0;
-		if (! usrgdp) {
+		if (!usrgdp) {
 			free((void *)gdp);
 		}
 		return -1;
@@ -476,7 +476,7 @@ diriter(jdm_fshandle_t *fshandlep,
 
 			/* invoke the callback
 			 */
-			cbrval = (* cbfp)(arg1,
+			cbrval = (*cbfp)(arg1,
 					     fshandlep,
 					     fsfd,
 					     &statbuf,
@@ -495,7 +495,7 @@ diriter(jdm_fshandle_t *fshandlep,
 	}
 
 	(void)close(fd);
-	if (! usrgdp) {
+	if (!usrgdp) {
 		free((void *)gdp);
 	}
 

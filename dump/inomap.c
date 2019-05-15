@@ -373,13 +373,13 @@ inomap_build(jdm_fshandle_t *fshandlep,
 			} else {
 				ep = &startptp[startptix + 1];
 			}
-			assert(! p->sp_flags);
+			assert(!p->sp_flags);
 			mlog(MLOG_VERBOSE | MLOG_INOMAP,
 			      _("stream %u: ino %llu offset %lld to "),
 			      startptix,
 			      p->sp_ino,
 			      p->sp_offset);
-			if (! ep) {
+			if (!ep) {
 				mlog(MLOG_VERBOSE | MLOG_BARE | MLOG_INOMAP,
 				      _("end\n"));
 			} else {
@@ -533,7 +533,7 @@ cb_add(void *arg1,
 	 * increment was based, dump it if it has changed since that
 	 * original base dump.
 	 */
-	if (cb_resume && ! cb_inoinresumerange(ino)) {
+	if (cb_resume && !cb_inoinresumerange(ino)) {
 		if (ltime >= cb_resumetime) {
 			changed = BOOL_TRUE;
 		} else {
@@ -645,7 +645,7 @@ cb_inoinresumerange(xfs_ino_t ino)
 
 	for (streamix = 0; streamix < cb_resumerangecnt; streamix++) {
 		register drange_t *rp = &cb_resumerangep[streamix];
-		if (! (rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
+		if (!(rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
 		     &&
 		     ino >= rp->dr_begin.sp_ino
 		     &&
@@ -670,7 +670,7 @@ cb_inoresumed(xfs_ino_t ino)
 
 	for (streamix = 0; streamix < cb_resumerangecnt; streamix++) {
 		drange_t *rp = &cb_resumerangep[streamix];
-		if (! (rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
+		if (!(rp->dr_begin.sp_flags & STARTPT_FLAGS_END)
 		     &&
 		     ino == rp->dr_begin.sp_ino
 		     &&
@@ -1397,7 +1397,7 @@ inomap_get_gen(void *contextp, xfs_ino_t ino, gen_t *gen)
 	i2gsegp = &inomap.i2gmap[inomap_addr2segix(addrp)];
 
 	relino = ino - segp->base;
-	if (! (i2gsegp->s_valid & ((uint64_t)1 << relino)))
+	if (!(i2gsegp->s_valid & ((uint64_t)1 << relino)))
 		return 1;
 
 	*gen = i2gsegp->s_gen[relino];

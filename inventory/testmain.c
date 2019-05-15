@@ -139,7 +139,7 @@ delete_test(int n)
 	uuid_to_string(&moid, &str, &stat);
 	printf("Searching for Moid = %s\n", str);
 	free(str);
-	if (! inv_delete_mediaobj(&moid)) return -1;
+	if (!inv_delete_mediaobj(&moid)) return -1;
 
 	return 1;
 
@@ -204,7 +204,7 @@ query_test(int level)
 	if (level == -2) {
 		printf("mount pt %s\n",sesfile);
 		tok = inv_open(INV_BY_MOUNTPT, INV_SEARCH_ONLY, sesfile);
-		if (! tok) return -1;
+		if (!tok) return -1;
 		idx_DEBUG_print (tok->d_invindex_fd);
 		return 1;
 	}
@@ -213,7 +213,7 @@ query_test(int level)
 		printf("\n\n\n----------------------------------\n"
 		       "$ Searching fs %s\n", mnt_str[7-i]);
 		tok = inv_open(INV_BY_MOUNTPT, INV_SEARCH_ONLY, mnt_str[7-i]);
-		if (! tok) return -1;
+		if (!tok) return -1;
 
 		prctx.index = i;
 		if (level == -1)
@@ -421,7 +421,7 @@ main(int argc, char *argv[])
 
 	mlog_init(argc, argv);
 
-	if (! inv_DEBUG_print(argc, argv))
+	if (!inv_DEBUG_print(argc, argv))
 		return 0;
 
 	optind = 1;

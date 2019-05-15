@@ -278,7 +278,7 @@ static void do_get_mark(drive_t *, drive_mark_t *);
 static void do_end_read(drive_t *);
 static int do_begin_write(drive_t *);
 static void do_set_mark(drive_t *, drive_mcbfp_t, void *, drive_markrec_t *);
-static char * do_get_write_buf(drive_t *, size_t, size_t *);
+static char *do_get_write_buf(drive_t *, size_t, size_t *);
 static int do_write(drive_t *, char *, size_t);
 static size_t do_get_align_cnt(drive_t *);
 static int do_end_write(drive_t *, off64_t *);
@@ -320,7 +320,7 @@ static double percent64(off64_t num, off64_t denom);
 static int getrec(drive_t *drivep);
 static int write_record(drive_t *drivep, char *bufp, bool_t chksumpr,
                               bool_t xlatepr);
-static ring_msg_t * Ring_get(ring_t *ringp);
+static ring_msg_t *Ring_get(ring_t *ringp);
 static void Ring_reset(ring_t *ringp, ring_msg_t *msgp);
 static void Ring_put(ring_t *ringp, ring_msg_t *msgp);
 static int validate_media_file_hdr(drive_t *drivep);
@@ -417,7 +417,7 @@ ds_match(int argc, char *argv[], drive_t *drivep)
 	/* heuristics to determine if this is a drive.
 	 */
 
-	if (! strcmp(drivep->d_pathname, "stdio")) {
+	if (!strcmp(drivep->d_pathname, "stdio")) {
 		return -10;
 	}
 
@@ -432,7 +432,7 @@ ds_match(int argc, char *argv[], drive_t *drivep)
 		while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		   switch (c) {
 		      case GETOPT_BLOCKSIZE:
-			    if (! optarg || optarg[0] == '-') {
+			    if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_DRIVE,
 					_("-%c argument missing\n"),
 					c);
@@ -479,7 +479,7 @@ ds_instantiate(int argc, char *argv[], drive_t *drivep)
 	assert(sizeof(rec_hdr_t)
 		==
 		sizeofmember(drive_hdr_t, dh_specific));
-	assert(! (STAPE_MAX_RECSZ % PGSZ));
+	assert(!(STAPE_MAX_RECSZ % PGSZ));
 
 	/* hook up the drive ops
 	 */
@@ -510,7 +510,7 @@ ds_instantiate(int argc, char *argv[], drive_t *drivep)
 	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		switch (c) {
 		case GETOPT_RINGLEN:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_DRIVE,
 				      _("-%c argument missing\n"),
 				      c);
@@ -549,7 +549,7 @@ ds_instantiate(int argc, char *argv[], drive_t *drivep)
 	      			_("Overwrite command line option\n"));
 			break;
 		case GETOPT_FILESZ:
-			if (! optarg || optarg [0] == '-') {
+			if (!optarg || optarg [0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_DRIVE,
 				      _("-%c argument missing\n"),
 				      c);
@@ -601,7 +601,7 @@ ds_instantiate(int argc, char *argv[], drive_t *drivep)
 						  ring_write,
 						  (void *)drivep,
 						  &rval);
-		if (! contextp->dc_ringp) {
+		if (!contextp->dc_ringp) {
 			if (rval == ENOMEM) {
 				mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_DRIVE,
 				      _("unable to allocate memory "
@@ -727,7 +727,7 @@ do_begin_read(drive_t *drivep)
 	 */
 	assert(drivep->d_capabilities & DRIVE_CAP_READ);
 	assert(contextp->dc_mode == OM_NONE);
-	assert(! contextp->dc_recp);
+	assert(!contextp->dc_recp);
 
 	/* get a record buffer to use during initialization.
 	 */
@@ -749,7 +749,7 @@ do_begin_read(drive_t *drivep)
 		assert(contextp->dc_fd == -1);
 		rval = prepare_drive(drivep);
 		if (rval) {
-			if (! contextp->dc_singlethreadedpr) {
+			if (!contextp->dc_singlethreadedpr) {
 			    Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 			}
 			contextp->dc_msgp = 0;
@@ -759,7 +759,7 @@ do_begin_read(drive_t *drivep)
 	} else {
 		rval = read_label(drivep);
 		if (rval) {
-			if (! contextp->dc_singlethreadedpr) {
+			if (!contextp->dc_singlethreadedpr) {
 			    Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 			}
 			contextp->dc_msgp = 0;
@@ -773,7 +773,7 @@ do_begin_read(drive_t *drivep)
 	/* all is well. adjust context. don't kick off read-aheads just yet;
 	 * the client may not want this media file.
 	 */
-	if (! contextp->dc_singlethreadedpr) {
+	if (!contextp->dc_singlethreadedpr) {
 		contextp->dc_msgp->rm_op = RING_OP_NOP;
 		contextp->dc_msgp->rm_user = 0; /* do diff. use in do_seek */
 		Ring_put(contextp->dc_ringp, contextp->dc_msgp);
@@ -829,8 +829,8 @@ do_read(drive_t *drivep,
 	/* assert protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 	assert(wantedcnt > 0);
 
 	/* clear the return status field
@@ -891,7 +891,7 @@ do_return_read_buf(drive_t *drivep, char *bufp, size_t retcnt)
 	/* assert protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_errorpr);
+	assert(!contextp->dc_errorpr);
 	assert(contextp->dc_ownedp);
 	assert(bufp == contextp->dc_ownedp);
 
@@ -910,7 +910,7 @@ do_return_read_buf(drive_t *drivep, char *bufp, size_t retcnt)
 	 */
 	if (contextp->dc_nextp >= contextp->dc_dataendp) {
 		assert(contextp->dc_nextp == contextp->dc_dataendp);
-		if (! contextp->dc_singlethreadedpr) {
+		if (!contextp->dc_singlethreadedpr) {
 			contextp->dc_msgp->rm_op = RING_OP_READ;
 			Ring_put(contextp->dc_ringp, contextp->dc_msgp);
 			contextp->dc_msgp = 0;
@@ -941,8 +941,8 @@ do_get_mark(drive_t *drivep, drive_mark_t *markp)
 	/* assert protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 
 	/* the mark is simply the offset into the media file of the
 	 * next byte to be read.
@@ -982,8 +982,8 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 	/* assert protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 
 
 	/* the desired mark is passed by reference, and is really just an
@@ -1068,7 +1068,7 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 			currentoffset += (off64_t)actualcnt;
 			assert(currentoffset == nextrecoffset);
 			assert(wantedoffset >= currentoffset);
-			assert(! contextp->dc_recp);
+			assert(!contextp->dc_recp);
 			assert(currentoffset
 				==
 				contextp->dc_reccnt * (off64_t)tape_recsz);
@@ -1088,7 +1088,7 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 		off64_t wantedreccnt;
 		seekmode_t seekmode;
 
-		assert(! contextp->dc_recp);
+		assert(!contextp->dc_recp);
 		wantedreccnt = wantedoffset / (off64_t)tape_recsz;
 		if (contextp->dc_singlethreadedpr) {
 			seekmode = SEEKMODE_RAW;
@@ -1105,7 +1105,7 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 
 			if (seekmode == SEEKMODE_BUF) {
 				ring_stat_t rs;
-				assert(! contextp->dc_msgp);
+				assert(!contextp->dc_msgp);
 				contextp->dc_msgp =
 						Ring_get(contextp->dc_ringp);
 				rs = contextp->dc_msgp->rm_stat;
@@ -1194,7 +1194,7 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 		size_t actualcnt;
 		int rval;
 
-		assert(! contextp->dc_recp);
+		assert(!contextp->dc_recp);
 
 		/* figure how much to ask for. to eat an entire record,
 		 * ask for a record sans the header. do_read will eat
@@ -1211,7 +1211,7 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 		}
 		assert(actualcnt == wantedcnt);
 		do_return_read_buf(drivep, dummybufp, actualcnt);
-		assert(! contextp->dc_recp);
+		assert(!contextp->dc_recp);
 		currentoffset += (off64_t)tape_recsz;
 		assert(currentoffset
 			==
@@ -1315,8 +1315,8 @@ do_next_mark(drive_t *drivep)
 	/* assert protocol being followed.
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 
 	mlog(MLOG_DEBUG | MLOG_DRIVE,
 	      "rmt drive op: next mark\n");
@@ -1354,7 +1354,7 @@ noerrorsearch:
 			}
 		}
 
-		if (! contextp->dc_singlethreadedpr) {
+		if (!contextp->dc_singlethreadedpr) {
 			Ring_put(contextp->dc_ringp,
 				  contextp->dc_msgp);
 			contextp->dc_msgp = 0;
@@ -1374,7 +1374,7 @@ noerrorsearch:
 	assert(contextp->dc_nextp <= contextp->dc_dataendp);
 	assert(contextp->dc_nextp >= contextp->dc_recp + STAPE_HDR_SZ);
 	if (contextp->dc_nextp == contextp->dc_dataendp) {
-		if (! contextp->dc_singlethreadedpr) {
+		if (!contextp->dc_singlethreadedpr) {
 			Ring_put(contextp->dc_ringp,
 				  contextp->dc_msgp);
 			contextp->dc_msgp = 0;
@@ -1386,7 +1386,7 @@ noerrorsearch:
 	return 0;
 
 resetring:
-	if (! contextp->dc_singlethreadedpr) {
+	if (!contextp->dc_singlethreadedpr) {
 		Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 		contextp->dc_msgp = 0;
 	}
@@ -1464,7 +1464,7 @@ validatehdr:
 		goto readrecord;
 	}
 
-	assert(! (rechdrp->file_offset % (off64_t)tape_recsz));
+	assert(!(rechdrp->file_offset % (off64_t)tape_recsz));
 	markoff = rechdrp->first_mark_offset - rechdrp->file_offset;
 	assert(markoff >= (off64_t)STAPE_HDR_SZ);
 	assert(markoff < (off64_t)tape_recsz);
@@ -1475,7 +1475,7 @@ validatehdr:
 
 alliswell:
 	contextp->dc_nextp = contextp->dc_recp + (size_t)markoff;
-	assert(! (rechdrp->file_offset % (off64_t)tape_recsz));
+	assert(!(rechdrp->file_offset % (off64_t)tape_recsz));
 	contextp->dc_reccnt = rechdrp->file_offset / (off64_t)tape_recsz;
 	contextp->dc_iocnt = contextp->dc_reccnt + 1;
 	contextp->dc_recendp = contextp->dc_recp + tape_recsz;
@@ -1558,7 +1558,7 @@ do_end_read(drive_t *drivep)
 	/* assert protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 
 	/* In the scsi version, read_label() does a status command to the
 	 * drive to then decide if doing a 'fsf' is appropriate.  For minrmt,
@@ -1567,7 +1567,7 @@ do_end_read(drive_t *drivep)
 	 */
 	(void)fsf_and_verify(drivep);
 
-	if (! contextp->dc_singlethreadedpr) {
+	if (!contextp->dc_singlethreadedpr) {
 		Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 		contextp->dc_msgp = 0;
 	}
@@ -1613,8 +1613,8 @@ do_begin_write(drive_t *drivep)
 	/* verify protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_NONE);
-	assert(! drivep->d_markrecheadp);
-	assert(! contextp->dc_recp);
+	assert(!drivep->d_markrecheadp);
+	assert(!contextp->dc_recp);
 
 	/* get pointers into global write header
 	 */
@@ -1641,13 +1641,13 @@ do_begin_write(drive_t *drivep)
 	/* get a record buffer. will be used for the media file header,
 	 * and is needed to "prime the pump" for first call to do_write.
 	 */
-	assert(! contextp->dc_recp);
+	assert(!contextp->dc_recp);
 	if (contextp->dc_singlethreadedpr) {
 		assert(contextp->dc_bufp);
 		contextp->dc_recp = contextp->dc_bufp;
 	} else {
 		assert(contextp->dc_ringp);
-		assert(! contextp->dc_msgp);
+		assert(!contextp->dc_msgp);
 		contextp->dc_msgp = Ring_get(contextp->dc_ringp);
 		assert(contextp->dc_msgp->rm_stat == RING_STAT_INIT);
 		contextp->dc_recp = contextp->dc_msgp->rm_bufp;
@@ -1683,7 +1683,7 @@ do_begin_write(drive_t *drivep)
 
 	rval = write_record(drivep, contextp->dc_recp, BOOL_TRUE, BOOL_FALSE);
 	if (rval) {
-		if (! contextp->dc_singlethreadedpr) {
+		if (!contextp->dc_singlethreadedpr) {
 			Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 			contextp->dc_msgp = 0;
 		}
@@ -1694,7 +1694,7 @@ do_begin_write(drive_t *drivep)
 	/* prepare the drive context. must have a record buffer ready to
 	 * go, header initialized.
 	 */
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	contextp->dc_reccnt = 1; /* count the header record */
 	contextp->dc_recendp = contextp->dc_recp + tape_recsz;
 	contextp->dc_nextp = contextp->dc_recp + STAPE_HDR_SZ;
@@ -1740,8 +1740,8 @@ do_set_mark(drive_t *drivep,
 	/* verify protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_recp);
 	assert(contextp->dc_nextp);
 
@@ -1803,8 +1803,8 @@ do_get_write_buf(drive_t *drivep, size_t wantedcnt, size_t *actualcntp)
 	/* verify protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_recp);
 	assert(contextp->dc_nextp);
 	assert(contextp->dc_nextp < contextp->dc_recendp);
@@ -1869,7 +1869,7 @@ do_write(drive_t *drivep, char *bufp, size_t retcnt)
 	/* verify protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_errorpr);
+	assert(!contextp->dc_errorpr);
 	assert(contextp->dc_ownedp);
 	assert(contextp->dc_recp);
 	assert(contextp->dc_nextp);
@@ -1970,7 +1970,7 @@ do_write(drive_t *drivep, char *bufp, size_t retcnt)
  *	the number of bytes to next alignment
  */
 static size_t
-do_get_align_cnt(drive_t * drivep)
+do_get_align_cnt(drive_t *drivep)
 {
 	char *next_alignment_point;
 	intptr_t next_alignment_off;
@@ -1984,8 +1984,8 @@ do_get_align_cnt(drive_t * drivep)
 	/* verify protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_errorpr);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_errorpr);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_recp);
 	assert(contextp->dc_nextp);
 	assert(contextp->dc_nextp < contextp->dc_recendp);
@@ -2030,7 +2030,7 @@ do_end_write(drive_t *drivep, off64_t *ncommittedp)
 	/* verify protocol being followed
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_recp);
 	assert(contextp->dc_nextp);
 	assert(contextp->dc_nextp >= contextp->dc_recp + STAPE_HDR_SZ);
@@ -2045,7 +2045,7 @@ do_end_write(drive_t *drivep, off64_t *ncommittedp)
 	 * do commits, already done when error occured.
 	 */
 	if (contextp->dc_errorpr) {
-		if (! contextp->dc_singlethreadedpr) {
+		if (!contextp->dc_singlethreadedpr) {
 			Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 			contextp->dc_msgp = 0;
 		}
@@ -2117,8 +2117,8 @@ do_end_write(drive_t *drivep, off64_t *ncommittedp)
 	} else {
 		first_rec_w_err = -1L;
 	}
-	if (! contextp->dc_singlethreadedpr) {
-		while (! rval) {
+	if (!contextp->dc_singlethreadedpr) {
+		while (!rval) {
 			assert(contextp->dc_msgp);
 			contextp->dc_msgp->rm_op = RING_OP_TRACE;
 			Ring_put(contextp->dc_ringp,
@@ -2147,7 +2147,7 @@ do_end_write(drive_t *drivep, off64_t *ncommittedp)
 
 	/* the ring is now flushed. reset
 	 */
-	if (! contextp->dc_singlethreadedpr) {
+	if (!contextp->dc_singlethreadedpr) {
 		Ring_reset(contextp->dc_ringp, contextp->dc_msgp);
 		contextp->dc_msgp = 0;
 	}
@@ -2157,7 +2157,7 @@ do_end_write(drive_t *drivep, off64_t *ncommittedp)
 	 * side-effect of flushing the driver/drive of pending writes,
 	 * exposing any write errors.
 	 */
-	if (! rval) {
+	if (!rval) {
 		int weofrval;
 
 		weofrval = mt_op(contextp->dc_fd, MTWEOF, 1);
@@ -2637,13 +2637,13 @@ validate_media_file_hdr(drive_t *drivep)
 
 	/* check the checksum
 	 */
-	if (! global_hdr_checksum_check(tmpgh)) {
+	if (!global_hdr_checksum_check(tmpgh)) {
 	        mlog(MLOG_DEBUG | MLOG_DRIVE,
 	              "bad media file header checksum\n");
 	        return DRIVE_ERROR_CORRUPTION;
 	}
 
-	if (! tape_rec_checksum_check(contextp, contextp->dc_recp)) {
+	if (!tape_rec_checksum_check(contextp, contextp->dc_recp)) {
 		mlog(MLOG_NORMAL | MLOG_DRIVE,
 		      _("tape record checksum error\n"));
 		return DRIVE_ERROR_CORRUPTION;
@@ -2925,7 +2925,7 @@ tape_rec_checksum_set(drive_context_t *contextp, char *bufp)
 	uint32_t *p;
 	uint32_t accum;
 
-	if (! contextp->dc_recchksumpr) {
+	if (!contextp->dc_recchksumpr) {
 		return;
 	}
 
@@ -3096,7 +3096,7 @@ prepare_drive(drive_t *drivep)
 		/* open the drive
 	 	 */
 		ok = Open(drivep);
-		if (! ok) {
+		if (!ok) {
 			if (errno != EBUSY) {
 				display_access_failed_message(drivep);
 				return DRIVE_ERROR_DEVICE;
@@ -3121,7 +3121,7 @@ prepare_drive(drive_t *drivep)
 	 * mark separation and media file size.
 	 */
 	ok = get_tpcaps(drivep);
-	if (! ok) {
+	if (!ok) {
 		return DRIVE_ERROR_DEVICE;
 	}
 
@@ -3223,7 +3223,7 @@ prepare_drive(drive_t *drivep)
 			      "and try again\n");
 			Close(drivep);
 			ok = Open(drivep);
-			if (! ok) {
+			if (!ok) {
 				display_access_failed_message(drivep);
 				return DRIVE_ERROR_DEVICE;
 			}
@@ -3246,7 +3246,7 @@ prepare_drive(drive_t *drivep)
 			      "and try again\n");
 			Close(drivep);
 			ok = Open(drivep);
-			if (! ok) {
+			if (!ok) {
 				display_access_failed_message(drivep);
 				return DRIVE_ERROR_DEVICE;
 			}
@@ -3335,7 +3335,7 @@ checkhdr:
 				}
 				(void)rewind_and_verify(drivep);
 				ok = set_best_blk_and_rec_sz(drivep);
-				if (! ok) {
+				if (!ok) {
 					return DRIVE_ERROR_DEVICE;
 				}
 				return DRIVE_ERROR_FOREIGN;
@@ -3362,7 +3362,7 @@ largersize:
 				      _("assuming media is corrupt "
 				      "or contains non-xfsdump data\n"));
 				ok = set_best_blk_and_rec_sz(drivep);
-				if (! ok) {
+				if (!ok) {
 					return DRIVE_ERROR_DEVICE;
 				}
 				return DRIVE_ERROR_FOREIGN;
@@ -3371,7 +3371,7 @@ largersize:
                  */
 		if (tape_recsz != STAPE_MAX_RECSZ) {
 			tape_recsz = STAPE_MAX_RECSZ;
-			if (! contextp->dc_isQICpr) {
+			if (!contextp->dc_isQICpr) {
 				tape_blksz = tape_recsz;;
 			}
 			changedblkszpr = BOOL_TRUE;
@@ -3526,7 +3526,7 @@ record_hdr_validate(drive_t *drivep, char *bufp, bool_t chkoffpr)
 	rec_hdr_t *rechdrp = &rechdr;
 	rec_hdr_t *tmprh = (rec_hdr_t *)bufp;
 
-	if (! tape_rec_checksum_check(contextp, bufp)) {
+	if (!tape_rec_checksum_check(contextp, bufp)) {
 		mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_DRIVE,
 		      _("record %lld corrupt: bad record checksum\n"),
 		      contextp->dc_iocnt - 1);
@@ -3703,7 +3703,7 @@ getrec(drive_t *drivep)
 	drive_context_t *contextp;
 	contextp = (drive_context_t *)drivep->d_contextp;
 
-	while (! contextp->dc_recp) {
+	while (!contextp->dc_recp) {
 		rec_hdr_t *rechdrp;
 		if (contextp->dc_singlethreadedpr) {
 			int rval;
@@ -3850,12 +3850,12 @@ display_ring_metrics(drive_t *drivep, int mlog_flags)
 	char *bufszsfxp;
 
 	if (tape_recsz == STAPE_MIN_MAX_BLKSZ) {
-		assert(! (STAPE_MIN_MAX_BLKSZ % 0x400));
+		assert(!(STAPE_MIN_MAX_BLKSZ % 0x400));
 		sprintf(bufszbuf, "%u", STAPE_MIN_MAX_BLKSZ / 0x400);
 		assert(strlen(bufszbuf) < sizeof(bufszbuf));
 		bufszsfxp = _("KB");
 	} else if (tape_recsz == STAPE_MAX_RECSZ) {
-		assert(! (STAPE_MAX_RECSZ % 0x100000));
+		assert(!(STAPE_MAX_RECSZ % 0x100000));
 		sprintf(bufszbuf, "%u", STAPE_MAX_RECSZ / 0x100000);
 		assert(strlen(bufszbuf) < sizeof(bufszbuf));
 		bufszsfxp = _("MB");

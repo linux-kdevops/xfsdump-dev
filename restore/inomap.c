@@ -274,7 +274,7 @@ inomap_restore_pers(drive_t *drivep,
 		        PERSSZ
 		        +
 		        sizeof(hnk_t) * (size_t)hnkcnt);
-	assert(! rval1);
+	assert(!rval1);
 	(void)close(fd);
 	free((void *)perspath);
 
@@ -286,7 +286,7 @@ inomap_restore_pers(drive_t *drivep,
 	case 0:
 		assert((size_t)nread == sizeof(hnk_t) * (size_t)hnkcnt);
 		ok = inomap_sync_pers(hkdir);
-		if (! ok) {
+		if (!ok) {
 			return RV_ERROR;
 		}
 		return RV_OK;
@@ -515,7 +515,7 @@ inomap_rst_needed(xfs_ino_t firstino, xfs_ino_t lastino)
 
 	/* if inomap not restored/resynced, just say yes
 	 */
-	if (! roothnkp) {
+	if (!roothnkp) {
 		return BOOL_TRUE;
 	}
 
@@ -570,7 +570,7 @@ begin:
 		}
 		if (segp >= hnkp->seg + SEGPERHNK) {
 			hnkp = hnkp->nextp;
-			if (! hnkp) {
+			if (!hnkp) {
 				return BOOL_FALSE;
 			}
 			segp = hnkp->seg;
@@ -585,7 +585,7 @@ begin:
  */
 void
 inomap_cbiter(int statemask,
-	       bool_t (* cbfunc)(void *ctxp, xfs_ino_t ino),
+	       bool_t (*cbfunc)(void *ctxp, xfs_ino_t ino),
 	       void *ctxp)
 {
 	hnk_t *hnkp;
@@ -620,7 +620,7 @@ inomap_cbiter(int statemask,
 				if (statemask & (1 << state)) {
 					bool_t ok;
 					ok = (cbfunc)(ctxp, ino);
-					if (! ok) {
+					if (!ok) {
 						return;
 					}
 				}

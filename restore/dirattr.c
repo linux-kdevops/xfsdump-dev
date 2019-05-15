@@ -208,8 +208,8 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 	/* sanity checks
 	 */
 	assert(sizeof(dirattr_pers_t) <= DIRATTR_PERS_SZ);
-	assert(! dtp);
-	assert(! dpp);
+	assert(!dtp);
+	assert(!dpp);
 
 	/* allocate and initialize context
 	 */
@@ -269,7 +269,7 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 		      ioctlcmd = XFS_IOC_RESVSP64,
 		      loglevel = MLOG_VERBOSE
 		      ;
-		      ! successpr && trycnt < 2
+		      !successpr && trycnt < 2
 		      ;
 		      trycnt++,
 		      ioctlcmd = XFS_IOC_ALLOCSP64,
@@ -278,7 +278,7 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 			struct flock64 flock64;
 			int rval;
 
-			if (! ioctlcmd) {
+			if (!ioctlcmd) {
 				continue;
 			}
 
@@ -314,7 +314,7 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 
 	/* mmap the persistent descriptor
 	 */
-	assert(! (DIRATTR_PERS_SZ % pgsz));
+	assert(!(DIRATTR_PERS_SZ % pgsz));
 	dpp = (dirattr_pers_t *)mmap_autogrow(DIRATTR_PERS_SZ,
 				        dtp->dt_fd,
 				        (off_t)0);
@@ -329,7 +329,7 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 
 	/* initialize persistent state
 	 */
-	if (! resume) {
+	if (!resume) {
 		dpp->dp_appendoff = (off64_t)DIRATTR_PERS_SZ;
 	}
 
@@ -356,12 +356,12 @@ dirattr_cleanup(void)
 	/* REFERENCED */
 	int rval;
 
-	if (! dtp) {
+	if (!dtp) {
 		return;
 	}
 	if (dpp) {
 		rval = munmap((void *)dpp, DIRATTR_PERS_SZ);
-		assert(! rval);
+		assert(!rval);
 		dpp = 0;
 	}
 	if (dtp->dt_fd >= 0) {
@@ -403,7 +403,7 @@ dirattr_add(filehdr_t *fhdrp)
 
 	/* make sure file pointer is positioned to write at end of file
 	 */
-	if (! dtp->dt_at_endpr) {
+	if (!dtp->dt_at_endpr) {
 		off64_t newoff;
 		newoff = lseek64(dtp->dt_fd, dpp->dp_appendoff, SEEK_SET);
 		if (newoff == (off64_t)-1) {
@@ -621,7 +621,7 @@ dirattr_addextattr(dah_t dah, extattrhdr_t *ahdrp)
 
 bool_t
 dirattr_cb_extattr(dah_t dah,
-		    bool_t (* cbfunc)(extattrhdr_t *ahdrp,
+		    bool_t (*cbfunc)(extattrhdr_t *ahdrp,
 				         void *ctxp),
 		    extattrhdr_t *ahdrp,
 		    void *ctxp)
@@ -735,8 +735,8 @@ dirattr_cb_extattr(dah_t dah,
 
 		/* call the callback func
 		 */
-		ok = (* cbfunc)(ahdrp, ctxp);
-		if (! ok) {
+		ok = (*cbfunc)(ahdrp, ctxp);
+		if (!ok) {
 			return BOOL_FALSE;
 		}
 

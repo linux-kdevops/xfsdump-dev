@@ -168,8 +168,8 @@ extern ring_t *ring_create(size_t ringlen,
 			    size_t bufsz,
 			    bool_t pinpr,
 			    ix_t drive_index,
-			    int (* readfunc)(void *clientctxp, char *bufp),
-			    int (* writefunc)(void *clientctxp, char *bufp),
+			    int (*readfunc)(void *clientctxp, char *bufp),
+			    int (*writefunc)(void *clientctxp, char *bufp),
 			    void *clientctxp,
 			    int *rvalp);
 

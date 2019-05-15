@@ -195,7 +195,7 @@ ds_match(int argc, char *argv[], drive_t *drivep)
 
 	/* sanity checks
 	 */
-	assert(! (sizeofmember(drive_context_t, dc_buf) % PGSZ));
+	assert(!(sizeofmember(drive_context_t, dc_buf) % PGSZ));
 
 	/* determine if this is an rmt file. if so, give a weak match:
 	 * might be an ordinary file accessed via the rmt protocol.
@@ -212,7 +212,7 @@ ds_match(int argc, char *argv[], drive_t *drivep)
 	/* willing to pick up anything not picked up by other strategies,
 	 * as long as it exists and is not a directory
 	 */
-	if (! strcmp(drivep->d_pathname, "stdio")) {
+	if (!strcmp(drivep->d_pathname, "stdio")) {
 		return 1;
 	}
 
@@ -260,7 +260,7 @@ ds_instantiate(int argc, char *argv[], drive_t *drivep)
 	 */
 	drivep->d_capabilities = 0;
 	drivep->d_capabilities |= DRIVE_CAP_AUTOREWIND;
-	if (! strcmp(drivep->d_pathname, "stdio")) {
+	if (!strcmp(drivep->d_pathname, "stdio")) {
 #ifdef DUMP
 		contextp->dc_fd = 1;
 #endif /* DUMP */
@@ -514,7 +514,7 @@ do_begin_read(drive_t *drivep)
 
 	/* check the checksum
 	 */
-	if (! global_hdr_checksum_check(tmphdr)) {
+	if (!global_hdr_checksum_check(tmphdr)) {
 		mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_DRIVE,
 		      _("media file header checksum error\n"));
 		free(tmphdr);
@@ -596,7 +596,7 @@ do_read(drive_t *drivep,
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	assert(wantedcnt > 0);
 
 	/* pre-initialize reference return
@@ -724,7 +724,7 @@ do_get_mark(drive_t *drivep, drive_mark_t *markp)
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 
 	/* calculate the offset of the next byte to be supplied relative to
 	 * the beginning of the buffer and relative to the beginning of
@@ -757,7 +757,7 @@ do_seek_mark(drive_t *drivep, drive_mark_t *markp)
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 
 	/* calculate the current offset within the media file
 	 * of the next byte to be read
@@ -820,9 +820,9 @@ do_next_mark(drive_t *drivep)
 	 */
 	assert(dcaps & DRIVE_CAP_NEXTMARK);
 	assert(contextp->dc_mode == OM_READ);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 
-	if (! mark) {
+	if (!mark) {
 		return DRIVE_ERROR_EOF;
 	}
 
@@ -964,7 +964,7 @@ do_begin_write(drive_t *drivep)
 	     tmphdr->gh_hostname,
 	     tmphdr->gh_dumplabel);
 
-	if (! global_hdr_checksum_check(tmphdr)) {
+	if (!global_hdr_checksum_check(tmphdr)) {
 		mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_DRIVE,
 		      _("media file header checksum error\n"));
 	}
@@ -1008,7 +1008,7 @@ do_set_mark(drive_t *drivep,
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_nextp);
 
 	/* calculate the mark offset
@@ -1155,7 +1155,7 @@ do_set_mark(drive_t *drivep,
 	 */
 	if (contextp->dc_nextp == contextp->dc_buf) {
 		assert(drivep->d_markrecheadp == 0);
-		(* cbfuncp)(cbcontextp, markrecp, BOOL_TRUE);
+		(*cbfuncp)(cbcontextp, markrecp, BOOL_TRUE);
 		return;
 	} else {
 		markrecp->dm_cbfuncp = cbfuncp;
@@ -1191,7 +1191,7 @@ do_get_write_buf(drive_t *drivep, size_t wanted_bufsz, size_t *actual_bufszp)
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_nextp);
 	assert(contextp->dc_nextp < contextp->dc_emptyp);
 	assert(contextp->dc_ownedsz == 0);
@@ -1250,7 +1250,7 @@ do_write(drive_t *drivep, char *bufp, size_t writesz)
 	assert(contextp->dc_mode == OM_WRITE);
 	assert(contextp->dc_ownedp);
 	assert(bufp == contextp->dc_ownedp);
-	assert(! contextp->dc_nextp);
+	assert(!contextp->dc_nextp);
 	assert(contextp->dc_ownedp < contextp->dc_emptyp);
 	assert(writesz == contextp->dc_ownedsz);
 
@@ -1315,7 +1315,7 @@ do_get_align_cnt(drive_t *drivep)
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_nextp);
 	assert(contextp->dc_nextp < contextp->dc_emptyp);
 
@@ -1349,7 +1349,7 @@ do_end_write(drive_t *drivep, off64_t *ncommittedp)
 	/* assert protocol
 	 */
 	assert(contextp->dc_mode == OM_WRITE);
-	assert(! contextp->dc_ownedp);
+	assert(!contextp->dc_ownedp);
 	assert(contextp->dc_nextp);
 	assert(contextp->dc_nextp < contextp->dc_emptyp);
 

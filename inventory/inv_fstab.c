@@ -215,7 +215,7 @@ fstab_get_fname(void *pred,
 			}
 		}
 #ifdef INVT_DEBUG
-		if (! uuidp)
+		if (!uuidp)
 			mlog(MLOG_DEBUG | MLOG_INV,"INV: get_fname: unable to find %s"
 			      " in the inventory\n", (char *)pred);
 #endif
@@ -224,7 +224,7 @@ fstab_get_fname(void *pred,
 		uuidp = (uuid_t *)pred;
 	}
 
-	if (! uuidp)
+	if (!uuidp)
 		return -1;
 
 	uuid_unparse(*uuidp, uuidstr);

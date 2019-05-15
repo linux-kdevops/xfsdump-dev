@@ -47,7 +47,7 @@ struct cld {
 	int c_exit_code;
 	pthread_t c_tid;
 	ix_t c_streamix;
-	int (* c_entry)(void *arg1);
+	int (*c_entry)(void *arg1);
 	void * c_arg1;
 };
 
@@ -73,7 +73,7 @@ cldmgr_init(void)
 }
 
 bool_t
-cldmgr_create(int (* entry)(void *arg1),
+cldmgr_create(int (*entry)(void *arg1),
 	       ix_t streamix,
 	       char *descstr,
 	       void *arg1)
@@ -84,7 +84,7 @@ cldmgr_create(int (* entry)(void *arg1),
 	assert(pthread_equal(pthread_self(), cldmgr_parenttid));
 
 	cldp = cldmgr_getcld();
-	if (! cldp) {
+	if (!cldp) {
 		mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_PROC, _(
 		      "cannot create %s thread for stream %u: "
 		      "too many child threads (max allowed is %d)\n"),
@@ -234,7 +234,7 @@ cldmgr_entry(void *arg1)
 	      "thread %lu created for stream %d\n",
 	      tid,
 	      cldp->c_streamix);
-	cldp->c_exit_code = (* cldp->c_entry)(cldp->c_arg1);
+	cldp->c_exit_code = (*cldp->c_entry)(cldp->c_arg1);
 
 	pthread_cleanup_pop(1);
 

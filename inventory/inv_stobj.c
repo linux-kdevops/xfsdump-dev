@@ -233,12 +233,12 @@ stobj_split(invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 		if (GET_REC_NOLOCK(fd, &session, sizeof(invt_session_t),
 			     harr[i].sh_sess_off) < 0)
 			return -1;
-		if (! stobj_pack_sessinfo(fd, &session, &harr[i], &bufpp,
+		if (!stobj_pack_sessinfo(fd, &session, &harr[i], &bufpp,
 					   &bufszp))
 			return -1;
 		/* Now we need to put this in the new StObj. So, first
 		   unpack it. */
-		if (! stobj_unpack_sessinfo(bufpp, bufszp, &sesinfo))
+		if (!stobj_unpack_sessinfo(bufpp, bufszp, &sesinfo))
 			return -1;
 
 		/* There is no chance of a recursion here */
@@ -247,7 +247,7 @@ stobj_split(invt_idxinfo_t *idx, int fd, invt_sescounter_t *sescnt,
 			return -1;
 
 		/* Now delete that session from this StObj */
-		if (! stobj_delete_sessinfo(fd, sescnt, &session,
+		if (!stobj_delete_sessinfo(fd, sescnt, &session,
 					     &harr[i]))
 			return -1;
 		free(bufpp);
@@ -638,7 +638,7 @@ stobj_put_mediafile(inv_stmtoken_t tok, invt_mediafile_t *mf)
 	   last ino of the new mediafile. If this is the first mediafile, we
 	   have to update the startino as well. Note that ino is a <ino,off>
 	   tuple */
-	if (! (mf->mf_flag & INVT_MFILE_INVDUMP)) {
+	if (!(mf->mf_flag & INVT_MFILE_INVDUMP)) {
 		if (stream.st_nmediafiles == 0)
 			stream.st_startino = mf->mf_startino;
 		stream.st_endino = mf->mf_endino;
@@ -679,7 +679,7 @@ stobj_put_mediafile(inv_stmtoken_t tok, invt_mediafile_t *mf)
 			return -1;
 	}
 
-	if (! (mf->mf_flag & INVT_MFILE_INVDUMP)) {
+	if (!(mf->mf_flag & INVT_MFILE_INVDUMP)) {
 		tok->md_lastmfile = mf;
 	} else {
 		tok->md_lastmfile = NULL;
@@ -886,7 +886,7 @@ stobj_getsession_bylabel(
 		return -1;
 
 	/* now see if this is the one that caller is askin for */
-	if (! STREQL(ses.s_label, (char *)seslabel)) {
+	if (!STREQL(ses.s_label, (char *)seslabel)) {
 		return BOOL_FALSE;
 	}
 
@@ -1456,7 +1456,7 @@ DEBUG_sessionprint(inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 		for (j = 0; j < ses->s_streams[i].st_nmediafiles; j++) {
 			mfp = &ses->s_streams[i].st_mediafiles[j];
 			if (moidsearch) {
-				if (! mobj_eql(mfp, mobj))
+				if (!mobj_eql(mfp, mobj))
 					continue;
 			}
 			printf("\t\t\tmedia file %d:", j);
@@ -1475,7 +1475,7 @@ DEBUG_sessionprint(inv_session_t *ses, uint ref, invt_pr_ctx_t *prctx)
 			printf("\t\t\t\tmfile size:\t%llu\n",
 				(unsigned long long)mfp->m_size);
 
-			if (! mfp->m_isinvdump) {
+			if (!mfp->m_isinvdump) {
 				printf("\t\t\t\tmfile start:"
 					"\tino %llu offset %lld\n",
 					(unsigned long long)mfp->m_startino,

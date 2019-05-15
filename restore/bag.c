@@ -46,9 +46,9 @@ bag_insert(bag_t *bagp,
 	register bagelem_t *nextp;
 	register bagelem_t *prevp;
 
-	assert(! newp->be_loaded);
+	assert(!newp->be_loaded);
 	newp->be_loaded = BOOL_TRUE;
-	assert(! newp->be_bagp);
+	assert(!newp->be_bagp);
 	newp->be_bagp = bagp;
 
 	newp->be_key = key;
@@ -117,7 +117,7 @@ bag_find(bag_t *bagp,
 	      p = p->be_nextp)
 		;
 
-	if (! p || p->be_key != key) {
+	if (!p || p->be_key != key) {
 		*payloadpp = 0;
 		return 0;
 	} else {
@@ -133,7 +133,7 @@ void
 bagiter_init(bag_t *bagp, bagiter_t *iterp)
 {
 	iterp->bi_bagp = bagp;
-	if (! bagp->b_headp) {
+	if (!bagp->b_headp) {
 		iterp->bi_nextp = 0;
 		return;
 	}
@@ -148,7 +148,7 @@ bagiter_next(bagiter_t *iterp, void **payloadpp)
 
 	/* termination condition
 	 */
-	if (! iterp->bi_nextp) {
+	if (!iterp->bi_nextp) {
 		*payloadpp = 0;
 		return 0;
 	}

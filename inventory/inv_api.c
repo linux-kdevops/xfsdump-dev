@@ -184,7 +184,7 @@ inv_writesession_open(
 	assert (forwhat != INV_SEARCH_ONLY);
 	assert (fd > 0);
 
-	if (! (tok->d_update_flag & FSTAB_UPDATED)) {
+	if (!(tok->d_update_flag & FSTAB_UPDATED)) {
 		if (fstab_put_entry(fsid, mntpt, devpath, forwhat) < 0) {
 		       mlog(MLOG_NORMAL | MLOG_INV, _(
 				"INV: put_fstab_entry failed.\n"));
@@ -322,7 +322,7 @@ inv_stream_open(
 	if (stobj_get_sessinfo(tok, &seshdr, &ses) <= 0)
 		err = BOOL_TRUE;
 
-	if ((! err)  && ses.s_cur_nstreams < ses.s_max_nstreams) {
+	if ((!err)  && ses.s_cur_nstreams < ses.s_max_nstreams) {
 		/* this is where this stream header will be written to */
 		stok->md_stream_off = (off64_t) (sizeof(invt_stream_t) *
 					         ses.s_cur_nstreams)
@@ -333,14 +333,14 @@ inv_stream_open(
 		if (PUT_REC_NOLOCK(fd, &ses, sizeof(ses),
 				     tok->sd_session_off) < 0)
 			err = BOOL_TRUE;
-	} else if (! err) {
+	} else if (!err) {
 		mlog (MLOG_NORMAL, _(
 		       "INV: cant create more than %d streams."
 		       " Max'd out..\n"), ses.s_cur_nstreams);
 		err = BOOL_TRUE;
 	}
 
-	if (! err) {
+	if (!err) {
 		stream.st_firstmfile = stream.st_lastmfile =
 			               stok->md_stream_off;
 
@@ -1018,7 +1018,7 @@ inv_getopt(int argc, char **argv, invt_pr_ctx_t *prctx)
 		rval |= I_IERR;
 	}
 	else if ((rval & I_IFOUND) && !(rval & I_IERR) && fs
-		 && ! prctx->fstab && ! prctx->invcheck) {
+		 && !prctx->fstab && !prctx->invcheck) {
 		inv_idbtoken_t tok;
 
 		/* A filesystem could be backed up, mkfs'ed then restored
@@ -1101,8 +1101,8 @@ inv_DEBUG_print(int argc, char **argv)
 	/* If user didnt indicate -i option, we can't do anything */
 	rval = inv_getopt(argc, argv, &prctx);
 
-	if (!prctx.invcheck && ! prctx.fstab) {
-		if (! (rval & I_IFOUND)) {
+	if (!prctx.invcheck && !prctx.fstab) {
+		if (!(rval & I_IFOUND)) {
 			return BOOL_TRUE;
 		} else if (rval & I_IERR || rval & I_IDONE) {
 			return BOOL_FALSE;
@@ -1115,7 +1115,7 @@ inv_DEBUG_print(int argc, char **argv)
 	if (fd >= 0) {
 		 if (prctx.fstab) {
 			 fstab_DEBUG_print(arr, numfs);
-			 if (! prctx.invidx)
+			 if (!prctx.invidx)
 				 return BOOL_FALSE;
 		 }
 

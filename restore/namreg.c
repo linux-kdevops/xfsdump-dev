@@ -124,8 +124,8 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 
 	/* sanity checks
 	 */
-	assert(! ntp);
-	assert(! npp);
+	assert(!ntp);
+	assert(!npp);
 
 	assert(sizeof(namreg_pers_t) <= NAMREG_PERS_SZ);
 
@@ -184,7 +184,7 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 		      ioctlcmd = XFS_IOC_RESVSP64,
 		      loglevel = MLOG_VERBOSE
 		      ;
-		      ! successpr && trycnt < 2
+		      !successpr && trycnt < 2
 		      ;
 		      trycnt++,
 		      ioctlcmd = XFS_IOC_ALLOCSP64,
@@ -193,7 +193,7 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 			struct flock64 flock64;
 			int rval;
 
-			if (! ioctlcmd) {
+			if (!ioctlcmd) {
 				continue;
 			}
 
@@ -229,7 +229,7 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 
 	/* mmap the persistent descriptor
 	 */
-	assert(! (NAMREG_PERS_SZ % pgsz));
+	assert(!(NAMREG_PERS_SZ % pgsz));
 	npp = (namreg_pers_t *) mmap_autogrow(
 				        NAMREG_PERS_SZ,
 				        ntp->nt_fd,
@@ -244,7 +244,7 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 
 	/* initialize persistent state
 	 */
-	if (! resume) {
+	if (!resume) {
 		npp->np_appendoff = (off64_t)NAMREG_PERS_SZ;
 	}
 
@@ -270,7 +270,7 @@ namreg_add(char *name, size_t namelen)
 
 	/* make sure file pointer is positioned to append
 	 */
-	if (! ntp->nt_at_endpr) {
+	if (!ntp->nt_at_endpr) {
 		off64_t newoff;
 		newoff = lseek64(ntp->nt_fd, npp->np_appendoff, SEEK_SET);
 		if (newoff == (off64_t)-1) {

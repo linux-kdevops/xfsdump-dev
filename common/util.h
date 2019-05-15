@@ -32,8 +32,8 @@
  *
  * if bufp is null, writes bufsz zeros.
  */
-typedef char * (* gwbfp_t)(void *contextp, size_t wantedsz, size_t *szp);
-typedef int (* wfp_t)(void *contextp, char *bufp, size_t bufsz);
+typedef char *(*gwbfp_t)(void *contextp, size_t wantedsz, size_t *szp);
+typedef int (*wfp_t)(void *contextp, char *bufp, size_t bufsz);
 
 extern int write_buf(char *bufp,
 			   size_t bufsz,
@@ -57,7 +57,7 @@ extern int write_buf(char *bufp,
  * *statp will be zero.
  */
 typedef char * (*rfp_t)(void *contextp, size_t wantedsz, size_t *szp, int *statp);
-typedef void (* rrbfp_t)(void *contextp, char *bufp, size_t bufsz);
+typedef void (*rrbfp_t)(void *contextp, char *bufp, size_t bufsz);
 
 extern int read_buf(char *bufp,
 			  size_t bufsz,
@@ -110,7 +110,7 @@ extern int bigstat_one(int fsfd,
 			     xfs_bstat_t *statp);
 
 extern int inogrp_iter(int fsfd,
-			     int (* fp)(void *arg1,
+			     int (*fp)(void *arg1,
 				     		int fsfd,
 						xfs_inogrp_t *inogrp),
 			     void * arg1,

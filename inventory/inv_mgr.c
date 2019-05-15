@@ -310,8 +310,8 @@ search_invt(
 					continue;
 			}
 
-			found = (* do_chkcriteria)(fd, &harr[j], arg, buf);
-			if (! found) continue;
+			found = (*do_chkcriteria)(fd, &harr[j], arg, buf);
+			if (!found) continue;
 
 			/* we found what we need; just return */
 			INVLOCK(fd, LOCK_UN);

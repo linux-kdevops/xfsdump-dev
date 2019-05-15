@@ -29,7 +29,7 @@ extern bool_t cldmgr_init(void);
 /* cldmgr_create - creates a child thread. returns FALSE if trouble
  * encountered
  */
-extern bool_t cldmgr_create(int (* entry)(void *arg1),
+extern bool_t cldmgr_create(int (*entry)(void *arg1),
 			     ix_t streamix,
 			     char *descstr,
 			     void *arg1);

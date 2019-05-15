@@ -253,7 +253,7 @@ stream_get_exit_status(pthread_t tid,
 
 	lock();
 	p = stream_find(tid, states, nstates);
-	if (! p) goto unlock;
+	if (!p) goto unlock;
 
 	if (state) *state = p->s_state;
 	if (ix) *ix = p->s_ix;

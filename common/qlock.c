@@ -79,7 +79,7 @@ qlock_alloc(ix_t ord)
 
 	/* verify the ordinal is not already taken, and mark as taken
 	 */
-	assert(! QLOCK_ORDMAP_GET(qlock_ordalloced, ord));
+	assert(!QLOCK_ORDMAP_GET(qlock_ordalloced, ord));
 	QLOCK_ORDMAP_SET(qlock_ordalloced, ord);
 
 	/* allocate lock memory
@@ -119,7 +119,7 @@ qlock_lock(qlockh_t qlockh)
 		      qlockp->ql_ord,
 		      thread_ordmap);
 	}
-	assert(! QLOCK_ORDMAP_GET(thread_ordmap, qlockp->ql_ord));
+	assert(!QLOCK_ORDMAP_GET(thread_ordmap, qlockp->ql_ord));
 
 	/* assert that no locks with a lesser ordinal are held by this thread
 	 */
@@ -130,7 +130,7 @@ qlock_lock(qlockh_t qlockh)
 		      qlockp->ql_ord,
 		      thread_ordmap);
 	}
-	assert(! QLOCK_ORDMAP_CHK(thread_ordmap, qlockp->ql_ord));
+	assert(!QLOCK_ORDMAP_CHK(thread_ordmap, qlockp->ql_ord));
 
 	/* acquire the lock
 	 */
@@ -160,7 +160,7 @@ qlock_unlock(qlockh_t qlockh)
 	/* release the lock
 	 */
 	rval = pthread_mutex_unlock(&qlockp->ql_mutex);
-	assert(! rval);
+	assert(!rval);
 }
 
 qsemh_t

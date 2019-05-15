@@ -83,7 +83,7 @@ extern void dirattr_addextattr(dah_t dah, extattrhdr_t *ahdrp);
  * else returns TRUE.
  */
 extern bool_t dirattr_cb_extattr(dah_t dah,
-				  bool_t (* cbfunc)(extattrhdr_t *ahdrp,
+				  bool_t (*cbfunc)(extattrhdr_t *ahdrp,
 						       void *ctxp),
 				  extattrhdr_t *ahdrp,
 				  void *ctxp);

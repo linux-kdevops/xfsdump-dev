@@ -114,7 +114,7 @@ global_hdr_alloc(int argc, char *argv[])
 		      strerror(errno));
 		return 0;
 	}
-	if (! strlen(ghdrp->gh_hostname)) {
+	if (!strlen(ghdrp->gh_hostname)) {
 		mlog(MLOG_NORMAL | MLOG_ERROR,
 		      _("hostname length is zero\n"));
 		return 0;
@@ -164,7 +164,7 @@ global_hdr_alloc(int argc, char *argv[])
                                 return 0;
                         }
 
-			if (! uuid_parse(optarg, ghdrp->gh_dumpid)) {
+			if (!uuid_parse(optarg, ghdrp->gh_dumpid)) {
 				mlog(MLOG_NORMAL | MLOG_ERROR,
 				      _("-%c argument not a valid uuid\n"),
 				      c);
@@ -208,14 +208,14 @@ global_hdr_alloc(int argc, char *argv[])
 	/* if no dump label specified, no pipes in use, and dialogs
 	 * are allowed, prompt for one
 	 */
-	if (! dumplabel && dlog_allowed()) {
+	if (!dumplabel && dlog_allowed()) {
 		dumplabel = prompt_label(labelbuf, sizeof(labelbuf));
 	}
 #endif /* DUMP */
 
-	if (! dumplabel || ! strlen(dumplabel)) {
+	if (!dumplabel || !strlen(dumplabel)) {
 #ifdef DUMP
-		if (! pipeline) {
+		if (!pipeline) {
 			mlog(MLOG_VERBOSE | MLOG_WARNING,
 			      _("no session label specified\n"));
 		}
@@ -308,7 +308,7 @@ prompt_label_cb(void *uctxp, dlog_pcbp_t pcb, void *pctxp)
 {
 	/* query: ask for a dump label
 	 */
-	(* pcb)(pctxp,
+	(*pcb)(pctxp,
 		   _("please enter label for this dump session"));
 }
 

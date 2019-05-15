@@ -201,14 +201,14 @@ main(int argc, char *argv[])
 	 * if found, create a new argv.
 	 */
 	ok = loadoptfile(&argc, &argv);
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_OPT);
 	}
 
 	/* initialize message logging (stage 1)
 	 */
 	ok = mlog_init1(argc, argv);
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 	/* scan the command line for the info, progress
@@ -223,7 +223,7 @@ main(int argc, char *argv[])
 	while ((c = getopt(argc, argv, GETOPT_CMDSTRING)) != EOF) {
 		switch (c) {
                 case GETOPT_MINSTACKSZ:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_NOLOCK,
 				      _("-%c argument missing\n"),
 				      c);
@@ -245,7 +245,7 @@ main(int argc, char *argv[])
 			minstacksz = tmpstacksz;
 			break;
                 case GETOPT_MAXSTACKSZ:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_NOLOCK,
 				      _("-%c argument missing\n"),
 				      c);
@@ -271,7 +271,7 @@ main(int argc, char *argv[])
 			mlog_exit_hint(RV_USAGE);
 			break;
 		case GETOPT_PROGRESS:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_NOLOCK,
 				      _("-%c argument missing\n"),
 				      c);
@@ -333,14 +333,14 @@ main(int argc, char *argv[])
 	 */
 	ok = set_rlimits(&vmsz);
 #endif /* RESTORE */
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 
 	/* initialize message logging (stage 2) - allocate the message lock
 	 */
 	ok = mlog_init2();
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 
@@ -385,7 +385,7 @@ main(int argc, char *argv[])
 	 * core, if necessary. some tmp files may be placed here as well.
 	 */
 	homedir = getcwd(0, MAXPATHLEN);
-	if (! homedir) {
+	if (!homedir) {
 		mlog(MLOG_NORMAL | MLOG_ERROR,
 		      _("unable to determine current directory: %s\n"),
 		      strerror(errno));
@@ -395,7 +395,7 @@ main(int argc, char *argv[])
 	/* sanity check the inventory database directory, setup global paths
 	 */
 	ok = inv_setup_base();
-	if (! ok) {
+	if (!ok) {
 		mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_NOLOCK,
 		      _("both /var/lib/xfsdump and /var/xfsdump exist - fatal\n"));
 		return mlog_exit(EXIT_ERROR, RV_INIT);
@@ -413,7 +413,7 @@ main(int argc, char *argv[])
 
 	/* if an inventory display is requested, do it and exit
 	 */
-	if (! inv_DEBUG_print(argc, argv)) {
+	if (!inv_DEBUG_print(argc, argv)) {
 		return mlog_exit(EXIT_NORMAL, RV_OK); /* normal termination */
 	}
 
@@ -436,14 +436,14 @@ main(int argc, char *argv[])
 	/* initialize operator dialog capability
 	 */
 	ok = dlog_init(argc, argv);
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 
 	/* initialize the child process manager
 	 */
 	ok = cldmgr_init();
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 
@@ -453,7 +453,7 @@ main(int argc, char *argv[])
 	 * will be done shortly.
 	 */
 	ok = drive_init1(argc, argv);
-	if (! ok) {
+	if (!ok) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 
@@ -480,7 +480,7 @@ main(int argc, char *argv[])
 	mlog(MLOG_VERBOSE,
 	      _("version %s (dump format %d.0)"),
 	      VERSION, GLOBAL_HDR_VERSION);
-	if (! pipeline && ! stdoutpiped && sistr && dlog_allowed()) {
+	if (!pipeline && !stdoutpiped && sistr && dlog_allowed()) {
 		mlog(MLOG_VERBOSE | MLOG_BARE, _(
 		      " - "
 		      "type %s for status and control\n"),
@@ -494,7 +494,7 @@ main(int argc, char *argv[])
 	/* build a global write header template
 	 */
 	gwhdrtemplatep = global_hdr_alloc(argc, argv);
-	if (! gwhdrtemplatep) {
+	if (!gwhdrtemplatep) {
 		return mlog_exit(EXIT_ERROR, RV_INIT);
 	}
 #endif /* DUMP */
@@ -526,7 +526,7 @@ main(int argc, char *argv[])
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGPIPE, &sa, NULL);
 
-	if (! pipeline) {
+	if (!pipeline) {
 		sigset_t blocked_set;
 
 		stop_in_progress = BOOL_FALSE;
@@ -565,7 +565,7 @@ main(int argc, char *argv[])
 #ifdef RESTORE
 	ok = content_init(argc, argv, vmsz / VMSZ_PER);
 #endif /* RESTORE */
-	if (! ok) {
+	if (!ok) {
 		err = mlog_exit(EXIT_ERROR, RV_INIT);
 		goto err_free;
 	}
@@ -591,12 +591,12 @@ main(int argc, char *argv[])
 				  argv,
 				  (global_hdr_t *)0);
 #endif /* RESTORE */
-		if (! ok) {
+		if (!ok) {
 			err = mlog_exit(EXIT_ERROR, RV_INIT);
 			goto err_free;
 		}
 		ok = drive_init3();
-		if (! ok) {
+		if (!ok) {
 			err = mlog_exit(EXIT_ERROR, RV_INIT);
 			goto err_free;
 		}
@@ -630,7 +630,7 @@ main(int argc, char *argv[])
 	 * asynchronously read the media file header, typically a very
 	 * time-consuming chore. drive_init3 will synchronize with each slave.
 	 */
-	if (! init_error) {
+	if (!init_error) {
 #ifdef DUMP
 		ok = drive_init2(argc,
 				  argv,
@@ -641,13 +641,13 @@ main(int argc, char *argv[])
 				  argv,
 				  (global_hdr_t *)0);
 #endif /* RESTORE */
-		if (! ok) {
+		if (!ok) {
 			init_error = BOOL_TRUE;
 		}
 	}
-	if (! init_error) {
+	if (!init_error) {
 		ok = drive_init3();
-		if (! ok) {
+		if (!ok) {
 			init_error = BOOL_TRUE;
 		}
 	}
@@ -655,13 +655,13 @@ main(int argc, char *argv[])
 	/* create a child thread for each stream. drivecnt global from
 	 * drive.h, initialized by drive_init[12]
 	 */
-	if (! init_error) {
+	if (!init_error) {
 		for (stix = 0; stix < drivecnt; stix++) {
 			ok = cldmgr_create(childmain,
 					    stix,
 					    "child",
 					    (void *)stix);
-			if (! ok) {
+			if (!ok) {
 				init_error = BOOL_TRUE;
 			}
 		}
@@ -800,7 +800,7 @@ main(int argc, char *argv[])
 
 		/* see if need to initiate a stop
 		 */
-		if (stop_requested && ! stop_in_progress) {
+		if (stop_requested && !stop_in_progress) {
 			mlog(MLOG_NORMAL,
 			      _("initiating session interrupt (timeout in %d sec)\n"),
 			      stop_timeout);
@@ -828,7 +828,7 @@ main(int argc, char *argv[])
 			}
 		}
 
-		if (progrpt_enabledpr && ! stop_in_progress) {
+		if (progrpt_enabledpr && !stop_in_progress) {
 			bool_t need_progrptpr = BOOL_FALSE;
 			while (now >= progrpt_deadline) {
 				need_progrptpr = BOOL_TRUE;
@@ -1153,7 +1153,7 @@ loadoptfile(int *argcp, char ***argvp)
 	while ((c = getopt(*argcp, *argvp, GETOPT_CMDSTRING)) != EOF) {
 		switch (c) {
 		case GETOPT_OPTFILE:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL | MLOG_ERROR | MLOG_NOLOCK,
 				      _("-%c argument missing\n"),
 				      c);
@@ -1173,7 +1173,7 @@ loadoptfile(int *argcp, char ***argvp)
 			break;
 		}
 	}
-	if (! optfilename)  {
+	if (!optfilename)  {
 		return BOOL_TRUE;
 	}
 
@@ -1222,7 +1222,7 @@ loadoptfile(int *argcp, char ***argvp)
 			i++; /* to skip option argument */
 			continue;
 		}
-		sz += strlen((* argvp)[i]) + 1;
+		sz += strlen((*argvp)[i]) + 1;
 	}
 
 	/* add in the size of the option file (plus one byte in case
@@ -1240,7 +1240,7 @@ loadoptfile(int *argcp, char ***argvp)
 	p = argbuf;
 	i = 0;
 	sprintf(p, "%s ", ( * argvp)[ i]);
-	p += strlen((* argvp)[i]) + 1;
+	p += strlen((*argvp)[i]) + 1;
 	i++;
 
 	/* copy the options file into the buffer after the given args
@@ -1267,7 +1267,7 @@ loadoptfile(int *argcp, char ***argvp)
 			continue;
 		}
 		sprintf(p, "%s ", ( * argvp)[ i]);
-		p += strlen((* argvp)[i]) + 1;
+		p += strlen((*argvp)[i]) + 1;
 	}
 
 	/* null-terminate the entire buffer
@@ -1296,7 +1296,7 @@ loadoptfile(int *argcp, char ***argvp)
 
 		/* done when NULL encountered
 		 */
-		if (! *p) {
+		if (!*p) {
 			break;
 		}
 
@@ -1310,14 +1310,14 @@ loadoptfile(int *argcp, char ***argvp)
 
 		/* if no more separators, all tokens seen
 		 */
-		if (! p) {
+		if (!p) {
 			break;
 		}
 	}
 
 	/* if no arguments, can return now
 	 */
-	if (! tokencnt) {
+	if (!tokencnt) {
 		close(fd);
 		return BOOL_TRUE;
 	}
@@ -1342,7 +1342,7 @@ loadoptfile(int *argcp, char ***argvp)
 
 		/* done when NULL encountered
 		 */
-		if (! *p) {
+		if (!*p) {
 			break;
 		}
 
@@ -1370,7 +1370,7 @@ loadoptfile(int *argcp, char ***argvp)
 
 		/* if no more separators, all tokens seen
 		 */
-		if (! endp) {
+		if (!endp) {
 			break;
 		}
 
@@ -1468,7 +1468,7 @@ childmain(void *arg1)
 	/* let the drive manager shut down its slave thread
 	 */
 	drivep = drivepp[stix];
-	(* drivep->d_opsp->do_quit)(drivep);
+	(*drivep->d_opsp->do_quit)(drivep);
 
 	return exitcode;
 }
@@ -1480,7 +1480,7 @@ prompt_prog_cb(void *uctxp, dlog_pcbp_t pcb, void *pctxp)
 {
 	/* query: ask for a dump label
 	 */
-	(* pcb)(pctxp,
+	(*pcb)(pctxp,
 		   progrpt_enabledpr
 		   ?
 		   _("please enter seconds between progress reports, "
@@ -1565,7 +1565,7 @@ sigint_dialog(void)
 				 "the following operations\n");
 	assert(querycnt <= QUERYMAX);
 	choicecnt = 0;
-	if (! stop_in_progress) {
+	if (!stop_in_progress) {
 		interruptix = choicecnt;
 		choicestr[choicecnt++ ] = _("interrupt this session");
 	} else {
@@ -1906,7 +1906,7 @@ sigint_dialog(void)
 			if (responseix == okix) {
 				int newinterval;
 				newinterval = atoi(buf);
-				if (! strlen(buf)) {
+				if (!strlen(buf)) {
 					ackstr[ackcnt++ ] = _("no change\n");
 				} else if (newinterval > 0) {
 					time32_t newdeadline;
@@ -1953,21 +1953,21 @@ sigint_dialog(void)
 				ackstr[ackcnt++ ] = _("no change\n");
 			}
 		} else if (responseix == mllevix) {
-			mlog_showlevel = ! mlog_showlevel;
+			mlog_showlevel = !mlog_showlevel;
 			if (mlog_showlevel) {
 				ackstr[ackcnt++ ] = _("showing log message levels\n");
 			} else {
 				ackstr[ackcnt++ ] = _("hiding log message levels\n");
 			}
 		} else if (responseix == mlssix) {
-			mlog_showss = ! mlog_showss;
+			mlog_showss = !mlog_showss;
 			if (mlog_showss) {
 				ackstr[ackcnt++ ] = _("showing log message subsystems\n");
 			} else {
 				ackstr[ackcnt++ ] = _("hiding log message subsystems\n");
 			}
 		} else if (responseix == mltsix) {
-			mlog_timestamp = ! mlog_timestamp;
+			mlog_timestamp = !mlog_timestamp;
 			if (mlog_timestamp) {
 				ackstr[ackcnt++ ] = _("showing log message timestamps\n");
 			} else {
@@ -2056,7 +2056,7 @@ set_rlimits(size64_t *vmszp)
 
 	rval = getrlimit64(RLIMIT_AS, &rlimit64);
 
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_AS org cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
@@ -2066,7 +2066,7 @@ set_rlimits(size64_t *vmszp)
 		rlimit64.rlim_cur = rlimit64.rlim_max;
 		(void)setrlimit64(RLIMIT_AS, &rlimit64);
 		rval = getrlimit64(RLIMIT_AS, &rlimit64);
-		assert(! rval);
+		assert(!rval);
 		mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 			"RLIMIT_VMEM now cur 0x%llx max 0x%llx\n",
 			rlimit64.rlim_cur,
@@ -2078,7 +2078,7 @@ set_rlimits(size64_t *vmszp)
 
 	assert(minstacksz <= maxstacksz);
 	rval = getrlimit64(RLIMIT_STACK, &rlimit64);
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_STACK org cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
@@ -2098,7 +2098,7 @@ set_rlimits(size64_t *vmszp)
 			rlimit64.rlim_max = minstacksz;
 			(void)setrlimit64(RLIMIT_STACK, &rlimit64);
 			rval = getrlimit64(RLIMIT_STACK, &rlimit64);
-			assert(! rval);
+			assert(!rval);
 			if (rlimit64.rlim_cur < minstacksz) {
 				mlog(MLOG_NORMAL
 				      |
@@ -2125,7 +2125,7 @@ set_rlimits(size64_t *vmszp)
 			rlimit64.rlim_cur = minstacksz;
 			(void)setrlimit64(RLIMIT_STACK, &rlimit64);
 			rval = getrlimit64(RLIMIT_STACK, &rlimit64);
-			assert(! rval);
+			assert(!rval);
 			if (rlimit64.rlim_cur < minstacksz) {
 				mlog(MLOG_NORMAL
 				      |
@@ -2153,7 +2153,7 @@ set_rlimits(size64_t *vmszp)
 		rlimit64.rlim_cur = maxstacksz;
 		(void)setrlimit64(RLIMIT_STACK, &rlimit64);
 		rval = getrlimit64(RLIMIT_STACK, &rlimit64);
-		assert(! rval);
+		assert(!rval);
 		if (rlimit64.rlim_cur > maxstacksz) {
 			mlog(MLOG_NORMAL
 			      |
@@ -2174,14 +2174,14 @@ set_rlimits(size64_t *vmszp)
 	      rlimit64.rlim_max);
 
 	rval = getrlimit64(RLIMIT_DATA, &rlimit64);
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_DATA org cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
 	      rlimit64.rlim_max);
 
 	rval = getrlimit64(RLIMIT_FSIZE, &rlimit64);
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_FSIZE org cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
@@ -2191,14 +2191,14 @@ set_rlimits(size64_t *vmszp)
 	rlimit64.rlim_cur = RLIM64_INFINITY;
 	(void)setrlimit64(RLIMIT_FSIZE, &rlimit64);
 	rval = getrlimit64(RLIMIT_FSIZE, &rlimit64);
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_FSIZE now cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
 	      rlimit64.rlim_max);
 
 	rval = getrlimit64(RLIMIT_CPU, &rlimit64);
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_CPU cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
@@ -2206,7 +2206,7 @@ set_rlimits(size64_t *vmszp)
 	rlimit64.rlim_cur = rlimit64.rlim_max;
 	(void)setrlimit64(RLIMIT_CPU, &rlimit64);
 	rval = getrlimit64(RLIMIT_CPU, &rlimit64);
-	assert(! rval);
+	assert(!rval);
 	mlog(MLOG_NITTY | MLOG_NOLOCK | MLOG_PROC,
 	      "RLIMIT_CPU now cur 0x%llx max 0x%llx\n",
 	      rlimit64.rlim_cur,
@@ -2285,7 +2285,7 @@ strpbrkquotes(char *p, const char *sep)
 		}
 
 		if (*p == '\\') {
-			if (! prevcharwasbackslash) {
+			if (!prevcharwasbackslash) {
 				prevcharwasbackslash = BOOL_TRUE;
 			} else {
 				prevcharwasbackslash = BOOL_FALSE;
@@ -2306,7 +2306,7 @@ strpbrkquotes(char *p, const char *sep)
 			continue;
 		}
 
-		if (! inquotes) {
+		if (!inquotes) {
 			if (strchr(sep, (int)(*p))) {
 				return p;
 			}
@@ -2338,7 +2338,7 @@ stripquotes(char *p)
 	justremovedbackslash = BOOL_FALSE;
 
 	for (nextp = p; nextp < endp;) {
-		if (*nextp == '\\' && ! justremovedbackslash) {
+		if (*nextp == '\\' && !justremovedbackslash) {
 			shiftleftby1(nextp, endp);
 			endp--;
 			justremovedbackslash = BOOL_TRUE;

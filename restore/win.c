@@ -225,8 +225,8 @@ win_map(segix_t segix, void **pp)
 			winp->w_prevp = 0;
 			winp->w_nextp = 0;
 		} else {
-			assert(! winp->w_prevp);
-			assert(! winp->w_nextp);
+			assert(!winp->w_prevp);
+			assert(!winp->w_nextp);
 		}
 		winp->w_refcnt++;
 		*pp = winp->w_p;
@@ -262,7 +262,7 @@ win_map(segix_t segix, void **pp)
 		}
 		tranp->t_segmap[winp->w_segix] = NULL;
 		rval = munmap(winp->w_p, tranp->t_segsz);
-		assert(! rval);
+		assert(!rval);
 		memset((void *)winp, 0, sizeof(win_t));
 	} else {
 		assert(tranp->t_wincnt == tranp->t_winmax);
@@ -283,8 +283,8 @@ win_map(segix_t segix, void **pp)
 	assert(tranp->t_firstoff
 		<=
 		OFF64MAX - segoff - (off64_t)tranp->t_segsz + 1ll);
-	assert(! (tranp->t_segsz % pgsz));
-	assert(! ((tranp->t_firstoff + segoff) % (off64_t)pgsz));
+	assert(!(tranp->t_segsz % pgsz));
+	assert(!((tranp->t_firstoff + segoff) % (off64_t)pgsz));
 #ifdef TREE_DEBUG
 	mlog(MLOG_DEBUG | MLOG_TREE | MLOG_NOLOCK,
 	     "win_map(): mmap segment at %lld, size = %llu\n",
@@ -350,8 +350,8 @@ win_unmap(segix_t segix, void **pp)
 	 */
 	assert(winp->w_refcnt > 0);
 	winp->w_refcnt--;
-	assert(! winp->w_prevp);
-	assert(! winp->w_nextp);
+	assert(!winp->w_prevp);
+	assert(!winp->w_nextp);
 	if (winp->w_refcnt == 0) {
 		if (tranp->t_lrutailp) {
 			assert(tranp->t_lruheadp);
@@ -359,12 +359,12 @@ win_unmap(segix_t segix, void **pp)
 			tranp->t_lrutailp->w_nextp = winp;
 			tranp->t_lrutailp = winp;
 		} else {
-			assert(! tranp->t_lruheadp);
-			assert(! winp->w_prevp);
+			assert(!tranp->t_lruheadp);
+			assert(!winp->w_prevp);
 			tranp->t_lruheadp = winp;
 			tranp->t_lrutailp = winp;
 		}
-		assert(! winp->w_nextp);
+		assert(!winp->w_nextp);
 	}
 
 	/* zero the caller's pointer

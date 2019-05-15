@@ -22,7 +22,7 @@
 #include "cleanup.h"
 
 struct cu {
-	void (* cu_funcp)(void *arg1, void *arg2);
+	void (*cu_funcp)(void *arg1, void *arg2);
 	void *cu_arg1;
 	void *cu_arg2;
 	int  cu_flags;
@@ -45,7 +45,7 @@ cleanup_init(void)
 }
 
 static cleanup_t *
-cleanup_register_base(void (* funcp)(void *arg1, void *arg2),
+cleanup_register_base(void (*funcp)(void *arg1, void *arg2),
 		  void *arg1,
 		  void *arg2)
 {
@@ -64,7 +64,7 @@ cleanup_register_base(void (* funcp)(void *arg1, void *arg2),
 }
 
 cleanup_t *
-cleanup_register(void (* funcp)(void *arg1, void *arg2),
+cleanup_register(void (*funcp)(void *arg1, void *arg2),
 		  void *arg1,
 		  void *arg2)
 {
@@ -76,7 +76,7 @@ cleanup_register(void (* funcp)(void *arg1, void *arg2),
 }
 
 cleanup_t *
-cleanup_register_early(void (* funcp)(void *arg1, void *arg2),
+cleanup_register_early(void (*funcp)(void *arg1, void *arg2),
 		  void *arg1,
 		  void *arg2)
 {
@@ -118,7 +118,7 @@ cleanup(void)
 {
 	while (cu_rootp) {
 		cu_t *p = cu_rootp;
-		(* p->cu_funcp)(p->cu_arg1, p->cu_arg2);
+		(*p->cu_funcp)(p->cu_arg1, p->cu_arg2);
 		cu_rootp = p->cu_nextp;
 		free((void *)p);
 	}
@@ -136,7 +136,7 @@ cleanup_early(void)
 		cu_t *cunextp = cuptr->cu_nextp;
 
 		if (cuptr->cu_flags & CU_EARLY) {
-			(* cuptr->cu_funcp)(cuptr->cu_arg1, cuptr->cu_arg2);
+			(*cuptr->cu_funcp)(cuptr->cu_arg1, cuptr->cu_arg2);
 			free((void *)cuptr);
 			if (cuprevp)  {
 				cuprevp->cu_nextp = cunextp;

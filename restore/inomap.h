@@ -80,7 +80,7 @@ extern void inomap_rst_add(xfs_ino_t ino);
 extern void inomap_rst_del(xfs_ino_t ino);
 extern rv_t inomap_discard(drive_t *drivep, content_inode_hdr_t *scrhdrp);
 extern void inomap_cbiter(int mapstatemask,
-			   bool_t (* cbfunc)(void *ctxp, xfs_ino_t ino),
+			   bool_t (*cbfunc)(void *ctxp, xfs_ino_t ino),
 			   void *ctxp);
 
 #endif /* INOMAP_H */

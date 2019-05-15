@@ -60,7 +60,7 @@ path_diff(char *path, char *base)
 	assert(*base == '/');
 	assert(*path == '/');
 
-	if (! path_beginswith(path, base)) {
+	if (!path_beginswith(path, base)) {
 		return 0;
 	}
 
@@ -85,10 +85,10 @@ path_diff(char *path, char *base)
 int
 path_beginswith(char *path, char *base)
 {
-	if (! base) {
+	if (!base) {
 		return 0;
 	}
-	return ! strncmp(base, path, strlen(base));
+	return !strncmp(base, path, strlen(base));
 }
 
 char *
@@ -136,19 +136,19 @@ path_normalize(char *path)
 	assert(path[0] == '/');
 
 	while ((pep = pem_next(pemp)) != 0) {
-		if (! strcmp(pep, "")) {
+		if (!strcmp(pep, "")) {
 			free((void *)pep);
 			continue;
 		}
-		if (! strcmp(pep, ".")) {
+		if (!strcmp(pep, ".")) {
 			free((void *)pep);
 			continue;
 		}
-		if (! strcmp(pep, "..")) {
+		if (!strcmp(pep, "..")) {
 			int ok;
 			free((void *)pep);
 			ok = pa_peel(pap);
-			if (! ok) {
+			if (!ok) {
 				pa_free(pap);
 				pem_free(pemp);
 				return 0;
@@ -201,7 +201,7 @@ pem_next(pem_t *pemp)
 
 	/* if end of string encountered, place next next at end of string
 	 */
-	if (! nextnext) {
+	if (!nextnext) {
 		for (nextnext = pemp->pem_next; *nextnext; nextnext++)
 			;
 	}

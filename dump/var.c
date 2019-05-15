@@ -50,7 +50,7 @@ var_create(void)
 		p++;
 		if (*p == '/') {
 			*p = '\0';
-			if (! var_create_component(path))
+			if (!var_create_component(path))
 				return;
 			*p = '/';
 		}
@@ -132,14 +132,14 @@ var_skip_recurse(char *base, void (*cb)(xfs_ino_t ino))
 	      "excluding %s from dump\n",
 	      base);
 
-	(* cb)(statbuf.st_ino);
+	(*cb)(statbuf.st_ino);
 
 	if ((statbuf.st_mode & S_IFMT) != S_IFDIR) {
 		return;
 	}
 
 	dirp = opendir(base);
-	if (! dirp) {
+	if (!dirp) {
 		mlog(MLOG_NORMAL, _(
 		      "unable to open directory %s\n"),
 		      base);

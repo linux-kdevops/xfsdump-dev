@@ -90,7 +90,7 @@ dlog_init(int argc, char *argv[])
 	/* look to see if restore source coming in on
 	 * stdin. If so, try to open /dev/tty for dialogs.
 	 */
-	if (optind < argc && ! strcmp(argv[optind ], "-")) {
+	if (optind < argc && !strcmp(argv[optind ], "-")) {
 		dlog_ttyfd = open("/dev/tty", O_RDWR);
 		if (dlog_ttyfd < 0) {
 			perror("/dev/tty");
@@ -251,7 +251,7 @@ dlog_multi_query(char *querystr[],
 			long int val;
 			char *end = buf;
 
-			if (! strlen(buf)) {
+			if (!strlen(buf)) {
 				return defaultix;
 			}
 
@@ -303,7 +303,7 @@ dlog_string_query(dlog_ucbp_t ucb, /* user's print func */
 	/* call the caller's callback with his context, print context, and
 	 * print operator
 	 */
-	(* ucb)(uctxp, dlog_string_query_print, 0);
+	(*ucb)(uctxp, dlog_string_query_print, 0);
 
 	/* if called for, print the timeout and a newline.
 	 * if not, print just a newline
@@ -362,7 +362,7 @@ dlog_string_query_print(void *ctxp, char *fmt, ...)
 {
 	va_list args;
 
-	assert(! ctxp);
+	assert(!ctxp);
 
 	va_start(args, fmt);
 	mlog_va(MLOG_NORMAL | MLOG_NOLOCK | MLOG_BARE, fmt, args);

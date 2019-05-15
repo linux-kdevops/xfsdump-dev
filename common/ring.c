@@ -99,7 +99,7 @@ ring_create(size_t ringlen,
 		msgp->rm_loc = RING_LOC_READY;
 
 		msgp->rm_bufp = (char *)memalign(PGSZ, bufsz);
-		if (! msgp->rm_bufp) {
+		if (!msgp->rm_bufp) {
 			*rvalp = ENOMEM;
 			return 0;
 		}
@@ -224,7 +224,7 @@ ring_reset(ring_t *ringp, ring_msg_t *msgp)
 	/* if the client is not holding a message, get the next message
 	 */
 	if (ringp->r_client_cnt == 0) {
-		assert(! msgp);
+		assert(!msgp);
 		msgp = ring_get(ringp);
 		assert(msgp);
 		assert(ringp->r_client_cnt == 1);
@@ -433,7 +433,7 @@ ring_slave_entry(void *ringctxp)
 				msgp->rm_stat = RING_STAT_IGNORE;
 				break;
 			}
-			if (! ringp->r_first_io_time) {
+			if (!ringp->r_first_io_time) {
 				ringp->r_first_io_time = time(0);
 				assert(ringp->r_first_io_time);
 			}
@@ -453,7 +453,7 @@ ring_slave_entry(void *ringctxp)
 				msgp->rm_stat = RING_STAT_IGNORE;
 				break;
 			}
-			if (! ringp->r_first_io_time) {
+			if (!ringp->r_first_io_time) {
 				ringp->r_first_io_time = time(0);
 				assert(ringp->r_first_io_time);
 			}

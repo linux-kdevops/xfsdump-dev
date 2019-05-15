@@ -188,7 +188,7 @@ mlog_init1(int argc, char *argv[])
 
 		switch (c) {
 		case GETOPT_VERBOSITY:
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				fprintf(stderr,
 					 _("%s: -%c argument missing\n"),
 					 progname,
@@ -216,7 +216,7 @@ mlog_init1(int argc, char *argv[])
 					<
 					MLOG_SS_CNT + vsymcnt);
 				if (suboptix < MLOG_SS_CNT) {
-					if (! valstr) {
+					if (!valstr) {
 						fprintf(stderr,
 							 _("%s: -%c subsystem "
 							 "subargument "
@@ -382,11 +382,11 @@ mlog_va(int levelarg, char *fmt, va_list args)
 		return;
 	}
 
-	if (! (levelarg & MLOG_NOLOCK)) {
+	if (!(levelarg & MLOG_NOLOCK)) {
 		mlog_lock();
 	}
 
-	if (! (levelarg & MLOG_BARE)) {
+	if (!(levelarg & MLOG_BARE)) {
 		int streamix;
 		streamix = stream_getix(pthread_self());
 
@@ -455,7 +455,7 @@ mlog_va(int levelarg, char *fmt, va_list args)
 	vfprintf(mlog_fp, fmt, args);
 	fflush(mlog_fp);
 
-	if (! (levelarg & MLOG_NOLOCK)) {
+	if (!(levelarg & MLOG_NOLOCK)) {
 		mlog_unlock();
 	}
 }
@@ -793,7 +793,7 @@ mlog_sym_lookup(char *sym)
 			 sizeof(mlog_sym) / sizeof(mlog_sym[0]);
 
 	for (; p < ep; p++) {
-		if (! strcmp(sym, p->sym)) {
+		if (!strcmp(sym, p->sym)) {
 			return p->level;
 		}
 	}

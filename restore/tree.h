@@ -97,7 +97,7 @@ extern rv_t tree_cb_links(xfs_ino_t ino,
 			   gen_t gen,
 			   int32_t ctime,
 			   int32_t mtime,
-			   bool_t (* funcp)(void *contextp,
+			   bool_t (*funcp)(void *contextp,
 					       bool_t linkpr,
 					       char *path1,
 					       char *path2),
@@ -115,7 +115,7 @@ extern bool_t tree_setattr(char *path);
 extern bool_t tree_delorph(void);
 extern bool_t tree_subtree_inter(void);
 
-extern bool_t tree_extattr(bool_t (* cbfunc)(char *path, dah_t dah),
+extern bool_t tree_extattr(bool_t (*cbfunc)(char *path, dah_t dah),
 			    char *path);
 	/* does a depthwise bottom-up traversal of the tree, calling
 	 * the supplied callback for all directories with a non-NULL dirattr

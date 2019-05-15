@@ -138,13 +138,13 @@ struct drive_strategy {
 	char *ds_description;
 		    /* a short char string describing strategy
 		     */
-	int (* ds_match)(int argc,
+	int (*ds_match)(int argc,
 				 char *argv[],
 				 struct drive *drivep);
 		    /* returns degree of match. drivep has been pre-allocated
 		     * and initialized with generic info.
 		     */
-	bool_t (* ds_instantiate)(int argc,
+	bool_t (*ds_instantiate)(int argc,
 				     char *argv[],
 				     struct drive *drivep);
 		    /* creates a drive manager instance, by filling in the
@@ -186,7 +186,7 @@ typedef off64_t drive_mark_t;
  * was NOT committed.
  */
 struct drive_markrec; /* forward decl */
-typedef void (* drive_mcbfp_t)(void *context_t,
+typedef void (*drive_mcbfp_t)(void *context_t,
 				  struct drive_markrec *markrecp,
 				  bool_t committed);
 
@@ -257,17 +257,17 @@ struct drive {
 typedef struct drive drive_t;
 
 struct drive_ops {
-	bool_t (* do_init)(drive_t *drivep);
+	bool_t (*do_init)(drive_t *drivep);
 				/* initializes drive, and begins async
 				 * determination of media object presence
 				 * returns FALSE if session should be aborted.
 				 */
-	bool_t (* do_sync)(drive_t *drivep);
+	bool_t (*do_sync)(drive_t *drivep);
 				/* synchronizes with the activity kicked off
 				 * by do_init. returns FALSE if session should
 				 * be aborted.
 				 */
-	int (* do_begin_read)(drive_t *drivep);
+	int (*do_begin_read)(drive_t *drivep);
 				/* prepares the drive manager for reading.
 				 * if the media is positioned at BOM or just
 				 * after a file mark, current media file is
@@ -306,7 +306,7 @@ struct drive_ops {
 				 * begin_read. if successful, caller MUST call
 				 * end_read prior to next begin_read.
 				 */
-	char * (* do_read)(drive_t *drivep,
+	char *(*do_read)(drive_t *drivep,
 			      size_t wanted_bufsz,
 			      size_t *actual_bufszp,
 			      int *statp);
@@ -341,7 +341,7 @@ struct drive_ops {
 				 * valid data (although the buffer size may
 				 * be zero!).
 				 */
-	void (* do_return_read_buf)(drive_t *drivep,
+	void (*do_return_read_buf)(drive_t *drivep,
 				       char *bufp,
 				       size_t bufsz);
 				/* returns the buffer obtained
@@ -349,14 +349,14 @@ struct drive_ops {
 				 * the entire buffer must be returned
 				 * in one shot.
 				 */
-	void (* do_get_mark)(drive_t *drivep,
+	void (*do_get_mark)(drive_t *drivep,
 				drive_mark_t *drivemarkp);
 				/* returns (by reference) a mark corresponding
 				 * to the next byte which will be read by a
 				 * call to do_read(). will be used in a later
 				 * session to seek to that position.
 				 */
-	int (* do_seek_mark)(drive_t *drivep,
+	int (*do_seek_mark)(drive_t *drivep,
 				     drive_mark_t *drivemarkp);
 				/* searches for the specified mark within the
 				 * current file. returns zero if the mark
@@ -367,7 +367,7 @@ struct drive_ops {
 				 *	CORRUPTION - encountered corrupt data;
 				 *	DEVICE - device error;
 				 */
-	int (* do_next_mark)(drive_t *drivep);
+	int (*do_next_mark)(drive_t *drivep);
 				/* if d_capabilities has DRIVE_CAP_NEXTMARK set,
 				 * drive has the capability to
 				 * seek forward to the next mark. returns
@@ -385,7 +385,7 @@ struct drive_ops {
 				 * will position the media at the next media
 				 * file.
 				 */
-	int (* do_begin_write)(drive_t *drivep);
+	int (*do_begin_write)(drive_t *drivep);
 				/* begins a write media file for writing.
 				 * asserts the media is positioned at BOM or
 				 * just after a file mark. write header will
@@ -396,7 +396,7 @@ struct drive_ops {
 				 *	DEVICE - device error;
 				 *	CORE  - driver error
 				 */
-	void (* do_set_mark)(drive_t *drivep,
+	void (*do_set_mark)(drive_t *drivep,
 				drive_mcbfp_t cbfuncp,
 				void *cbcontextp,
 				drive_markrec_t *markrecp);
@@ -426,7 +426,7 @@ struct drive_ops {
 				 * last committed marked point in the write
 				 * stream.
 				 */
-	char * (* do_get_write_buf)(drive_t *drivep,
+	char *(*do_get_write_buf)(drive_t *drivep,
 				       size_t wanted_bufsz,
 				       size_t *actual_bufszp);
 				/* asks the drive manager for a buffer.
@@ -443,7 +443,7 @@ struct drive_ops {
 				 * be larger or smaller than the wanted bufsz,
 				 * but will be at least 1 byte in length.
 				 */
-	int (* do_write)(drive_t *drivep,
+	int (*do_write)(drive_t *drivep,
 				 char *bufp,
 				 size_t bufsz);
 				/* asks the drive manager to write bufsz
@@ -473,7 +473,7 @@ struct drive_ops {
 				 * instead, the caller must get another buffer
 				 * using do_get_write_buf().
 				 */
-	size_t (* do_get_align_cnt)(drive_t *drivep);
+	size_t (*do_get_align_cnt)(drive_t *drivep);
 				/* used during writing. returns the number
 				 * of bytes which should be written to
 				 * page-align the next do_get_write_buf()
@@ -481,7 +481,7 @@ struct drive_ops {
 				 * alignment will be maintained after the
 				 * initial alignment done using this info.
 				 */
-	int (* do_end_write)(drive_t *drivep, off64_t *ncommittedp);
+	int (*do_end_write)(drive_t *drivep, off64_t *ncommittedp);
 				/* terminates a media file write sequence.
 				 * flushes any buffered data not yet committed
 				 * to media, and calls callbacks for all marks
@@ -502,7 +502,7 @@ struct drive_ops {
 				 * an error, do_end_write will not do any
 				 * I/O, and will return 0.
 				 */
-	int (* do_fsf)(drive_t *drivep,
+	int (*do_fsf)(drive_t *drivep,
 			      int count,
 			      int *statp);
 				/* if d_capabilities has DRIVE_CAP_FSF set,
@@ -528,7 +528,7 @@ struct drive_ops {
 				 * behaves as if position is at most recent
 				 * file mark or BOT.
 				 */
-	int (* do_bsf)(drive_t *drivep,
+	int (*do_bsf)(drive_t *drivep,
 			       int count,
 			       int *statp);
 				/* if d_capabilities has DRIVE_CAP_BSF set,
@@ -554,35 +554,35 @@ struct drive_ops {
 				 *	BOM - hit beginning of recorded data;
 				 *	DEVICE - device error;
 				 */
-	int (* do_rewind)(drive_t *drivep);
+	int (*do_rewind)(drive_t *drivep);
 				/* if d_capabilities has DRIVE_CAP_REWIND set,
 				 * drive has the capability to
 				 * position at beginning of recorded data
 				 *	DEVICE - device error;
 				 */
-	int (* do_erase)(drive_t *drivep);
+	int (*do_erase)(drive_t *drivep);
 				/* if d_capabilities has DRIVE_CAP_ERASE set,
 				 * drive has the capability to
 				 * erase: all content of media object is
 				 * eradicated.
 				 *	DEVICE - device error;
 				 */
-	int (* do_eject_media)(drive_t *drivep);
+	int (*do_eject_media)(drive_t *drivep);
 				/* if d_capabilities has DRIVE_CAP_EJECT set,
 				 * drive has capability
 				 * to eject media, and will do so when called.
 				 *	DEVICE - device error;
 				 */
-	int (* do_get_device_class)(drive_t *drivep);
+	int (*do_get_device_class)(drive_t *drivep);
 				/* returns the media class of the device
 				 * (see below).
 				 */
-	void (* do_display_metrics)(drive_t *drivep);
+	void (*do_display_metrics)(drive_t *drivep);
 				/* use BARE mlog to print useful throughput
 				 * and performance info. set to NULL if
 				 * nothing to say.
 				 */
-	void (* do_quit)(drive_t * drivep);
+	void (*do_quit)(drive_t *drivep);
 				/* tells the drive manager to de-allocate
 				 * resources, INCLUDING the slave process.
 				 */

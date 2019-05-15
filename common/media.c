@@ -113,7 +113,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 				usage();
 				return 0;
 			}
-			if (! optarg || optarg[0] == '-') {
+			if (!optarg || optarg[0] == '-') {
 				mlog(MLOG_NORMAL,
 				      _("-%c argument missing\n"),
 				      c);
@@ -128,7 +128,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 
 	/* if no media label specified, synthesize one
 	 */
-	if (! medialabel) {
+	if (!medialabel) {
 		/* not useful
 		mlog(MLOG_VERBOSE,
 		      _("WARNING: no media label specified\n"));
@@ -158,7 +158,7 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 	chosen_sp = 0;
 	for (id = 0; spp < epp; spp++, id++) {
 		(*spp)->ms_id = id;
-		if (! chosen_sp) {
+		if (!chosen_sp) {
 			/* lend the media_t array to the strategy
 			 */
 			(*spp)->ms_mediap = mediapp;
@@ -169,12 +169,12 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 				mediap->m_strategyp = *spp;
 				mediap->m_writehdrp->mh_strategyid = id;
 			}
-			if ((* (*spp)->ms_match)(argc, argv, dsp)) {
+			if ((*(*spp)->ms_match)(argc, argv, dsp)) {
 				chosen_sp = *spp;
 			}
 		}
 	}
-	if (! chosen_sp) {
+	if (!chosen_sp) {
 		mlog(MLOG_NORMAL,
 #ifdef DUMP
 		      _("no media strategy available for selected "
@@ -200,8 +200,8 @@ media_create(int argc, char *argv[], drive_strategy_t *dsp)
 	/* initialize the strategy. this will cause each of the managers
 	 * to be initialized as well. if error, return 0.
 	 */
-	ok = (* chosen_sp->ms_create)(chosen_sp, argc, argv);
-	if (! ok) {
+	ok = (*chosen_sp->ms_create)(chosen_sp, argc, argv);
+	if (!ok) {
 		return 0;
 	}
 
@@ -215,7 +215,7 @@ media_init(media_strategy_t *msp, int argc, char *argv[])
 {
 	bool_t ok;
 
-	ok = (* msp->ms_init)(msp, argc, argv);
+	ok = (*msp->ms_init)(msp, argc, argv);
 
 	return ok;
 }
@@ -223,7 +223,7 @@ media_init(media_strategy_t *msp, int argc, char *argv[])
 void
 media_complete(media_strategy_t *msp)
 {
-	(* msp->ms_complete)(msp);
+	(*msp->ms_complete)(msp);
 }
 
 /* media_get_upper_hdrs - supply pointers to portion of media file headers

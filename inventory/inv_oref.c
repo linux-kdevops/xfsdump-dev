@@ -38,7 +38,7 @@ oref_resolve_(
 
 	type &= INVT_OTYPE_MASK;
 	assert(type);
-	assert(! OREF_ISRESOLVED(obj, INVT_OTYPE_MASK));
+	assert(!OREF_ISRESOLVED(obj, INVT_OTYPE_MASK));
 
 	switch (type) {
 	      case INVT_OTYPE_INVIDX:
@@ -114,7 +114,7 @@ oref_resolve_entries(
 	if (OREF_ISRESOLVED(obj, INVT_RES_ENTRIES))
 		return INV_OK;
 
-	assert(! OREF_ISRESOLVED(INVT_OTYPE_STOBJ));
+	assert(!OREF_ISRESOLVED(INVT_OTYPE_STOBJ));
 
 	if (OREF_ISRESOLVED(INVT_OTYPE_INVIDX)) {
 		invt_entry_t *ent;
@@ -202,7 +202,7 @@ oref_sync(
 		break;
 
 	      case INVT_RES_ENTRIES:
-		assert(! OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ));
+		assert(!OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ));
 
 		rval = PUT_REC_NOLOCK(obj->fd,
 				      OREF_ENTRIES(obj),
@@ -235,7 +235,7 @@ oref_sync_append(
 
 	switch (type) {
 	      case INVT_RES_ENTRIES:
-		assert(! OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ));
+		assert(!OREF_ISRESOLVED(obj, INVT_OTYPE_STOBJ));
 
 		rval = PUT_REC_NOLOCK(obj->fd,
 				      entry,
@@ -317,7 +317,7 @@ oref_resolve(
 	invt_oref_t	*stobj;
 	int		index;
 
-	assert(! OREF_ISRESOLVED(invidx, INVT_OTYPE_MASK));
+	assert(!OREF_ISRESOLVED(invidx, INVT_OTYPE_MASK));
 
 	OREF_SET_TYPE(invidx, INVT_OTYPE_INVIDX);
 

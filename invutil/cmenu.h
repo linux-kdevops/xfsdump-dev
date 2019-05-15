@@ -44,18 +44,18 @@ typedef enum {
 } alignment_t;
 
 typedef struct menu_ops_s {
-    int (* op_delete) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_undelete) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_saveexit) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_select) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_collapse) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_expand) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_collapseall) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_expandall) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_highlight) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_unhighlight) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_commit) (WINDOW *win, node_t *current, node_t *list);
-    int (* op_prune) (char *mountpt, uuid_t *uuidp, time32_t prunetime, node_t *node, node_t *list);
+    int (*op_delete) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_undelete) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_saveexit) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_select) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_collapse) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_expand) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_collapseall) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_expandall) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_highlight) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_unhighlight) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_commit) (WINDOW *win, node_t *current, node_t *list);
+    int (*op_prune) (char *mountpt, uuid_t *uuidp, time32_t prunetime, node_t *node, node_t *list);
 } menu_ops_t;
 
 typedef struct {
