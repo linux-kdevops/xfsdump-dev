@@ -55,6 +55,33 @@
 #include "openutil.h"
 #include "mmap.h"
 
+/* Create a file, try to reserve space for it, and return the fd. */
+int
+create_filled_file(
+	const char	*pathname,
+	off64_t		size)
+{
+	struct flock64	fl = {
+		.l_len = size,
+	};
+	int		fd;
+	int		ret;
+
+	(void)unlink(pathname);
+
+	fd = open(pathname, O_RDWR | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+	if (fd < 0)
+		return fd;
+
+	ret = ioctl(fd, XFS_IOC_RESVSP64, &fl);
+	if (ret && errno != ENOTTY)
+		mlog(MLOG_VERBOSE | MLOG_NOTE,
+_("attempt to reserve %lld bytes for %s using %s failed: %s (%d)\n"),
+				size, pathname, "XFS_IOC_RESVSP64",
+				strerror(errno), errno);
+	return fd;
+}
+
 /* structure definitions used locally ****************************************/
 
 /* node handle limits
@@ -238,13 +265,8 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 			return BOOL_FALSE;
 		}
 	} else {
-		/* create the dirattr file, first unlinking any older version
-		 * laying around
-		 */
-		(void)unlink(dtp->dt_pathname);
-		dtp->dt_fd = open(dtp->dt_pathname,
-				   O_RDWR | O_CREAT | O_EXCL,
-				   S_IRUSR | S_IWUSR);
+		dtp->dt_fd = create_filled_file(dtp->dt_pathname,
+			DIRATTR_PERS_SZ + (dircnt * sizeof(struct dirattr)));
 		if (dtp->dt_fd < 0) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not create directory attributes file %s: "
@@ -254,62 +276,6 @@ dirattr_init(char *hkdir, bool_t resume, uint64_t dircnt)
 			return BOOL_FALSE;
 		}
 
-		/* reserve space for the backing store. try to use RESVSP64.
-		 * if doesn't work, try ALLOCSP64. the former is faster, as
-		 * it does not zero the space.
-		 */
-		{
-		bool_t successpr;
-		unsigned int ioctlcmd;
-		int loglevel;
-		size_t trycnt;
-
-		for (trycnt = 0,
-		      successpr = BOOL_FALSE,
-		      ioctlcmd = XFS_IOC_RESVSP64,
-		      loglevel = MLOG_VERBOSE
-		      ;
-		      !successpr && trycnt < 2
-		      ;
-		      trycnt++,
-		      ioctlcmd = XFS_IOC_ALLOCSP64,
-		      loglevel = max(MLOG_NORMAL, loglevel - 1)) {
-			off64_t initsz;
-			struct flock64 flock64;
-			int rval;
-
-			if (!ioctlcmd) {
-				continue;
-			}
-
-			initsz = (off64_t)DIRATTR_PERS_SZ
-				 +
-				 ((off64_t)dircnt * sizeof(dirattr_t));
-			flock64.l_whence = 0;
-			flock64.l_start = 0;
-			flock64.l_len = initsz;
-			rval = ioctl(dtp->dt_fd, ioctlcmd, &flock64);
-			if (rval) {
-				if (errno != ENOTTY) {
-					mlog(loglevel | MLOG_NOTE, _(
-					      "attempt to reserve %lld bytes for %s "
-					      "using %s "
-					      "failed: %s (%d)\n"),
-					      initsz,
-					      dtp->dt_pathname,
-					      ioctlcmd == XFS_IOC_RESVSP64
-					      ?
-					      "XFS_IOC_RESVSP64"
-					      :
-					      "XFS_IOC_ALLOCSP64",
-					      strerror(errno),
-					      errno);
-				}
-			} else {
-				successpr = BOOL_TRUE;
-			}
-		}
-		}
 	}
 
 	/* mmap the persistent descriptor

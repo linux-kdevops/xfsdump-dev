@@ -37,6 +37,10 @@
 #include "namreg.h"
 #include "openutil.h"
 #include "mmap.h"
+#include "global.h"
+#include "content.h"
+#include "content_inode.h"
+#include "dirattr.h"
 
 /* structure definitions used locally ****************************************/
 
@@ -153,13 +157,8 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 			return BOOL_FALSE;
 		}
 	} else {
-		/* create the namreg file, first unlinking any older version
-		 * laying around
-		 */
-		(void)unlink(ntp->nt_pathname);
-		ntp->nt_fd = open(ntp->nt_pathname,
-				   O_RDWR | O_CREAT | O_EXCL,
-				   S_IRUSR | S_IWUSR);
+		ntp->nt_fd = create_filled_file(ntp->nt_pathname,
+			NAMREG_PERS_SZ + (inocnt * NAMREG_AVGLEN));
 		if (ntp->nt_fd < 0) {
 			mlog(MLOG_NORMAL | MLOG_ERROR, _(
 			      "could not create name registry file %s: "
@@ -167,63 +166,6 @@ namreg_init(char *hkdir, bool_t resume, uint64_t inocnt)
 			      ntp->nt_pathname,
 			      strerror(errno));
 			return BOOL_FALSE;
-		}
-
-		/* reserve space for the backing store. try to use RESVSP64.
-		 * if doesn't work, try ALLOCSP64. the former is faster, as
-		 * it does not zero the space.
-		 */
-		{
-		bool_t successpr;
-		unsigned int ioctlcmd;
-		int loglevel;
-		size_t trycnt;
-
-		for (trycnt = 0,
-		      successpr = BOOL_FALSE,
-		      ioctlcmd = XFS_IOC_RESVSP64,
-		      loglevel = MLOG_VERBOSE
-		      ;
-		      !successpr && trycnt < 2
-		      ;
-		      trycnt++,
-		      ioctlcmd = XFS_IOC_ALLOCSP64,
-		      loglevel = max(MLOG_NORMAL, loglevel - 1)) {
-			off64_t initsz;
-			struct flock64 flock64;
-			int rval;
-
-			if (!ioctlcmd) {
-				continue;
-			}
-
-			initsz = (off64_t)NAMREG_PERS_SZ
-				 +
-				 ((off64_t)inocnt * NAMREG_AVGLEN);
-			flock64.l_whence = 0;
-			flock64.l_start = 0;
-			flock64.l_len = initsz;
-			rval = ioctl(ntp->nt_fd, ioctlcmd, &flock64);
-			if (rval) {
-				if (errno != ENOTTY) {
-					mlog(loglevel | MLOG_NOTE, _(
-					      "attempt to reserve %lld bytes for %s "
-					      "using %s "
-					      "failed: %s (%d)\n"),
-					      initsz,
-					      ntp->nt_pathname,
-					      ioctlcmd == XFS_IOC_RESVSP64
-					      ?
-					      "XFS_IOC_RESVSP64"
-					      :
-					      "XFS_IOC_ALLOCSP64",
-					      strerror(errno),
-					      errno);
-				}
-			} else {
-				successpr = BOOL_TRUE;
-			}
-		}
 		}
 	}
 

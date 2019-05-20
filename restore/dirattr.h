@@ -88,4 +88,6 @@ extern bool_t dirattr_cb_extattr(dah_t dah,
 				  extattrhdr_t *ahdrp,
 				  void *ctxp);
 
+int create_filled_file(const char *pathname, off64_t size);
+
 #endif /* DIRATTR_H */
