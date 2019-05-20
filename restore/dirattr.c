@@ -75,6 +75,17 @@ create_filled_file(
 	if (fd < 0)
 		return fd;
 
+#ifdef HAVE_FALLOCATE
+	ret = fallocate(fd, 0, 0, size);
+	if (ret && (errno != EOPNOTSUPP && errno != ENOTTY))
+		mlog(MLOG_VERBOSE | MLOG_NOTE,
+_("attempt to reserve %lld bytes for %s using %s failed: %s (%d)\n"),
+				size, pathname, "fallocate",
+				strerror(errno), errno);
+	if (ret == 0)
+		return fd;
+#endif
+
 	ret = ioctl(fd, XFS_IOC_RESVSP64, &fl);
 	if (ret && (errno != EOPNOTSUPP && errno != ENOTTY))
 		mlog(MLOG_VERBOSE | MLOG_NOTE,

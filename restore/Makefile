@@ -102,6 +102,10 @@ LTDEPENDENCIES = $(LIBRMT)
 
 LCFLAGS = -DRESTORE
 
+ifeq ($(HAVE_FALLOCATE),yes)
+LCFLAGS += -DHAVE_FALLOCATE
+endif
+
 default: depend $(LTCOMMAND)
 
 include $(BUILDRULES)
