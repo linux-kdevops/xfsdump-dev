@@ -44,7 +44,7 @@ int fstab_numfiles;
 menu_ops_t fstab_ops = {
     NULL,
     NULL,
-    NULL, /*fstab_saveall,*/
+    NULL, /*fstab_saveall, */
     fstab_select,
     NULL,
     NULL,

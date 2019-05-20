@@ -5694,7 +5694,7 @@ position:
 			}
 
 			if ((int32_t)mwhdrp->mh_mediaix >= 0) {
-				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA,_(
+				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 				      "cannot interleave dump streams: "
 				      "must supply a blank media object\n"));
 				goto changemedia;
@@ -5829,7 +5829,7 @@ position:
 			}
 
 			if (contextp->cc_Media_useterminatorpr) {
-				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA,_(
+				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 				      "encountered EOD but expecting a media "
 				      "stream terminator: "
 				      "assuming full media\n"));
@@ -5882,7 +5882,7 @@ position:
 			}
 
 			if (contextp->cc_Media_useterminatorpr) {
-				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA,_(
+				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 				      "encountered corrupt or foreign data "
 				      "but expecting a media "
 				      "stream terminator: "
@@ -5890,7 +5890,7 @@ position:
 				mlog_exit_hint(RV_CORRUPT);
 				goto changemedia;
 			} else if (!(dcaps & DRIVE_CAP_OVERWRITE)) {
-				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA,_(
+				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 				      "encountered corrupt or foreign data: "
 				      "unable to overwrite: "
 				      "assuming corrupted media\n"));
@@ -5898,7 +5898,7 @@ position:
 				goto changemedia;
 			} else {
 				int status;
-				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA,_(
+				mlog(MLOG_NORMAL | MLOG_WARNING | MLOG_MEDIA, _(
 				      "encountered corrupt or foreign data: "
 				      "repositioning to overwrite\n"));
 				mlog_exit_hint(RV_CORRUPT);

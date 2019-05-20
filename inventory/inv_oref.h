@@ -125,7 +125,7 @@ typedef struct invt_oref {
 				       (oref)->lockflag == LOCK_UN)
 
 #define OREF_LOCK(oref, mode) \
-        { if (! OREF_LOCKMODE_EQL(oref,mode)) \
+        { if (! OREF_LOCKMODE_EQL(oref, mode)) \
 	      { INVLOCK((oref)->fd, mode); \
 		(oref)->lockflag = mode; } \
 	}

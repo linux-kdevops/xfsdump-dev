@@ -35,7 +35,7 @@
 #include "inv_priv.h"
 #include "mlog.h"
 
-#define IXLATE(a1,a2,MEMBER)	\
+#define IXLATE(a1, a2, MEMBER)	\
 	INT_XLATE((a1)->MEMBER, (a2)->MEMBER, dir, ARCH_CONVERT)
 #define BXLATE(MEMBER)		\
 	bcopy(&(ptr1)->MEMBER, &(ptr2)->MEMBER, sizeof((ptr1)->MEMBER))

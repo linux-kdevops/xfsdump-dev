@@ -57,7 +57,7 @@ idx_insert_newentry(int fd, /* kept locked EX by caller */
 	/* If time period of the new entry is before our first invindex,
 	   we have to insert a new invindex in the first slot */
 	if (iarr[0].ie_timeperiod.tp_start > tm) {
-		/* *stobjfd = idx_put_newentry(fd, 0, iarr, icnt, &ient);*/
+		/* *stobjfd = idx_put_newentry(fd, 0, iarr, icnt, &ient); */
 		*stobjfd = open(iarr[0].ie_filename, INV_OFLAG(forwhat));
 		return 0;
 	}
@@ -67,7 +67,7 @@ idx_insert_newentry(int fd, /* kept locked EX by caller */
 		   period, hellalujah */
 		if (IS_WITHIN(&iarr[i].ie_timeperiod, tm)) {
 #ifdef INVT_DEBUG
-			mlog(MLOG_DEBUG | MLOG_INV, "INV: is_within %d\n",i);
+			mlog(MLOG_DEBUG | MLOG_INV, "INV: is_within %d\n", i);
 #endif
 			*stobjfd = open(iarr[i].ie_filename, INV_OFLAG(forwhat));
 			return i;
@@ -110,7 +110,7 @@ idx_insert_newentry(int fd, /* kept locked EX by caller */
 				   insert the new entry and write back
 				   icnt and invindex entry */
 				/* *stobjfd = idx_put_newentry(fd, i+1, iarr,
-							     icnt, &ient);*/
+							     icnt, &ient); */
 			      *stobjfd = open(iarr[i].ie_filename, INV_OFLAG(forwhat));
 			      return i;
 			}
@@ -132,7 +132,7 @@ idx_insert_newentry(int fd, /* kept locked EX by caller */
 				   one. Then insert the new entry and write
 				   back icnt and invindex entries */
 				/* *stobjfd = idx_put_newentry(fd, i+1, iarr,
-							     icnt, &ient);*/
+							     icnt, &ient); */
 			      *stobjfd = open(iarr[i].ie_filename, INV_OFLAG(forwhat));
 				return i;
 			}

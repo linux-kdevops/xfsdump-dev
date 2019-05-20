@@ -85,8 +85,8 @@
 			       (size_t) nhdrs * sizeof(invt_seshdr_t) + \
 			       (size_t) nsess * sizeof(invt_session_t))
 
-#define STREQL(n,m)		(strcmp((n),(m)) == 0)
-#define UUID_EQL(n,m,t)	(uuid_compare(n, m, t) == 0)
+#define STREQL(n, m)		(strcmp((n), (m)) == 0)
+#define UUID_EQL(n, m, t)	(uuid_compare(n, m, t) == 0)
 #define IS_PARTIAL_SESSION(h) ((h)->sh_flag & INVT_PARTIAL)
 #define IS_RESUMED_SESSION(h) ((h)->sh_flag & INVT_RESUMED)
 #define SC_EOF_INITIAL_POS	(off64_t) (sizeof(invt_sescounter_t) + \
@@ -94,7 +94,7 @@
 					 (sizeof(invt_seshdr_t) + \
 					   sizeof(invt_session_t)))
 
-#define INV_PERROR(s)  	mlog(MLOG_NORMAL,"INV: %s %s\n", s,strerror(errno))
+#define INV_PERROR(s)  	mlog(MLOG_NORMAL, "INV: %s %s\n", s, strerror(errno))
 #define INV_OFLAG(f)    (f == INV_SEARCH_ONLY) ? O_RDONLY: O_RDWR
 
 /*----------------------------------------------------------------------*/

@@ -2207,7 +2207,7 @@ content_stream_restore(ix_t thrdix)
 		if (fileh == DH_NULL) {
 			return mlog_exit(EXIT_FAULT, RV_ERROR);
 		}
-		uuid_copy(persp->s.dumpid,grhdrp->gh_dumpid);
+		uuid_copy(persp->s.dumpid, grhdrp->gh_dumpid);
 		persp->s.begintime = time(0);
 		tranp->t_dumpidknwnpr = BOOL_TRUE;
 		tranp->t_sync2 = SYNC_DONE;

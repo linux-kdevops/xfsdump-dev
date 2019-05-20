@@ -460,7 +460,7 @@ CheckAndPruneFstab(char *inv_path, bool_t checkonly, char *mountPt,
     int		j;
     bool_t	removeflag;
     invt_fstab_t *fstabentry;
-    invt_counter_t *counter,cnt;
+    invt_counter_t *counter, cnt;
 
     if (mountPt == NULL && uuid_is_null(*uuidp) && uuid_is_null(*sessionp)) {
 	fprintf(stderr, "%s: mountpoint, uuid or session "
@@ -613,7 +613,7 @@ CheckAndPruneInvIndexFile(bool_t checkonly,
     invt_counter_t header;
 
     printf("      processing index file \n"
-	   "       %s\n",idxFileName);
+	   "       %s\n", idxFileName);
 
     fd = open_and_lock(idxFileName,
 			FILE_WRITE,

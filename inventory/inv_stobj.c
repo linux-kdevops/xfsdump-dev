@@ -445,7 +445,7 @@ stobj_put_streams(int fd, invt_seshdr_t *hdr, invt_session_t *ses,
 	off64_t off  = hdr->sh_streams_off;
 	off64_t mfileoff = off + (off64_t)(nstm * sizeof(invt_stream_t));
 	uint nmfiles = 0;
-	uint i,j;
+	uint i, j;
 
 	/* fix the offsets in streams */
 	for (i = 0; i < nstm; i++) {
@@ -636,7 +636,7 @@ stobj_put_mediafile(inv_stmtoken_t tok, invt_mediafile_t *mf)
 
 	/* We need to update the last ino of this STREAM, which is now the
 	   last ino of the new mediafile. If this is the first mediafile, we
-	   have to update the startino as well. Note that ino is a <ino,off>
+	   have to update the startino as well. Note that ino is a <ino, off>
 	   tuple */
 	if (!(mf->mf_flag & INVT_MFILE_INVDUMP)) {
 		if (stream.st_nmediafiles == 0)

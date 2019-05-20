@@ -151,7 +151,7 @@ extern int diriter(jdm_fshandle_t *fshandlep,
 /*
  * Align pointer up to alignment
  */
-#define	ALIGN_PTR(p,a)	\
+#define	ALIGN_PTR(p, a)	\
 	(((intptr_t)(p) & ((a)-1)) ? \
 		((void *)(((intptr_t)(p) + ((a)-1)) & ~((a)-1))) : \
 		((void *)(p)))

@@ -50,7 +50,7 @@ struct uname_table
 };
 
 struct uname_table uname_table[] =
-{ {UNAME_LINUX, "Linux"}, {UNAME_IRIX, "IRIX"}, {0,0} };
+{ {UNAME_LINUX, "Linux"}, {UNAME_IRIX, "IRIX"}, {0, 0} };
 
 
 /*

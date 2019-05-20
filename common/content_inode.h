@@ -75,7 +75,7 @@ struct content_inode_hdr {
 	char pad1[4];					/*   4  10 */
 		/* alignment */
 	time32_t cih_last_time;				/*   4  14 */
-		/* if an incremental,time of previous dump at a lesser level */
+		/* if an incremental, time of previous dump at a lesser level */
 	time32_t cih_resume_time;			/*   4  18 */
 		/* if a resumed dump, time of interrupted dump */
 	xfs_ino_t cih_rootino;				/*   8  20 */

@@ -463,7 +463,7 @@ update_invidx_entry(int fd, char *filename, int stobj_fd)
     read_n_bytes(stobj_fd, &sescnt, sizeof(sescnt), "stobj file");
 
     memset(&hdr, 0, sizeof(hdr));
-    first_offset = STOBJ_OFFSET(0,0);
+    first_offset = STOBJ_OFFSET(0, 0);
     lseek(stobj_fd, first_offset, SEEK_SET);
     read_n_bytes(stobj_fd, &hdr, sizeof(hdr), "stobj file");
     start_time = hdr.sh_time;
@@ -632,7 +632,7 @@ stobj_put_streams(int fd, invt_seshdr_t *hdr, invt_session_t *ses,
     off64_t	off	= hdr->sh_streams_off;
     off64_t	mfileoff= off + (off64_t)(nstm * sizeof(invt_stream_t));
     uint	nmfiles = 0;
-    uint	i,j;
+    uint	i, j;
 
     /* fix the offsets in streams */
      for (i = 0; i < nstm; i++) {

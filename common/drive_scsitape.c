@@ -58,11 +58,11 @@
 /* remote tape protocol debug
  */
 #ifdef RMTDBG
-#define	open(p,f)		dbgrmtopen(p,f)
+#define	open(p, f)		dbgrmtopen(p, f)
 #define	close(fd)		dbgrmtclose(fd)
-#define	ioctl(fd,op,arg)	dbgrmtioctl(fd,op,arg)
-#define	read(fd,p,sz)		dbgrmtread(fd,p,sz)
-#define	write(fd,p,sz)		dbgrmtwrite(fd,p,sz)
+#define	ioctl(fd, op, arg)	dbgrmtioctl(fd, op, arg)
+#define	read(fd, p, sz)		dbgrmtread(fd, p, sz)
+#define	write(fd, p, sz)	dbgrmtwrite(fd, p, sz)
 #else /* RMTDBG */
 #define	open rmtopen
 #define	close rmtclose
@@ -3071,7 +3071,7 @@ validate_media_file_hdr(drive_t *drivep)
 
 	/* check the magic number
 	 */
-	if (strncmp(grhdrp->gh_magic, GLOBAL_HDR_MAGIC,GLOBAL_HDR_MAGIC_SZ)) {
+	if (strncmp(grhdrp->gh_magic, GLOBAL_HDR_MAGIC, GLOBAL_HDR_MAGIC_SZ)) {
 	        mlog(MLOG_DEBUG | MLOG_DRIVE,
 	              "missing magic number in tape label\n");
 	        return DRIVE_ERROR_FORMAT;

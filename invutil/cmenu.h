@@ -26,16 +26,16 @@
 /* number of lines for info window */
 #define INFO_SIZE 4
 
-#define put_header(m,a)		put_line(stdscr, 0, m, A_REVERSE | A_BOLD, a)
-#define put_footer(m,a)		put_line(stdscr, LINES - 1, m, A_REVERSE | A_BOLD, a)
-#define put_error(m)		put_line(stdscr, LINES - 1, m, A_REVERSE | A_BOLD, ALIGN_LEFT);\
+#define put_header(m, a)		put_line(stdscr, 0, m, A_REVERSE | A_BOLD, a)
+#define put_footer(m, a)		put_line(stdscr, LINES - 1, m, A_REVERSE | A_BOLD, a)
+#define put_error(m)			put_line(stdscr, LINES - 1, m, A_REVERSE | A_BOLD, ALIGN_LEFT);\
 					beep();\
 					wrefresh(stdscr);\
 					sleep(2)
-#define put_info_header(m)	put_line(infowin, 0, m, A_REVERSE|A_BOLD, ALIGN_LEFT)
-#define put_info_line(l,m)	put_line(infowin, l, m, 0, ALIGN_LEFT)
-#define put_option(w,l,t,a)	put_line(w, l, t, a, ALIGN_LEFT)
-#define clear_line(w,l)		wmove(w, l, 0); wclrtoeol(w);
+#define put_info_header(m)		put_line(infowin, 0, m, A_REVERSE|A_BOLD, ALIGN_LEFT)
+#define put_info_line(l, m)		put_line(infowin, l, m, 0, ALIGN_LEFT)
+#define put_option(w, l, t, a)	put_line(w, l, t, a, ALIGN_LEFT)
+#define clear_line(w, l)		wmove(w, l, 0); wclrtoeol(w);
 
 typedef enum {
     ALIGN_LEFT,

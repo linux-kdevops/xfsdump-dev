@@ -35,29 +35,29 @@
 #endif
 
 #ifndef HAVE_SWABMACROS
-#define INT_SWAP16(type,var) ((typeof(type))(__swab16((__u16)(var))))
-#define INT_SWAP32(type,var) ((typeof(type))(__swab32((__u32)(var))))
-#define INT_SWAP64(type,var) ((typeof(type))(__swab64((__u64)(var))))
+#define INT_SWAP16(type, var) ((typeof(type))(__swab16((__u16)(var))))
+#define INT_SWAP32(type, var) ((typeof(type))(__swab32((__u32)(var))))
+#define INT_SWAP64(type, var) ((typeof(type))(__swab64((__u64)(var))))
 #endif
 
 #define INT_SWAP(type, var) \
-	((sizeof(type) == 8) ? INT_SWAP64(type,var) : \
-	((sizeof(type) == 4) ? INT_SWAP32(type,var) : \
-	((sizeof(type) == 2) ? INT_SWAP16(type,var) : \
+	((sizeof(type) == 8) ? INT_SWAP64(type, var) : \
+	((sizeof(type) == 4) ? INT_SWAP32(type, var) : \
+	((sizeof(type) == 2) ? INT_SWAP16(type, var) : \
 	(var))))
 
-#define INT_GET(ref,arch) \
-	(((arch) == ARCH_NOCONVERT) ? (ref) : INT_SWAP((ref),(ref)))
+#define INT_GET(ref, arch) \
+	(((arch) == ARCH_NOCONVERT) ? (ref) : INT_SWAP((ref), (ref)))
 
-#define INT_SET(ref,arch,valueref) \
+#define INT_SET(ref, arch, valueref) \
 	(__builtin_constant_p(valueref) ? \
 	(void)((ref) = (((arch) != ARCH_NOCONVERT) ? \
-	  		   (INT_SWAP((ref),(valueref))) : (valueref))) : \
+			   (INT_SWAP((ref), (valueref))) : (valueref))) : \
 	(void)(((ref) = (valueref)), \
 			(((arch) != ARCH_NOCONVERT) ? \
-			   (ref) = INT_SWAP((ref),(ref)) : 0)))
+			   (ref) = INT_SWAP((ref), (ref)) : 0)))
 
-#define INT_XLATE(buf,p,dir,arch) \
+#define INT_XLATE(buf, p, dir, arch) \
 	((dir > 0) ? ((p) = INT_GET((buf),(arch))) : INT_SET((buf),(arch),(p)))
 
 #endif /* SWAP_H */

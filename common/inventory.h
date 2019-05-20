@@ -144,7 +144,7 @@ typedef struct invt_strdesc_entry	*inv_stmtoken_t;
 extern inv_idbtoken_t
 inv_open(
 	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */
-	 void 		 *pred);/* uuid_t *,char * mntpt, or char *dev */
+	 void 		 *pred);/* uuid_t *, char * mntpt, or char *dev */
 
 
 extern bool_t

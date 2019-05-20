@@ -202,7 +202,7 @@ query_test(int level)
 	invt_pr_ctx_t prctx;
 
 	if (level == -2) {
-		printf("mount pt %s\n",sesfile);
+		printf("mount pt %s\n", sesfile);
 		tok = inv_open(INV_BY_MOUNTPT, INV_SEARCH_ONLY, sesfile);
 		if (!tok) return -1;
 		idx_DEBUG_print (tok->d_invindex_fd);
@@ -251,7 +251,7 @@ query_test(int level)
 int
 write_test(int nsess, int nstreams, int nmedia, int dumplevel)
 {
-	int i,j,k,m,fd;
+	int i, j, k, m, fd;
 	unsigned int stat;
 	uuid_t *fsidp;
 	inv_idbtoken_t tok1;
@@ -301,7 +301,7 @@ write_test(int nsess, int nstreams, int nmedia, int dumplevel)
 	for (i = 0; i < nsess; i++) {
 		j = i % 8;
 		/*mnt = mnt_str[j];
-		dev = dev_str[7-j];*/
+		dev = dev_str[7-j]; */
 		mnt = mnt_str[0];
 		dev = dev_str[7];
 		fsidp = &fsidarr[0]; /* j */

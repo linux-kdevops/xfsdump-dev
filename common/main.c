@@ -988,7 +988,7 @@ usage(void)
 	ULO(_("(contents only)"),			GETOPT_TOC);
 	ULO(_("<verbosity {silent, verbose, trace}>"),	GETOPT_VERBOSITY);
 	ULO(_("(use small tree window)"),		GETOPT_SMALLWINDOW);
-	ULO(_("(don't restore extended file attributes)"),GETOPT_NOEXTATTR);
+	ULO(_("(don't restore extended file attributes)"), GETOPT_NOEXTATTR);
 	ULO(_("(restore root dir owner/permissions)"),	GETOPT_ROOTPERM);
 	ULO(_("(restore DMAPI event settings)"),	GETOPT_SETDM);
 #ifdef REVEAL
@@ -998,7 +998,7 @@ usage(void)
 	ULO(_("(don't prompt)"),			GETOPT_FORCE);
 	ULO(_("(display dump inventory)"),		GETOPT_INVPRINT);
 	ULO(_("(inhibit inventory update)"),		GETOPT_NOINVUPDATE);
-	ULO(_("(force use of format 2 generation numbers)"),GETOPT_FMT2COMPAT);
+	ULO(_("(force use of format 2 generation numbers)"), GETOPT_FMT2COMPAT);
 	ULO(_("<session label>"),			GETOPT_DUMPLABEL);
 #ifdef REVEAL
 	ULO(_("(timestamp messages)"),			GETOPT_TIMESTAMP);

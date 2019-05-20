@@ -17,7 +17,7 @@
  */
 
 /*
- * Copyright (C) 1993, 95, 96, 97, 98, 99,2000,2001 Free Software Foundation, Inc.
+ * Copyright (C) 1993, 95-99, 2000-2001 Free Software Foundation, Inc.
  * This file is based almost entirely on getdents.c in the GNU C Library.
  */
 

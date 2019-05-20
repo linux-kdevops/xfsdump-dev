@@ -189,7 +189,7 @@ extern inv_idbtoken_t
 inv_open(
 	 inv_predicate_t bywhat, /* BY_UUID, BY_MOUNTPT, BY_DEVPATH */
 	 inv_oflag_t      forwhat,/* SEARCH_ONLY, SEARCH_N_MOD */
-	 void 		 *pred);/* uuid_t *,char * mntpt, or char *dev */
+	 void 		 *pred);/* uuid_t *, char * mntpt, or char *dev */
 
 
 extern bool_t

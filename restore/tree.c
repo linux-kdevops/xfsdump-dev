@@ -1974,7 +1974,7 @@ tree_cb_links(xfs_ino_t ino,
 			adopt(persp->p_orphh, nh, NRH_NULL);
 			ok = Node2path(nh, path1, _("orphan"));
 			assert(ok);
-			(void)(*funcp)(contextp, BOOL_FALSE, path1,path2);
+			(void)(*funcp)(contextp, BOOL_FALSE, path1, path2);
 		}
 	}
 	return RV_OK;
