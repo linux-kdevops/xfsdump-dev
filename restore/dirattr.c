@@ -76,7 +76,7 @@ create_filled_file(
 		return fd;
 
 	ret = ioctl(fd, XFS_IOC_RESVSP64, &fl);
-	if (ret && errno != ENOTTY)
+	if (ret && (errno != EOPNOTSUPP && errno != ENOTTY))
 		mlog(MLOG_VERBOSE | MLOG_NOTE,
 _("attempt to reserve %lld bytes for %s using %s failed: %s (%d)\n"),
 				size, pathname, "XFS_IOC_RESVSP64",
