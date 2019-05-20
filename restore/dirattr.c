@@ -67,7 +67,9 @@ create_filled_file(
 	int		fd;
 	int		ret;
 
-	(void)unlink(pathname);
+	ret = unlink(pathname);
+	if (ret && errno != ENOENT)
+		return ret;
 
 	fd = open(pathname, O_RDWR | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
 	if (fd < 0)
