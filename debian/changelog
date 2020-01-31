@@ -1,26 +1,32 @@
+xfsdump (3.1.9) unstable; urgency=low
+
+  * New upstream release
+
+ -- Nathan Scott <nathans@debian.org>  Fri, 31 Jan 2020 11:30:58 -0600
+
 xfsdump (3.1.8) unstable; urgency=low
 
   * New upstream release
 
- -- Nathan Scott <nathans@debian.org> Thu, 21 Sep 2017 16:09:50 -0500
+ -- Nathan Scott <nathans@debian.org>  Thu, 21 Sep 2017 16:09:50 -0500
 
 xfsdump (3.1.7) unstable; urgency=low
 
   * New upstream release
 
- -- Nathan Scott <nathans@debian.org> Fri, 18 Aug 2017 17:49:02 -0500
+ -- Nathan Scott <nathans@debian.org>  Fri, 18 Aug 2017 17:49:02 -0500
 
 xfsdump (3.1.6) unstable; urgency=low
 
   * New upstream release
 
- -- Nathan Scott <nathans@debian.org> Tue, 10 Nov 2015 16:16:03 +1100
+ -- Nathan Scott <nathans@debian.org>  Tue, 10 Nov 2015 16:16:03 +1100
 
 xfsdump (3.1.5) unstable; urgency=low
 
   * New upstream release (closes: #799201)
 
- -- Nathan Scott <nathans@debian.org> Wed, 14 Oct 2015 12:53:24 +1100
+ -- Nathan Scott <nathans@debian.org>  Wed, 14 Oct 2015 12:53:24 +1100
 
 xfsdump (3.1.4) unstable; urgency=low
 
@@ -28,13 +34,13 @@ xfsdump (3.1.4) unstable; urgency=low
   * Add a watch file (closes: #748482)
   * Update configure files during build (closes: #746531)
 
- -- Nathan Scott <nathans@debian.org> Wed, 16 Jul 2014 13:26:02 +1000
+ -- Nathan Scott <nathans@debian.org>  Wed, 16 Jul 2014 13:26:02 +1000
 
 xfsdump (3.1.3) unstable; urgency=low
 
   * New upstream release
 
- -- Nathan Scott <nathans@debian.org> Wed, 08 May 2013 11:53:54 -0500
+ -- Nathan Scott <nathans@debian.org>  Wed, 08 May 2013 11:53:54 -0500
 
 xfsdump (3.1.1) unstable; urgency=low
 
