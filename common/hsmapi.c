@@ -108,7 +108,7 @@ typedef	struct {
 #define	DM_EVENT_TRUNCATE	18
 #define	DM_EVENT_DESTROY	20
 
- /* Interesting bit combinations within the bs_dmevmask field of xfs_bstat_t:
+/* Interesting bit combinations within the bs_dmevmask field of struct xfs_bstat
  * OFL, UNM, and PAR files have exactly these bits set.
  * DUL and MIG files have all but the DM_EVENT_READ bit set */
 #define DMF_EV_BITS	((1<<DM_EVENT_DESTROY) | \
@@ -268,11 +268,11 @@ HsmDeleteFsysContext(
 
 extern int
 HsmEstimateFileSpace(
-	hsm_fs_ctxt_t	*fscontextp,
-	hsm_f_ctxt_t	*fcontextp,
-const	xfs_bstat_t	*statp,
-	off64_t		*bytes,
-	int		accurate)
+	hsm_fs_ctxt_t		*fscontextp,
+	hsm_f_ctxt_t		*fcontextp,
+	const struct xfs_bstat	*statp,
+	off64_t			*bytes,
+	int			accurate)
 {
 	/* If the estimate needs to be accurate, then we'll have to
 	 * pay the price and read the DMF attribute, if there is one,
@@ -352,13 +352,13 @@ const	xfs_bstat_t	*statp,
 /* ARGSUSED */
 extern int
 HsmEstimateFileOffset(
-	hsm_fs_ctxt_t	*contextp,
-const	xfs_bstat_t	*statp,
-	off64_t		bytecount,
-	off64_t		*byteoffset)
+	hsm_fs_ctxt_t		*contextp,
+	const struct xfs_bstat	*statp,
+	off64_t			bytecount,
+	off64_t			*byteoffset)
 {
-	dmf_fs_ctxt_t	*dmf_fs_ctxtp = (dmf_fs_ctxt_t *)contextp;
-	dmf_f_ctxt_t	dmf_f_ctxt;
+	dmf_fs_ctxt_t		*dmf_fs_ctxtp = (dmf_fs_ctxt_t *)contextp;
+	dmf_f_ctxt_t		dmf_f_ctxt;
 
 	/* This is an implicit HsmAllocateFileContext call. */
 
@@ -457,14 +457,14 @@ HsmDeleteFileContext(
 
 extern int
 HsmInitFileContext(
-	hsm_f_ctxt_t	*contextp,
-const	xfs_bstat_t	*statp)
+	hsm_f_ctxt_t		*contextp,
+	const struct xfs_bstat	*statp)
 {
-	dmf_f_ctxt_t	*dmf_f_ctxtp = (dmf_f_ctxt_t *)contextp;
-	XFSattrvalue0_t	*dmfattrp;
-	int		state;
-	int		error;
-	attr_multiop_t	attr_op;
+	dmf_f_ctxt_t		*dmf_f_ctxtp = (dmf_f_ctxt_t *)contextp;
+	XFSattrvalue0_t		*dmfattrp;
+	int			state;
+	int			error;
+	attr_multiop_t		attr_op;
 
 	dmf_f_ctxtp->candidate = 0; /* assume file will NOT be of interest */
 
@@ -492,7 +492,7 @@ const	xfs_bstat_t	*statp)
 	attr_op.am_flags     = ATTR_ROOT;
 
 	error = jdm_attr_multi(dmf_f_ctxtp->fsys.fshanp,
-			       (xfs_bstat_t *)statp,
+			       (struct xfs_bstat *)statp,
 			       (char *)&attr_op,
 			       1,
 			       0);
@@ -536,26 +536,26 @@ const	xfs_bstat_t	*statp)
 }
 
 
-/******************************************************************************
+/*******************************************************************************
 * Name
-*	HsmModifyInode - modify a xfs_bstat_t to make a file appear offline
+*	HsmModifyInode - modify a struct xfs_bstat to make a file appear offline
 *
 * Description
 *	HsmModifyInode uses the context provided by a previous
-*	HsmInitFileContext call to determine how to modify a xfs_bstat_t
+*	HsmInitFileContext call to determine how to modify a struct xfs_bstat
 *	structure to make a dual-residency HSM file appear to be offline.
 *
 * Returns
-*	!= 0, xfs_bstat_t structure was modified.
+*	!= 0, struct xfs_bstat structure was modified.
 *	== 0, if something is wrong with the file and it should not be dumped.
-******************************************************************************/
+8******************************************************************************/
 
 extern int
 HsmModifyInode(
-	hsm_f_ctxt_t	*contextp,
-	xfs_bstat_t	*statp)
+	hsm_f_ctxt_t		*contextp,
+	struct xfs_bstat	*statp)
 {
-	dmf_f_ctxt_t	*dmf_f_ctxtp = (dmf_f_ctxt_t *)contextp;
+	dmf_f_ctxt_t		*dmf_f_ctxtp = (dmf_f_ctxt_t *)contextp;
 
 	if (dmf_f_ctxtp->candidate) {
 		statp->bs_dmevmask = DMF_EV_BITS;

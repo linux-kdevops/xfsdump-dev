@@ -150,8 +150,8 @@ typedef struct timestruct timestruct_t;
 
 /* bstat_t - bulk stat structure
  *
- * used in filehdr_t below. derived from xfs_bstat_t, to achieve independence
- * from changes to xfs_bstat_t.
+ * used in filehdr_t below. derived from struct xfs_bstat, to achieve independence
+ * from changes to struct xfs_bstat.
  */
 #define BSTAT_SZ	128
 #define MODE_SZ		4

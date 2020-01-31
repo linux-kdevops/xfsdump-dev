@@ -79,9 +79,9 @@ static int cb_context(bool_t last,
 			    bool_t,
 			    bool_t *);
 static void cb_context_free(void);
-static int cb_count_inogrp(void *, int, xfs_inogrp_t *);
-static int cb_add_inogrp(void *, int, xfs_inogrp_t *);
-static int cb_add(void *, jdm_fshandle_t *, int, xfs_bstat_t *);
+static int cb_count_inogrp(void *, int, struct xfs_inogrp *);
+static int cb_add_inogrp(void *, int, struct xfs_inogrp *);
+static int cb_add(void *, jdm_fshandle_t *, int, struct xfs_bstat *);
 static bool_t cb_inoinresumerange(xfs_ino_t);
 static bool_t cb_inoresumed(xfs_ino_t);
 static void cb_accuminit_sz(void);
@@ -89,14 +89,14 @@ static void cb_spinit(void);
 static int cb_startpt(void *,
 			    jdm_fshandle_t *,
 			    int,
-			    xfs_bstat_t *);
+			    struct xfs_bstat *);
 static int supprt_prune(void *,
 			      jdm_fshandle_t *,
 			      int,
-			      xfs_bstat_t *,
+			      struct xfs_bstat *,
 			      char *);
-static off64_t quantity2offset(jdm_fshandle_t *, xfs_bstat_t *, off64_t);
-static off64_t estimate_dump_space(xfs_bstat_t *);
+static off64_t quantity2offset(jdm_fshandle_t *, struct xfs_bstat *, off64_t);
+static off64_t estimate_dump_space(struct xfs_bstat *);
 
 /* inomap primitives
  */
@@ -110,16 +110,16 @@ static void inomap_set_gen(void *, xfs_ino_t, gen_t);
 static int subtree_descend_cb(void *,
 				    jdm_fshandle_t *,
 				    int fsfd,
-				    xfs_bstat_t *,
+				    struct xfs_bstat *,
 				    char *);
 static int subtreelist_parse_cb(void *,
 				      jdm_fshandle_t *,
 				      int fsfd,
-				      xfs_bstat_t *,
+				      struct xfs_bstat *,
 				      char *);
 static int subtreelist_parse(jdm_fshandle_t *,
 				   int,
-				   xfs_bstat_t *,
+				   struct xfs_bstat *,
 				   char *[],
 				   ix_t);
 
@@ -144,7 +144,7 @@ static uint64_t inomap_exclude_skipattr = 0;
 bool_t
 inomap_build(jdm_fshandle_t *fshandlep,
 	      int fsfd,
-	      xfs_bstat_t *rootstatp,
+	      struct xfs_bstat *rootstatp,
 	      bool_t last,
 	      time32_t lasttime,
 	      bool_t resume,
@@ -161,7 +161,7 @@ inomap_build(jdm_fshandle_t *fshandlep,
 	      size64_t statcnt,
 	      size64_t *statdonep)
 {
-	xfs_bstat_t *bstatbufp;
+	struct xfs_bstat *bstatbufp;
 	size_t bstatbuflen;
 	bool_t pruneneeded = BOOL_FALSE;
 	int igrpcnt = 0;
@@ -185,10 +185,10 @@ inomap_build(jdm_fshandle_t *fshandlep,
 	/* allocate a bulkstat buf
 	 */
 	bstatbuflen = BSTATBUFLEN;
-	bstatbufp = (xfs_bstat_t *)memalign(pgsz,
+	bstatbufp = (struct xfs_bstat *)memalign(pgsz,
 					       bstatbuflen
 					       *
-					       sizeof(xfs_bstat_t));
+					       sizeof(struct xfs_bstat));
 	assert(bstatbufp);
 
 	/* count the number of inode groups, which will serve as a
@@ -488,7 +488,7 @@ cb_context_free(void)
 }
 
 static int
-cb_count_inogrp(void *arg1, int fsfd, xfs_inogrp_t *inogrp)
+cb_count_inogrp(void *arg1, int fsfd, struct xfs_inogrp *inogrp)
 {
 	int *count = (int *)arg1;
 	(*count)++;
@@ -505,7 +505,7 @@ static int
 cb_add(void *arg1,
 	jdm_fshandle_t *fshandlep,
 	int fsfd,
-	xfs_bstat_t *statp)
+	struct xfs_bstat *statp)
 {
 	register time32_t mtime = statp->bs_mtime.tv_sec;
 	register time32_t ctime = statp->bs_ctime.tv_sec;
@@ -691,7 +691,7 @@ static bool_t			/* false, used as diriter callback */
 supprt_prune(void *arg1,	/* ancestors marked as changed? */
 	      jdm_fshandle_t *fshandlep,
 	      int fsfd,
-	      xfs_bstat_t *statp,
+	      struct xfs_bstat *statp,
 	      char *name)
 {
 	static bool_t cbrval = BOOL_FALSE;
@@ -812,7 +812,7 @@ static int
 cb_startpt(void *arg1,
 	    jdm_fshandle_t *fshandlep,
 	    int fsfd,
-	    xfs_bstat_t *statp)
+	    struct xfs_bstat *statp)
 {
 	register int state;
 
@@ -1116,7 +1116,7 @@ inomap_lastseg(int hnkoff)
  * order. adds a new segment to the inomap and ino-to-gen map.
  */
 static int
-cb_add_inogrp(void *arg1, int fsfd, xfs_inogrp_t *inogrp)
+cb_add_inogrp(void *arg1, int fsfd, struct xfs_inogrp *inogrp)
 {
 	hnk_t *hunk;
 	seg_t *segp;
@@ -1472,7 +1472,7 @@ inomap_dump(drive_t *drivep)
 static int
 subtreelist_parse(jdm_fshandle_t *fshandlep,
 		   int fsfd,
-		   xfs_bstat_t *rootstatp,
+		   struct xfs_bstat *rootstatp,
 		   char *subtreebuf[],
 		   ix_t subtreecnt)
 {
@@ -1513,7 +1513,7 @@ static int
 subtreelist_parse_cb(void *arg1,
 		      jdm_fshandle_t *fshandlep,
 		      int fsfd,
-		      xfs_bstat_t *statp,
+		      struct xfs_bstat *statp,
 		      char *name)
 {
 	int cbrval = 0;
@@ -1596,7 +1596,7 @@ static int
 subtree_descend_cb(void *arg1,
 		    jdm_fshandle_t *fshandlep,
 		    int fsfd,
-		    xfs_bstat_t *statp,
+		    struct xfs_bstat *statp,
 		    char *name)
 {
 	int cbrval = 0;
@@ -1624,7 +1624,7 @@ subtree_descend_cb(void *arg1,
 #define BMAP_LEN	512
 
 static off64_t
-quantity2offset(jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty)
+quantity2offset(jdm_fshandle_t *fshandlep, struct xfs_bstat *statp, off64_t qty)
 {
 	int fd;
 	getbmapx_t bmap[BMAP_LEN];
@@ -1699,7 +1699,7 @@ quantity2offset(jdm_fshandle_t *fshandlep, xfs_bstat_t *statp, off64_t qty)
 
 
 static off64_t
-estimate_dump_space(xfs_bstat_t *statp)
+estimate_dump_space(struct xfs_bstat *statp)
 {
 	switch (statp->bs_mode & S_IFMT) {
 	case S_IFREG:

@@ -87,7 +87,7 @@ extern char *strncpyterm(char *s1, char *s2, size_t n);
 typedef int (*bstat_cbfp_t)(void *arg1,
 				 jdm_fshandle_t *fshandlep,
 				 int fsfd,
-				 xfs_bstat_t *statp);
+				 struct xfs_bstat *statp);
 
 typedef xfs_ino_t (*bstat_seekfp_t)(void *arg1,
 				    xfs_ino_t lastino);
@@ -102,17 +102,17 @@ extern int bigstat_iter(jdm_fshandle_t *fshandlep,
 			      void * seek_arg1,
 			      int *statp,
 			      bool_t (pfp)(int), /* preemption chk func */
-			      xfs_bstat_t *buf,
+			      struct xfs_bstat *buf,
 			      size_t buflen);
 
 extern int bigstat_one(int fsfd,
 			     xfs_ino_t ino,
-			     xfs_bstat_t *statp);
+			     struct xfs_bstat *statp);
 
 extern int inogrp_iter(int fsfd,
 			     int (*fp)(void *arg1,
 				     		int fsfd,
-						xfs_inogrp_t *inogrp),
+						struct xfs_inogrp *inogrp),
 			     void * arg1,
 			     int *statp);
 
@@ -131,11 +131,11 @@ extern int inogrp_iter(int fsfd,
  */
 extern int diriter(jdm_fshandle_t *fshandlep,
 			 int fsfd,
-			 xfs_bstat_t *statp,
+			 struct xfs_bstat *statp,
 			 int (*cbfp)(void *arg1,
 					     jdm_fshandle_t *fshandlep,
 					     int fsfd,
-					     xfs_bstat_t *statp,
+					     struct xfs_bstat *statp,
 					     char *namep),
 			 void *arg1,
 			 int *cbrvalp,

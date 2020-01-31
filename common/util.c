@@ -125,14 +125,14 @@ bigstat_iter(jdm_fshandle_t *fshandlep,
 	      void * seek_arg1,
 	      int *statp,
 	      bool_t (pfp)(int),
-	      xfs_bstat_t *buf,
+	      struct xfs_bstat *buf,
 	      size_t buflenin)
 {
 	__s32 buflenout;
 	xfs_ino_t lastino;
 	int saved_errno;
 	int bulkstatcnt;
-        xfs_fsop_bulkreq_t bulkreq;
+        struct xfs_fsop_bulkreq bulkreq;
 
 	/* stat set with return from callback func
 	 */
@@ -162,8 +162,8 @@ bigstat_iter(jdm_fshandle_t *fshandlep,
 	bulkreq.ubuffer = buf;
 	bulkreq.ocount = &buflenout;
 	while (!ioctl(fsfd, XFS_IOC_FSBULKSTAT, &bulkreq)) {
-		xfs_bstat_t *p;
-		xfs_bstat_t *endp;
+		struct xfs_bstat *p;
+		struct xfs_bstat *endp;
 
 		if (buflenout == 0) {
 			mlog(MLOG_NITTY + 1,
@@ -254,16 +254,16 @@ bigstat_iter(jdm_fshandle_t *fshandlep,
 int
 bigstat_one(int fsfd,
 	     xfs_ino_t ino,
-	     xfs_bstat_t *statp)
+	     struct xfs_bstat *statp)
 {
-        xfs_fsop_bulkreq_t bulkreq;
+	struct xfs_fsop_bulkreq bulkreq;
 	int count = 0;
 
 	assert(ino > 0);
-        bulkreq.lastip = (__u64 *)&ino;
-        bulkreq.icount = 1;
-        bulkreq.ubuffer = statp;
-        bulkreq.ocount = &count;
+	bulkreq.lastip = (__u64 *)&ino;
+	bulkreq.icount = 1;
+	bulkreq.ubuffer = statp;
+	bulkreq.ocount = &count;
 	return xfsctl(NULL, fsfd, XFS_IOC_FSBULKSTAT_SINGLE, &bulkreq);
 }
 
@@ -274,23 +274,23 @@ int
 inogrp_iter(int fsfd,
 	     int (*fp)(void *arg1,
 				int fsfd,
-				xfs_inogrp_t *inogrp),
+				struct xfs_inogrp *inogrp),
 	     void * arg1,
 	     int *statp)
 {
 	xfs_ino_t lastino;
 	int inogrpcnt;
-	xfs_inogrp_t *igrp;
-        xfs_fsop_bulkreq_t bulkreq;
+	struct xfs_inogrp *igrp;
+	struct xfs_fsop_bulkreq bulkreq;
 
 	/* stat set with return from callback func */
 	*statp = 0;
 
-	igrp = malloc(INOGRPLEN * sizeof(xfs_inogrp_t));
+	igrp = malloc(INOGRPLEN * sizeof(struct xfs_inogrp));
 	if (!igrp) {
 		mlog(MLOG_NORMAL | MLOG_ERROR,
 		     _("malloc of stream context failed (%d bytes): %s\n"),
-		     INOGRPLEN * sizeof(xfs_inogrp_t),
+		     INOGRPLEN * sizeof(struct xfs_inogrp),
 		     strerror(errno));
 		return -1;
 	}
@@ -302,7 +302,7 @@ inogrp_iter(int fsfd,
 	bulkreq.ubuffer = igrp;
 	bulkreq.ocount = &inogrpcnt;
 	while (!ioctl(fsfd, XFS_IOC_FSINUMBERS, &bulkreq)) {
-		xfs_inogrp_t *p, *endp;
+		struct xfs_inogrp *p, *endp;
 
 		if (inogrpcnt == 0) {
 			free(igrp);
@@ -339,11 +339,11 @@ inogrp_iter(int fsfd,
 int
 diriter(jdm_fshandle_t *fshandlep,
 	 int fsfd,
-	 xfs_bstat_t *statp,
+	 struct xfs_bstat *statp,
 	 int (*cbfp)(void *arg1,
 			     jdm_fshandle_t *fshandlep,
 			     int fsfd,
-			     xfs_bstat_t *statp,
+			     struct xfs_bstat *statp,
 			     char *namep),
 	 void *arg1,
 	 int *cbrvalp,
@@ -428,7 +428,7 @@ diriter(jdm_fshandle_t *fshandlep,
 		      assert(nread >= 0),
 		      p = (struct dirent *)((char *)p + reclen),
 		      reclen = (size_t)p->d_reclen) {
-			xfs_bstat_t statbuf;
+			struct xfs_bstat statbuf;
 			assert(scrval == 0);
 			assert(cbrval == 0);
 

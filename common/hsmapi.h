@@ -186,15 +186,15 @@ const	struct xfs_bstat	*statp);
 
 /******************************************************************************
 * Name
-*	HsmModifyInode - modify a xfs_bstat_t to make a file appear offline
+*	HsmModifyInode - modify a struct xfs_bstat to make a file appear offline
 *
 * Description
 *	HsmModifyInode uses the context provided by a previous
-*	HsmInitFileContext call to determine how to modify a xfs_bstat_t
+*	HsmInitFileContext call to determine how to modify a struct xfs_bstat
 *	structure to make a dual-residency HSM file appear to be offline.
 *
 * Returns
-*	!= 0, xfs_bstat_t structure was modified.
+*	!= 0, struct xfs_bstat structure was modified.
 *	== 0, if something is wrong with the file and it should not be dumped.
 ******************************************************************************/
 

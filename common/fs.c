@@ -204,7 +204,7 @@ fs_mounted(char *typs, char *chrs, char *mnts, uuid_t *idp)
 int
 fs_getid(char *mnts, uuid_t *idb)
 {
-	xfs_fsop_geom_v1_t geo;
+	struct xfs_fsop_geom_v1 geo;
 	int fd;
 
 	fd = open(mnts, O_RDONLY);

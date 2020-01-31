@@ -513,9 +513,9 @@ create inode-ranges for multi-stream dumps if pertinent.
       - bigstat_init on cb_add()
 	  - loops doing bulkstats (using syssgi() or ioctl())
 	    until system call returns non-zero value
-	  - each bulkstat returns a buffer of xfs_bstat_t records
+	  - each bulkstat returns a buffer of struct xfs_bstat records
 	    (buffer of size bulkreq.ocount)
-	  - loop thru each xfs_bstat_t record for an inode  
+	  - loop thru each struct xfs_bstat record for an inode
 	    calling cb_add()
 	  * cb_add
 	    - looks at latest mtime|ctime and 
@@ -629,7 +629,7 @@ create inode-ranges for multi-stream dumps if pertinent.
         * dump_filehdr()
           - write out 256 padded file header
           - header = &lt;offset, flags, checksum, 128-byte bulk stat structure &gt;
-          - bulkstat struct derived from xfs_bstat_t 
+          - bulkstat struct derived from struct xfs_bstat
             - stnd. stat stuff + extent size, #of extents, DMI stuff
           - if HSM context then 
             - modify bstat struct to make it offline

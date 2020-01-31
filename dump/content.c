@@ -262,30 +262,30 @@ extern size_t pgsz;
 /* file dumpers
  */
 static rv_t dump_dirs(ix_t strmix,
-		       xfs_bstat_t *bstatbufp,
+		       struct xfs_bstat *bstatbufp,
 		       size_t bstatbuflen,
 		       void *inomap_contextp);
 static rv_t dump_dir(ix_t strmix,
 		      jdm_fshandle_t *,
 		      int,
-		      xfs_bstat_t *);
+		      struct xfs_bstat *);
 static rv_t dump_file(void *,
 		       jdm_fshandle_t *,
 		       int,
-		       xfs_bstat_t *);
+		       struct xfs_bstat *);
 static rv_t dump_file_reg(drive_t *drivep,
 			   context_t *contextp,
 			   content_inode_hdr_t *scwhdrp,
 			   jdm_fshandle_t *,
-			   xfs_bstat_t *,
+			   struct xfs_bstat *,
 			   bool_t *);
 static rv_t dump_file_spec(drive_t *drivep,
 			    context_t *contextp,
 			    jdm_fshandle_t *,
-			    xfs_bstat_t *);
+			    struct xfs_bstat *);
 static rv_t dump_filehdr(drive_t *drivep,
 			  context_t *contextp,
-			  xfs_bstat_t *,
+			  struct xfs_bstat *,
 			  off64_t,
 			  int);
 static rv_t dump_extenthdr(drive_t *drivep,
@@ -296,18 +296,18 @@ static rv_t dump_extenthdr(drive_t *drivep,
 			    off64_t);
 static rv_t dump_dirent(drive_t *drivep,
 			 context_t *contextp,
-			 xfs_bstat_t *,
+			 struct xfs_bstat *,
 			 xfs_ino_t,
 			 gen_t,
 			 char *,
 			 size_t);
 static rv_t init_extent_group_context(jdm_fshandle_t *,
-				       xfs_bstat_t *,
+				       struct xfs_bstat *,
 				       extent_group_context_t *);
 static void cleanup_extent_group_context(extent_group_context_t *);
 static rv_t dump_extent_group(drive_t *drivep,
 			       context_t *contextp,
-			       xfs_bstat_t *,
+			       struct xfs_bstat *,
 			       extent_group_context_t *,
 			       off64_t,
 			       off64_t,
@@ -352,15 +352,15 @@ static bool_t check_complete_flags(void);
 static rv_t dump_extattrs(drive_t *drivep,
 			   context_t *contextp,
 	       		   jdm_fshandle_t *fshandlep,
-			   xfs_bstat_t *statp);
+			   struct xfs_bstat *statp);
 static rv_t dump_extattr_list(drive_t *drivep,
 			       context_t *contextp,
 	       		       jdm_fshandle_t *fshandlep,
-			       xfs_bstat_t *statp,
+			       struct xfs_bstat *statp,
 			       attrlist_t *listp,
 			       int flag,
 			       bool_t *abortprp);
-static char *dump_extattr_buildrecord(xfs_bstat_t *statp,
+static char *dump_extattr_buildrecord(struct xfs_bstat *statp,
 				       char *dumpbufp,
 				       char *dumpbufendp,
 				       char *namesrcp,
@@ -369,7 +369,7 @@ static char *dump_extattr_buildrecord(xfs_bstat_t *statp,
 				       char **valuepp);
 static rv_t dump_extattrhdr(drive_t *drivep,
 			     context_t *contextp,
-			     xfs_bstat_t *statp,
+			     struct xfs_bstat *statp,
 			     size_t recsz,
 			     size_t valoff,
 			     ix_t flags,
@@ -432,7 +432,7 @@ static jdm_fshandle_t *sc_fshandlep = 0;
 static int sc_fsfd = -1;
 	/* open file descriptor for root directory
 	 */
-static xfs_bstat_t *sc_rootxfsstatp = 0;
+static struct xfs_bstat *sc_rootxfsstatp = 0;
 	/* pointer to loaded bulkstat for root directory
 	 */
 static startpt_t *sc_startptp = 0;
@@ -1382,7 +1382,7 @@ baseuuidbypass:
 	}
 
 	/* figure out the ino for the root directory of the fs
-	 * and get its xfs_bstat_t for inomap_build().  This could
+	 * and get its struct xfs_bstat for inomap_build().  This could
 	 * be a bind mount; don't ask for the mount point inode,
 	 * find the actual lowest inode number in the filesystem.
 	 */
@@ -1390,7 +1390,7 @@ baseuuidbypass:
 		stat64_t rootstat;
 		xfs_ino_t lastino = 0;
 		int ocount = 0;
-		xfs_fsop_bulkreq_t bulkreq;
+		struct xfs_fsop_bulkreq bulkreq;
 
 		/* Get the inode of the mount point */
 		rval = fstat64(sc_fsfd, &rootstat);
@@ -1401,7 +1401,7 @@ baseuuidbypass:
 			return BOOL_FALSE;
 		}
 		sc_rootxfsstatp =
-			(xfs_bstat_t *)calloc(1, sizeof(xfs_bstat_t));
+			(struct xfs_bstat *)calloc(1, sizeof(struct xfs_bstat));
 		assert(sc_rootxfsstatp);
 
 		/* Get the first valid (i.e. root) inode in this fs */
@@ -2119,7 +2119,7 @@ content_stream_dump(ix_t strmix)
 	bool_t empty_mediafile;
 	time_t elapsed;
 	inv_stmtoken_t inv_stmt;
-	xfs_bstat_t *bstatbufp;
+	struct xfs_bstat *bstatbufp;
 	const size_t bstatbuflen = BSTATBUFLEN;
 	int rval;
 	rv_t rv;
@@ -2130,8 +2130,8 @@ content_stream_dump(ix_t strmix)
 
 	/* allocate a buffer for use by bstat_iter
 	 */
-	bstatbufp = (xfs_bstat_t *)calloc(bstatbuflen,
-					     sizeof(xfs_bstat_t));
+	bstatbufp = (struct xfs_bstat *)calloc(bstatbuflen,
+					     sizeof(struct xfs_bstat));
 	assert(bstatbufp);
 
 	/* allocate an inomap context */
@@ -2806,13 +2806,13 @@ update_cc_Media_useterminatorpr(drive_t *drivep, context_t *contextp)
 
 static rv_t
 dump_dirs(ix_t strmix,
-	   xfs_bstat_t *bstatbufp,
+	   struct xfs_bstat *bstatbufp,
 	   size_t bstatbuflen,
 	   void *inomap_contextp)
 {
 	xfs_ino_t lastino;
 	size_t bulkstatcallcnt;
-        xfs_fsop_bulkreq_t bulkreq;
+        struct xfs_fsop_bulkreq bulkreq;
 
 	inomap_reset_context(inomap_contextp);
 
@@ -2820,8 +2820,8 @@ dump_dirs(ix_t strmix,
 	 */
 	lastino = 0;
 	for (bulkstatcallcnt = 0 ; ; bulkstatcallcnt++) {
-		xfs_bstat_t *p;
-		xfs_bstat_t *endp;
+		struct xfs_bstat *p;
+		struct xfs_bstat *endp;
 		__s32 buflenout;
 		int rval;
 
@@ -2928,7 +2928,7 @@ static rv_t
 dump_dir(ix_t strmix,
 	  jdm_fshandle_t *fshandlep,
 	  int fsfd,
-	  xfs_bstat_t *statp)
+	  struct xfs_bstat *statp)
 {
 	context_t *contextp = &sc_contextp[strmix];
 	drive_t *drivep = drivepp[strmix];
@@ -3110,7 +3110,7 @@ dump_dir(ix_t strmix,
 			 * if it's not there, we have to get it the slow way.
 			 */
 			if (inomap_get_gen(NULL, p->d_ino, &gen)) {
-				xfs_bstat_t statbuf;
+				struct xfs_bstat statbuf;
 				int scrval;
 
 				scrval = bigstat_one(fsfd,
@@ -3169,7 +3169,7 @@ static rv_t
 dump_extattrs(drive_t *drivep,
 	       context_t *contextp,
 	       jdm_fshandle_t *fshandlep,
-	       xfs_bstat_t *statp)
+	       struct xfs_bstat *statp)
 {
 	ix_t pass;
 	int flag;
@@ -3269,7 +3269,7 @@ static rv_t
 dump_extattr_list(drive_t *drivep,
 		   context_t *contextp,
 		   jdm_fshandle_t *fshandlep,
-		   xfs_bstat_t *statp,
+		   struct xfs_bstat *statp,
 		   attrlist_t *listp,
 		   int flag,
 		   bool_t *abortprp)
@@ -3572,7 +3572,7 @@ dump_extattr_list(drive_t *drivep,
 }
 
 static char *
-dump_extattr_buildrecord(xfs_bstat_t *statp,
+dump_extattr_buildrecord(struct xfs_bstat *statp,
 			  char *dumpbufp,
 			  char *dumpbufendp,
 			  char *namesrcp,
@@ -3655,7 +3655,7 @@ dump_extattr_buildrecord(xfs_bstat_t *statp,
 static rv_t
 dump_extattrhdr(drive_t *drivep,
 		 context_t *contextp,
-		 xfs_bstat_t *statp,
+		 struct xfs_bstat *statp,
 		 size_t recsz,
 		 size_t valoff,
 		 ix_t flags,
@@ -3712,7 +3712,7 @@ static rv_t
 dump_file(void *arg1,
 	   jdm_fshandle_t *fshandlep,
 	   int fsfd,
-	   xfs_bstat_t *statp)
+	   struct xfs_bstat *statp)
 {
 	ix_t strmix = (ix_t)arg1;
 	context_t *contextp = &sc_contextp[strmix];
@@ -3942,7 +3942,7 @@ dump_file_reg(drive_t *drivep,
 	       context_t *contextp,
 	       content_inode_hdr_t *scwhdrp,
 	       jdm_fshandle_t *fshandlep,
-	       xfs_bstat_t *statp,
+	       struct xfs_bstat *statp,
 	       bool_t *file_skippedp)
 {
 	startpt_t *startptp = &scwhdrp->cih_startpt;
@@ -4163,7 +4163,7 @@ static rv_t
 dump_file_spec(drive_t *drivep,
 		context_t *contextp,
 		jdm_fshandle_t *fshandlep,
-		xfs_bstat_t *statp)
+		struct xfs_bstat *statp)
 {
 	int rval;
 	rv_t rv;
@@ -4277,7 +4277,7 @@ dump_file_spec(drive_t *drivep,
  */
 static rv_t
 init_extent_group_context(jdm_fshandle_t *fshandlep,
-			   xfs_bstat_t *statp,
+			   struct xfs_bstat *statp,
 			   extent_group_context_t *gcp)
 {
 	bool_t isrealtime;
@@ -4340,7 +4340,7 @@ cleanup_extent_group_context(extent_group_context_t *gcp)
 static rv_t
 dump_extent_group(drive_t *drivep,
 		   context_t *contextp,
-		   xfs_bstat_t *statp,
+		   struct xfs_bstat *statp,
 		   extent_group_context_t *gcp,
 		   off64_t maxcnt,
 		   off64_t stopoffset,
@@ -4932,7 +4932,7 @@ dump_extent_group(drive_t *drivep,
 
 /* Note: assumes the pad fields in dst have been zeroed. */
 static void
-copy_xfs_bstat(bstat_t *dst, xfs_bstat_t *src)
+copy_xfs_bstat(bstat_t *dst, struct xfs_bstat *src)
 {
 	dst->bs_ino = src->bs_ino;
 	dst->bs_mode = src->bs_mode;
@@ -4963,7 +4963,7 @@ copy_xfs_bstat(bstat_t *dst, xfs_bstat_t *src)
 static rv_t
 dump_filehdr(drive_t *drivep,
 	      context_t *contextp,
-	      xfs_bstat_t *statp,
+	      struct xfs_bstat *statp,
 	      off64_t offset,
 	      int flags)
 {
@@ -5086,7 +5086,7 @@ dump_extenthdr(drive_t *drivep,
 static rv_t
 dump_dirent(drive_t *drivep,
 	     context_t *contextp,
-	     xfs_bstat_t *statp,
+	     struct xfs_bstat *statp,
 	     xfs_ino_t ino,
 	     gen_t gen,
 	     char *name,
