@@ -584,7 +584,7 @@ struct drive_ops {
 				 */
 	void (*do_quit)(drive_t *drivep);
 				/* tells the drive manager to de-allocate
-				 * resources, INCLUDING the slave process.
+				 * resources, INCLUDING the worker process.
 				 */
 };
 

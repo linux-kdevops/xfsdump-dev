@@ -625,10 +625,10 @@ main(int argc, char *argv[])
 
 	/* now do the second and third passes of drive initialization.
 	 * allocate per-stream write and read headers. if a drive
-	 * manager uses a slave process, it should be created now,
-	 * using cldmgr_create(). each drive manager may use the slave to
+	 * manager uses a worker process, it should be created now,
+	 * using cldmgr_create(). each drive manager may use the worker to
 	 * asynchronously read the media file header, typically a very
-	 * time-consuming chore. drive_init3 will synchronize with each slave.
+	 * time-consuming chore. drive_init3 will synchronize with each worker.
 	 */
 	if (!init_error) {
 #ifdef DUMP
@@ -1465,7 +1465,7 @@ childmain(void *arg1)
 	exitcode = content_stream_restore(stix);
 #endif /* RESTORE */
 
-	/* let the drive manager shut down its slave thread
+	/* let the drive manager shut down its worker thread
 	 */
 	drivep = drivepp[stix];
 	(*drivep->d_opsp->do_quit)(drivep);

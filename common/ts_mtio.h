@@ -611,7 +611,7 @@ struct mt_capablity  {
 #define MTCANT_IMM	0x80000 /* drive doesn't work correctly when
 	immediate mode rewind, etc. is enabled.  Setting this bit
 	will disable immediate mode rewind on the drive, independent
-	of the setting of tpsc_immediate_rewind (in master.d/tpsc) */
+	of the setting of tpsc_immediate_rewind (in the tpsc sysgen file) */
 #define MTCAN_COMPRESS	0x100000 /* drive supports compression */
 #define MTCAN_BUFFM	0x200000 /* drive supports writing of
 				  * buffered filemarks */

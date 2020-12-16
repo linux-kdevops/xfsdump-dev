@@ -33,7 +33,7 @@
 #include "cldmgr.h"
 #include "ring.h"
 
-static int ring_slave_entry(void *ringctxp);
+static int ring_worker_entry(void *ringctxp);
 
 ring_t *
 ring_create(size_t ringlen,
@@ -72,14 +72,14 @@ ring_create(size_t ringlen,
 	ringp->r_active_in_ix = 0;
 	ringp->r_active_out_ix = 0;
 	ringp->r_client_cnt = 0;
-	ringp->r_slave_cnt = 0;
+	ringp->r_worker_cnt = 0;
 
 	/* initialize the meters
 	 */
 	ringp->r_client_msgcnt = 0;
-	ringp->r_slave_msgcnt = 0;
+	ringp->r_worker_msgcnt = 0;
 	ringp->r_client_blkcnt = 0;
-	ringp->r_slave_blkcnt = 0;
+	ringp->r_worker_blkcnt = 0;
 	ringp->r_first_io_time = 0;
 	ringp->r_all_io_cnt = 0;
 
@@ -120,11 +120,11 @@ ring_create(size_t ringlen,
 		}
 	}
 
-	/* kick off the slave thread
+	/* kick off the worker thread
 	 */
-	ok = cldmgr_create(ring_slave_entry,
+	ok = cldmgr_create(ring_worker_entry,
 			    drive_index,
-			    _("slave"),
+			    _("worker"),
 			    ringp);
 	assert(ok);
 
@@ -233,7 +233,7 @@ ring_reset(ring_t *ringp, ring_msg_t *msgp)
 		assert(ringp->r_client_cnt == 1);
 	}
 
-	/* tell the slave to abort
+	/* tell the worker to abort
 	 */
 	msgp->rm_op = RING_OP_RESET;
 	ring_put(ringp, msgp);
@@ -263,7 +263,7 @@ ring_reset(ring_t *ringp, ring_msg_t *msgp)
 	ringp->r_active_in_ix = 0;
 	ringp->r_active_out_ix = 0;
 	ringp->r_client_cnt = 0;
-	ringp->r_slave_cnt = 0;
+	ringp->r_worker_cnt = 0;
 	for (mix = 0; mix < ringp->r_len; mix++) {
 		ring_msg_t *msgp = &ringp->r_msgp[mix];
 		msgp->rm_mix = mix;
@@ -290,7 +290,7 @@ ring_destroy(ring_t *ringp)
 	 */
 	msgp = ring_get(ringp);
 
-	/* tell the slave to exit
+	/* tell the worker to exit
 	 */
 	msgp->rm_op = RING_OP_DIE;
 	ring_put(ringp, msgp);
@@ -308,7 +308,7 @@ ring_destroy(ring_t *ringp)
 					ringp->r_len;
 	} while (msgp->rm_stat != RING_STAT_DIEACK);
 
-	/* the slave is dead.
+	/* the worker is dead.
 	 */
 	qsem_free(ringp->r_ready_qsemh);
 	qsem_free(ringp->r_active_qsemh);
@@ -317,19 +317,19 @@ ring_destroy(ring_t *ringp)
 
 
 static ring_msg_t *
-ring_slave_get(ring_t *ringp)
+ring_worker_get(ring_t *ringp)
 {
 	ring_msg_t *msgp;
 
-	/* assert slave currently holds no messages
+	/* assert worker currently holds no messages
 	 */
-	assert(ringp->r_slave_cnt == 0);
+	assert(ringp->r_worker_cnt == 0);
 
-	/* bump slave message count and note if slave needs to block
+	/* bump worker message count and note if worker needs to block
 	 */
-	ringp->r_slave_msgcnt++;
+	ringp->r_worker_msgcnt++;
 	if (qsemPwouldblock(ringp->r_active_qsemh)) {
-		ringp->r_slave_blkcnt++;
+		ringp->r_worker_blkcnt++;
 	}
 
 	/* block until msg available on active queue ("P")
@@ -358,23 +358,23 @@ ring_slave_get(ring_t *ringp)
 	 */
 	msgp->rm_loc = RING_LOC_SLAVE;
 
-	/* bump the count of messages held by the slave
+	/* bump the count of messages held by the worker
 	 */
-	ringp->r_slave_cnt++;
+	ringp->r_worker_cnt++;
 
-	/* return the msg to the slave
+	/* return the msg to the worker
 	 */
 	return msgp;
 }
 
 static void
-ring_slave_put(ring_t *ringp, ring_msg_t *msgp)
+ring_worker_put(ring_t *ringp, ring_msg_t *msgp)
 {
-	/* assert the slave holds exactly one message
+	/* assert the worker holds exactly one message
 	 */
-	assert(ringp->r_slave_cnt == 1);
+	assert(ringp->r_worker_cnt == 1);
 
-	/* assert the slave is returning the right message
+	/* assert the worker is returning the right message
 	 */
 	assert(msgp->rm_mix == ringp->r_ready_in_ix);
 
@@ -382,9 +382,9 @@ ring_slave_put(ring_t *ringp, ring_msg_t *msgp)
 	 */
 	assert(msgp->rm_loc == RING_LOC_SLAVE);
 
-	/* decrement the count of messages held by the slave
+	/* decrement the count of messages held by the worker
 	 */
-	ringp->r_slave_cnt--;
+	ringp->r_worker_cnt--;
 
 	/* update the message location
 	 */
@@ -402,7 +402,7 @@ ring_slave_put(ring_t *ringp, ring_msg_t *msgp)
 }
 
 static int
-ring_slave_entry(void *ringctxp)
+ring_worker_entry(void *ringctxp)
 {
 	sigset_t blocked_set;
 	ring_t *ringp = (ring_t *)ringctxp;
@@ -424,7 +424,7 @@ ring_slave_entry(void *ringctxp)
 		ring_msg_t *msgp;
 		int rval;
 
-		msgp = ring_slave_get(ringp);
+		msgp = ring_worker_get(ringp);
 		msgp->rm_rval = 0;
 
 		switch(msgp->rm_op) {
@@ -486,7 +486,7 @@ ring_slave_entry(void *ringctxp)
 			msgp->rm_stat = RING_STAT_IGNORE;
 			break;
 		}
-		ring_slave_put(ringp, msgp);
+		ring_worker_put(ringp, msgp);
 	}
 
 	return 0;

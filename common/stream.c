@@ -54,7 +54,7 @@ stream_init(void)
  * Note that the stream list structure (updated via the stream_* functions)
  * is indexed by pthread_t (tid). Multiple processes can be registered against
  * the same stream index, typically: the primary content process that does the
- * work; and the drive slave process, which just processes stuff off the ring
+ * work; and the drive worker process, which just processes stuff off the ring
  * buffer. In general having multiple tids registered per stream is not an issue
  * for termination status reporting, as the mlog_exit* logging functions only
  * ever get called out of the primary content process.

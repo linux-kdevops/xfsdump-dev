@@ -188,7 +188,7 @@ struct drive_context {
 			 * to media without error. includes media file header
 			 * record. this is incremented when the actual I/O is
 			 * done. dc_reccnt is different, indicating what has
-			 * been seen by client. slave may have read ahead /
+			 * been seen by client. worker may have read ahead /
 			 * written behind.
 			 */
 	int dc_fd;
@@ -231,7 +231,7 @@ struct drive_context {
 			 * compression
 			 */
 	bool_t dc_singlethreadedpr;
-			/* single-threaded operation (no slave)
+			/* single-threaded operation (no worker)
 			 */
 	bool_t dc_errorpr;
 			/* TRUE if error encountered during reading or writing.
@@ -800,7 +800,7 @@ do_init(drive_t *drivep)
 	return BOOL_TRUE;
 }
 
-/* wait here for slave to complete initialization.
+/* wait here for worker to complete initialization.
  * set drive capabilities flags. NOTE: currently don't make use of this
  * feature: drive initialization done whenever block/record sizes unknown.
  */
@@ -2752,7 +2752,7 @@ do_quit(drive_t *drivep)
 	if (ringp) {
 		display_ring_metrics(drivep, MLOG_VERBOSE);
 
-		/* tell slave to die
+		/* tell worker to die
 		 */
 		mlog((MLOG_NITTY + 1) | MLOG_DRIVE,
 		      "ring op: destroy\n");
@@ -5156,10 +5156,10 @@ display_ring_metrics(drive_t *drivep, int mlog_flags)
 	      bufszbuf,
 	      bufszsfxp,
 	      contextp->dc_ringpinnedpr ? _("pinned ") : "",
-	      ringp->r_slave_msgcnt - ringp->r_slave_blkcnt,
-	      ringp->r_slave_msgcnt,
-	      percent64(ringp->r_slave_msgcnt - ringp->r_slave_blkcnt,
-			 ringp->r_slave_msgcnt),
+	      ringp->r_worker_msgcnt - ringp->r_worker_blkcnt,
+	      ringp->r_worker_msgcnt,
+	      percent64(ringp->r_worker_msgcnt - ringp->r_worker_blkcnt,
+			 ringp->r_worker_msgcnt),
 	      (double)(ringp->r_all_io_cnt)
 	      *
 	      (double)tape_recsz

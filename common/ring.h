@@ -21,16 +21,16 @@
 /* ring - readahead/writeahead abstraction
  *
  * the ring is conceptually an ordered set of messages circulating between the
- * client thread and the I/O slave thread. a message can be in one of four
+ * client thread and the I/O worker thread. a message can be in one of four
  * places: on the ready queue, held by the client, on the active queue, or held
- * by the slave. The client and slave can each hold at most one message at a
+ * by the worker. The client and worker can each hold at most one message at a
  * time. all others must be on one of the two queues. the messages must
- * circulate in that order: ready, client, active, slave, ready, ...
+ * circulate in that order: ready, client, active, worker, ready, ...
  * initially all messages are on the ready queue, with status set to
  * INIT. The client uses ring_get to remove a message from the ready queue.
  * the client can then use the message to read or write. to read, the client
  * sets the op field to READ, and places the message on the active queue. the
- * slave will remove messages from the active queue, invoke the client-supplied
+ * worker will remove messages from the active queue, invoke the client-supplied
  * read function with the message's buffer, record the read function's return
  * value in the message, set the message status to OK (read function returned 0)
  * or ERROR (read returned non-zero), and place the message on the ready queue.
@@ -39,28 +39,28 @@
  * except the client fills the buffer and sets the op to WRITE prior to placing
  * the message on the active queue.
  *
- * if the client-supplied read or write function returns an error, the slave
- * will set the message status to ERROR. the slave will pass all subsequent
+ * if the client-supplied read or write function returns an error, the worker
+ * will set the message status to ERROR. the worker will pass all subsequent
  * messages appearing on the active queue directly to the ready queue with
- * no I/O done and the message status set to IGNORE. the slave will remain
+ * no I/O done and the message status set to IGNORE. the worker will remain
  * in this state until a reset is performed (see below).
  *
- * The client may at anytime place a NOP msg on the ring. the slave does
+ * The client may at anytime place a NOP msg on the ring. the worker does
  * nothing with this mmessage other than to place it back on the ready queue
  * with NOPACK status. This is useful for inhibiting read-ahead.
  *
  * To flush the ring, the client must repetatively place TRACE messages on the
- * active queue until it sees an IGNORE msg on the ready queue. the slave will
+ * active queue until it sees an IGNORE msg on the ready queue. the worker will
  * simply transfer TRACErs from active to ready with no other action taken
  * (other than to set the message status to IGNORE).
  *
  * the client may at any time reset the ring. the reset will return to the
- * client when the current I/O being executed by the slave completes, and
+ * client when the current I/O being executed by the worker completes, and
  * all messages have been wiped clean and placed on the ready queue with
  * status set to INIT. the ring_reset function accomplishes this internally by
  * placing a RESET message on the active QUEUE, and continuing to remove
  * messages from the ready queue (without placing them on the active queue)
- * until the RESET message is seen the slave responds to a reset message by
+ * until the RESET message is seen the worker responds to a reset message by
  * setting the status to RESETACK, queueing the message on the ready queue, and
  * waiting for a message from the active queue. ring_reset will then re-
  * initialize the ring and return. note that the client may be holding one
@@ -68,7 +68,7 @@
  * that message into the reset call. otherwise it must pass in NULL.
  *
  * the ring_destroy function may be invoked to shut down the ring and kill the
- * slave thread. it simply places a DIE message on the active queue, and waits
+ * worker thread. it simply places a DIE message on the active queue, and waits
  * for a DIEACK response. it then de-allocates all semaphores memory allocated
  * by ring_create.
  *
@@ -76,7 +76,7 @@
  * of the client. it is not perturbed during any ring operations.
  *
  * the ring maintains four performance metering values: the number of times
- * the slave and client attempted to get a message, and the number of times
+ * the worker and client attempted to get a message, and the number of times
  * those attempts resulting in blocking.
  */
 
@@ -128,9 +128,9 @@ typedef struct ring_msg ring_msg_t;
  */
 struct ring {
 	off64_t r_client_msgcnt;
-	off64_t r_slave_msgcnt;
+	off64_t r_worker_msgcnt;
 	off64_t r_client_blkcnt;
-	off64_t r_slave_blkcnt;
+	off64_t r_worker_blkcnt;
 	time32_t r_first_io_time;
 	off64_t r_all_io_cnt;
 /* ALL BELOW PRIVATE!!! */
@@ -143,7 +143,7 @@ struct ring {
 	size_t r_active_out_ix;
 	qsemh_t r_active_qsemh;
 	size_t r_client_cnt;
-	size_t r_slave_cnt;
+	size_t r_worker_cnt;
 	int (*r_readfunc)(void *contextp, char *bufp);
 	int (*r_writefunc)(void *contextp, char *bufp);
 	void *r_clientctxp;
