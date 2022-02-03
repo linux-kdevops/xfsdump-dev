@@ -12,5 +12,3 @@ LSRCFILES = inv_api.c inv_core.c inv_fstab.c inv_idx.c inv_mgr.c \
 default install install-dev:
 
 include $(BUILDRULES)
-
--include .ltdep
