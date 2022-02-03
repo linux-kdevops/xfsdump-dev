@@ -3913,9 +3913,6 @@ dump_file(void *arg1,
 			contextp->cc_stat_lastino = statp->bs_ino;
 		}
 		return RV_OK;
-	/* not yet implemented
-	case S_IFMNT:
-	 */
 	}
 
 	if (rv == RV_OK
