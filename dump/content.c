@@ -511,6 +511,60 @@ static bool_t create_inv_session(
 		ix_t subtreecnt,
 		size_t strmix);
 
+/*
+ * Verify that we are asked to dump from the root of the filesystem;
+ * test this by checking whether the inode number we've been given matches
+ * the inode number for this directory's ".."
+ */
+static bool_t
+check_rootdir(int fd,
+	      xfs_ino_t ino)
+{
+	struct dirent	*gdp;
+	size_t		gdsz;
+	bool_t		found = BOOL_FALSE;
+
+	gdsz = sizeof(struct dirent) + NAME_MAX + 1;
+	if (gdsz < GETDENTSBUF_SZ_MIN)
+		gdsz = GETDENTSBUF_SZ_MIN;
+	gdp = (struct dirent *)calloc(1, gdsz);
+	assert(gdp);
+
+	while (1) {
+		struct dirent *p;
+		int nread;
+
+		nread = getdents_wrap(fd, (char *)gdp, gdsz);
+		/*
+		 * negative count indicates something very bad happened;
+		 * try to gracefully end this dir.
+		 */
+		if (nread < 0) {
+			mlog(MLOG_NORMAL | MLOG_WARNING,
+_("unable to read dirents for directory ino %llu: %s\n"),
+			      ino, strerror(errno));
+			break;
+		}
+
+		/* no more directory entries: break; */
+		if (!nread)
+			break;
+
+		for (p = gdp; nread > 0;
+		     nread -= (int)p->d_reclen,
+		     assert(nread >= 0),
+		     p = (struct dirent *)((char *)p + p->d_reclen)) {
+			if (!strcmp(p->d_name, "..")) {
+				if (p->d_ino == ino)
+					found = BOOL_TRUE;
+				break;
+			}
+		}
+	}
+	free(gdp);
+	return found;
+}
+
 bool_t
 content_init(int argc,
 	      char *argv[],
@@ -1393,6 +1447,14 @@ baseuuidbypass:
 			      mntpnt);
 			return BOOL_FALSE;
 		}
+
+		if (!check_rootdir(sc_fsfd, rootstat.st_ino)) {
+			mlog(MLOG_ERROR,
+_("%s is not the root of the filesystem (bind mount?) - use primary mountpoint\n"),
+			     mntpnt);
+			return BOOL_FALSE;
+		}
+
 		sc_rootxfsstatp =
 			(struct xfs_bstat *)calloc(1, sizeof(struct xfs_bstat));
 		assert(sc_rootxfsstatp);
