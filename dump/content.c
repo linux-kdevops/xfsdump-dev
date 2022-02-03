@@ -1382,17 +1382,10 @@ baseuuidbypass:
 	}
 
 	/* figure out the ino for the root directory of the fs
-	 * and get its struct xfs_bstat for inomap_build().  This could
-	 * be a bind mount; don't ask for the mount point inode,
-	 * find the actual lowest inode number in the filesystem.
+	 * and get its xfs_bstat_t for inomap_build()
 	 */
 	{
 		stat64_t rootstat;
-		xfs_ino_t lastino = 0;
-		int ocount = 0;
-		struct xfs_fsop_bulkreq bulkreq;
-
-		/* Get the inode of the mount point */
 		rval = fstat64(sc_fsfd, &rootstat);
 		if (rval) {
 			mlog(MLOG_NORMAL, _(
@@ -1404,21 +1397,11 @@ baseuuidbypass:
 			(struct xfs_bstat *)calloc(1, sizeof(struct xfs_bstat));
 		assert(sc_rootxfsstatp);
 
-		/* Get the first valid (i.e. root) inode in this fs */
-		bulkreq.lastip = (__u64 *)&lastino;
-		bulkreq.icount = 1;
-		bulkreq.ubuffer = sc_rootxfsstatp;
-		bulkreq.ocount = &ocount;
-		if (ioctl(sc_fsfd, XFS_IOC_FSBULKSTAT, &bulkreq) < 0) {
+		if (bigstat_one(sc_fsfd, rootstat.st_ino, sc_rootxfsstatp) < 0) {
 			mlog(MLOG_ERROR,
 			      _("failed to get bulkstat information for root inode\n"));
 			return BOOL_FALSE;
 		}
-
-		if (sc_rootxfsstatp->bs_ino != rootstat.st_ino)
-			mlog (MLOG_NORMAL | MLOG_NOTE,
-			       _("root ino %lld differs from mount dir ino %lld, bind mount?\n"),
-			         sc_rootxfsstatp->bs_ino, rootstat.st_ino);
 	}
 
 	/* alloc a file system handle, to be used with the jdm_open()
