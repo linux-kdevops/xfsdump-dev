@@ -31,7 +31,6 @@ extern bool_t tree_init(char *hkdir,
 			 size64_t nondircnt,
 			 size64_t vmsz,
 			 bool_t fullpr,
-			 bool_t restoredmpr,
 			 bool_t dstdirisxfspr,
 			 uint32_t dumpformat,
 			 bool_t truncategenpr);

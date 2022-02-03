@@ -3455,11 +3455,6 @@ msgstr "nie są potrzebne dodatkowe obiekty nośnika\n"
 msgid "path_to_handle of %s failed:%s\n"
 msgstr "path_to_handle na %s nie powiodło się: %s\n"
 
-#: .././restore/content.c:9723
-#, c-format
-msgid "fssetdm_by_handle of %s failed %s\n"
-msgstr "fssetdm_by_handle na %s nie powiodło się: %s\n"
-
 #: .././restore/content.c:9742
 #, c-format
 msgid "%s quota information written to '%s'\n"

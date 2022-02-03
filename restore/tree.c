@@ -108,9 +108,6 @@ struct treePersStorage {
 	bool_t p_ignoreorphpr;
 		/* set if positive subtree or interactive
 		 */
-	bool_t p_restoredmpr;
-		/* restore DMI event settings
-		 */
 	bool_t p_truncategenpr;
 		/* truncate inode generation number (for compatibility
 		 * with xfsdump format 2 and earlier)
@@ -348,7 +345,6 @@ tree_init(char *hkdir,
 	   size64_t nondircnt,
 	   size64_t vmsz,
 	   bool_t fullpr,
-	   bool_t restoredmpr,
 	   bool_t dstdirisxfspr,
 	   uint32_t dumpformat,
 	   bool_t truncategenpr)
@@ -507,10 +503,6 @@ tree_init(char *hkdir,
 	/* record if this is a full dump. can skip link processing if so
 	 */
 	persp->p_fullpr = fullpr;
-
-	/* record if DMI event settings should be restored
-	 */
-	persp->p_restoredmpr = restoredmpr;
 
 	/* record if truncated generation numbers are required
 	 */
@@ -2547,31 +2539,6 @@ setdirattr(dah_t dah, char *path)
 					path, strerror(errno));
 			}
 			free_handle(hanp, hlen);
-		}
-	}
-
-	if (tranp->t_dstdirisxfspr && persp->p_restoredmpr) {
-		fsdmidata_t fssetdm;
-
-		fssetdm.fsd_dmevmask = dirattr_get_dmevmask(dah);
-		fssetdm.fsd_padding = 0;	/* not used */
-		fssetdm.fsd_dmstate = (uint16_t)dirattr_get_dmstate(dah);
-
-		/* restore DMAPI event settings etc.
-		 */
-		rval = ioctl(fd,
-			      XFS_IOC_FSSETDM,
-			      (void *)&fssetdm);
-		if (rval) {
-			mlog(errno == EINVAL
-			      ?
-			      (MLOG_NITTY + 1) | MLOG_TREE
-			      :
-			      MLOG_NITTY | MLOG_TREE,
-			      "set DMI attributes"
-			      " of %s failed: %s\n",
-			      path,
-			      strerror(errno));
 		}
 	}
 

@@ -3972,11 +3972,6 @@ msgstr ""
 msgid "no additional media objects needed\n"
 msgstr "keine zusätzlichen Mediendateien benötigt\n"
 
-#: .././restore/content.c:9547
-#, c-format
-msgid "fssetdm_by_handle of %s failed %s\n"
-msgstr "fssetdm_by_handle von %s fehlgeschlagen %s\n"
-
 #: .././restore/content.c:9566
 #, c-format
 msgid "%s quota information written to '%s'\n"
