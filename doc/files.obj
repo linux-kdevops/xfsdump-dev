@@ -295,7 +295,7 @@ minilines(486,15,0,0,0,0,0,[
 mini_line(486,12,3,0,0,0,[
 str_block(0,486,12,3,0,-4,0,0,0,[
 str_seg('black','Courier',0,80640,486,12,3,0,-4,0,0,0,0,0,
-	"Other File (S_IFCHAR|S_IFBLK|S_IFIFO|S_IFNAM|S_IFSOCK)")])
+	"Other File (S_IFCHAR|S_IFBLK|S_IFIFO|S_IFSOCK)")])
 ])
 ])]).
 text('black',48,244,2,0,1,54,30,379,12,3,0,0,0,0,2,54,30,0,0,"",0,0,0,0,256,'',[

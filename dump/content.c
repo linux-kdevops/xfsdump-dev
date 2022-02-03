@@ -3883,9 +3883,6 @@ dump_file(void *arg1,
 	case S_IFCHR:
 	case S_IFBLK:
 	case S_IFIFO:
-#ifdef S_IFNAM
-	case S_IFNAM:
-#endif
 	case S_IFLNK:
 	case S_IFSOCK:
 		/* only need a filehdr_t; no data

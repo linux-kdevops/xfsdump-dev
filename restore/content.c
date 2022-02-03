@@ -7313,9 +7313,6 @@ restore_file_cb(void *cp, bool_t linkpr, char *path1, char *path2)
 		case S_IFBLK:
 		case S_IFCHR:
 		case S_IFIFO:
-#ifdef S_IFNAM
-		case S_IFNAM:
-#endif
 		case S_IFSOCK:
 			ok = restore_spec(fhdrp, rvp, path1);
 			return ok;
@@ -7797,11 +7794,6 @@ restore_spec(filehdr_t *fhdrp, rv_t *rvp, char *path)
 	case S_IFIFO:
 		printstr = _("named pipe");
 		break;
-#ifdef S_IFNAM
-	case S_IFNAM:
-		printstr = _("XENIX named pipe");
-		break;
-#endif
 	case S_IFSOCK:
 		printstr = _("UNIX domain socket");
 		break;

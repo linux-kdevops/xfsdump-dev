@@ -1723,9 +1723,6 @@ estimate_dump_space(struct xfs_bstat *statp)
 	case S_IFIFO:
 	case S_IFCHR:
 	case S_IFDIR:
-#ifdef S_IFNAM
-	case S_IFNAM:
-#endif
 	case S_IFBLK:
 	case S_IFSOCK:
 	case S_IFLNK:
