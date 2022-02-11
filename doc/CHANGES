@@ -1,3 +1,8 @@
+xfsdump-3.1.10 (11 Feb 2022)
+	- Fix bind mount handling which was corrupting dumps
+	- Remove some dead code
+	- Inclusive language updates
+
 xfsdump-3.1.9 (31 Jan 2020)
 	- Fix build due to removed typedefs in xfsprogs (Darrick Wong)
 	- Support fallocate in xfs_restore (Darrick Wong)

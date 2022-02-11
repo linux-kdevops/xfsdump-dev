@@ -1,3 +1,10 @@
+xfsdump (3.1.10) unstable; urgency=low
+
+  * New upstream release
+  * Fix bind mount handling which was corrupting dumps
+
+ -- Nathan Scott <nathans@debian.org>  Fri, 11 Feb 2022 13:03:24 -0500
+
 xfsdump (3.1.9) unstable; urgency=low
 
   * New upstream release
